@@ -1,0 +1,56 @@
+﻿  main.cpp
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(79,61): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(79,42): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(83,59): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(83,40): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(88,56): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(88,37): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(94,57): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(94,38): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(108,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(110,18): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(111,18): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(116,26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(117,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(120,26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(125,23): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(126,23): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(186,29): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(187,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(208,24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(209,24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(223,77): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Project1\main.cpp(231,31): warning C4305: '+=': truncation from 'double' to 'float'
+  Project1.vcxproj -> C:\Users\Richie\Desktop\M.g\Lab 1\Project1\Debug\Project1.exe
