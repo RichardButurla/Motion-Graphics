@@ -90,7 +90,7 @@ int main()
 
 	sf::Vector2f endPoint = { 600, 0 };
 
-	int levelData[]{ 4,5,5,2,6,1,5,2, 6, 4, 5, 3, 5, 4, 7, 5, 6, 4, 4, 3, 3, 6, 5 ,5,2,6,3,5 ,3 ,5,5,3,6,3,7,2,6,3,5,3,4,2,5,2,5,2,5,2,6,3,6,2,7,2,7,3 };
+	int levelData[]{ 4,5,5,2,6,1,5,2, 6, 3, 5, 2, 4, 3, 3, 2, 4, 2, 5, 2, 5, 1, 5 ,2,6,2,6,2 ,5 ,3,5,3,6,3,7,2,6,3,5,3,4,2,5,2,5,2,5,2,6,3,6,2,7,2,7,3 };
 
 	sf::RectangleShape wallTile;
 	wallTile.setSize(sf::Vector2f(50, 50));
@@ -124,6 +124,8 @@ int main()
 		{
 			if (currentState == GameStates::Game)
 			{
+				sf::Vector2f lastPlayerPos = { xPosition,yPosition };
+
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
 					yPosition -= speed;
@@ -176,10 +178,14 @@ int main()
 				int wallBumpBack = 5;
 				int numColumns = 0;
 
+				
+
 				while (index < 56)
 				{
-					//yOffset += 0.0005;
-					scrollLevelTimer = 0;
+					if (yOffset < 16)
+					{
+						yOffset += 0.0005;
+					}
 
 
 					wallStartXPos = 0;
@@ -188,6 +194,11 @@ int main()
 					wallTile.setScale(numColumns, 1);
 					wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
 					window.draw(wallTile);
+
+					if (simpleRectangle.getGlobalBounds().intersects(wallTile.getGlobalBounds()))
+					{
+						currentState = GameStates::Lose;
+					}
 
 					numColumns = levelData[index + 1];
 					wallTile.setFillColor(sf::Color::Cyan);
@@ -202,12 +213,15 @@ int main()
 					wallStartXPos = levelData[index] * wallTile.getSize().x + levelData[index + 1] * wallTile.getSize().x;
 					wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
 					window.draw(wallTile);
+					if (simpleRectangle.getGlobalBounds().intersects(wallTile.getGlobalBounds()))
+					{
+						currentState = GameStates::Lose;
+					}
 					index += 2;
 
 					wallStartYPos -= wallTile.getSize().y;
 
 				}
-				checkCollision(levelData, xPosition, yPosition, simpleRectangle);
 
 				if (yPosition <= endPoint.y)
 				{
@@ -223,15 +237,9 @@ int main()
 
 				int xSize = wallTile.getSize().x;
 
-				std::cout << "X Coord: " << simpleRectangle.getPosition().x << "Y Coord: " << simpleRectangle.getPosition().y << "\n";
-
-				window.draw(simpleRectangle);
-				//window.draw(scoreText);
-
-
-
+				std::cout << "Yoffset: " << yOffset;
 				
-
+				window.draw(simpleRectangle);
 			}
 			if (currentState == GameStates::Lose)
 			{
@@ -242,6 +250,7 @@ int main()
 					xPosition = window.getSize().x / 2;
 					yPosition = window.getSize().y - simpleRectangle.getSize().y;
 					simpleRectangle.setPosition(xPosition, yPosition);
+					yOffset = 0;
 					currentState = GameStates::Game;
 				}
 			}
@@ -254,6 +263,7 @@ int main()
 					xPosition = window.getSize().x / 2;
 					yPosition = window.getSize().y - simpleRectangle.getSize().y;
 					simpleRectangle.setPosition(xPosition, yPosition);
+					yOffset = 0;
 					currentState = GameStates::Game;
 				}
 			}
@@ -264,37 +274,4 @@ int main()
 	}
 
 	return 0;
-}
-
-void checkCollision(int t_levelDataArray[], float& t_Xpos, float& t_yPos, sf::RectangleShape& t_player)
-{
-	int maxWidth = 600;
-	int maxHeight = 600;
-	float playerWidth = t_player.getSize().x;
-	sf::Vector2f playerPos = t_player.getPosition();
-
-	int y = 0;
-	for (int x = 0; x < 56; x += 2) //56 is size of array
-	{
-		if (playerPos.y < maxHeight - ((y) * 50) && playerPos.y > maxHeight - ((y + 1) * 50)) //if player is within a certain y pos, check x pos
-		{
-			if (playerPos.x < t_levelDataArray[x] * 50 + playerWidth / 2 && playerPos.x < t_levelDataArray[x] * 50 + t_levelDataArray[x + 1] * 50) { //off left side
-
-				t_Xpos = playerPos.x + 1;
-			}
-			if (playerPos.x > t_levelDataArray[x] * 50 && playerPos.x > t_levelDataArray[x] * 50 + t_levelDataArray[x + 1] * 50 - playerWidth / 2) { //off right side
-
-				t_Xpos = playerPos.x - 1;
-			}
-		}
-		y++;
-	}
-	//for (int y = 0; y < 16; y++)
-	//{
-	//	if (playerPos.y < maxHeight - ((y) * 50) && playerPos.y < maxHeight - ((y + 1) * 50) - 1)//if below a wall
-	//	{
-	//		t_Xpos = playerPos.x;
-	//		t_yPos = playerPos.y + 1;
-	//	}
-	//}
 }
