@@ -18,7 +18,7 @@
 #include <time.h> 
 #include <fstream>
 
-void checkCollision(sf::RectangleShape &t_player, sf::RectangleShape t_wall, int t_index, float &xPosition, float &yPosition, float t_bumpBack);
+void checkCollision(int t_levelDataArray[], float& t_Xpos, float& t_yPos, sf::RectangleShape& t_player);
 
 int main()
 {
@@ -33,6 +33,7 @@ int main()
 	simpleRectangle.setFillColor(sf::Color::Red);
 
 	simpleRectangle.setPosition(0, 0);
+	simpleRectangle.setOrigin(width / 2, height / 2);
 	srand(time(NULL));
 
 	float xPosition = window.getSize().x / 2;
@@ -42,7 +43,7 @@ int main()
 
 	float scrollLevelTimer = 0;
 	float scrollLevelThreshold = 1;
-	float yOffset = 0.05;
+	float yOffset = 0;
 
 	int levelData[]{ 4,5,5,2,6,1,5,2, 6, 4, 5, 3, 5, 4, 7, 5, 6, 4, 4, 3, 3, 6, 5 ,5,2,6,3,5 ,3 ,5,5,3,6,3,7,2,6,3,5,3,4,2,5,2,5,2,5,2,6,3,6,2,7,2,7,3 };
 
@@ -122,56 +123,55 @@ int main()
 			int levelArraySize = 32;
 			int index = 0;
 
-			wallStartYPos = window.getSize().y;
+			wallStartYPos = window.getSize().y - wallTile.getSize().y;
 			int wallStartXPos = 0;
 			int startYpos = window.getSize().y - 50;
-			const int MAX_COLLUMNS = 15;
+			const int MAX_COLLUMNS = 12;
 
 			int wallBumpBack = 5;
+			int numColumns = 0;
 
-			while (index < levelArraySize)
+			while (index < 56)
 			{
-				yOffset += 0.0005;
+				//yOffset += 0.0005;
 				scrollLevelTimer = 0;
 
 
 				wallStartXPos = 0;
-				int numColumns = levelData[index];
+				numColumns = levelData[index];
 				wallTile.setFillColor(sf::Color::Magenta);
 				wallTile.setScale(numColumns, 1);
 				wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
-				checkCollision(simpleRectangle, wallTile, index,xPosition,yPosition, wallBumpBack  );
 				window.draw(wallTile);
-				index++;
 
-				numColumns = levelData[index];
+				numColumns = levelData[index + 1];
 				wallTile.setFillColor(sf::Color::Cyan);
 				wallTile.setScale(numColumns, 1);
-				wallStartXPos = levelData[index - 1] * wallTile.getSize().x;
-				wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
+				wallStartXPos = (levelData[index] * wallTile.getSize().x + 50);
+				wallTile.setPosition(wallStartXPos - 50, wallStartYPos + (yOffset * wallTile.getSize().y));
 				window.draw(wallTile);
-				index++;
 
-				numColumns = MAX_COLLUMNS - (levelData[index - 2] + levelData[index - 1]);
+				numColumns = MAX_COLLUMNS - (levelData[index] + levelData[index + 1]);
 				wallTile.setFillColor(sf::Color::Magenta);
 				wallTile.setScale(numColumns, 1);
-				wallStartXPos = levelData[index - 1] * wallTile.getSize().x + levelData[index - 2] * wallTile.getSize().x;
+				wallStartXPos = levelData[index] * wallTile.getSize().x + levelData[index + 1] * wallTile.getSize().x;
 				wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
-				checkCollision(simpleRectangle, wallTile, index, xPosition,yPosition, -wallBumpBack );
 				window.draw(wallTile);
+				index += 2;
 
 				wallStartYPos -= wallTile.getSize().y;
 
 			}
+			checkCollision(levelData, xPosition, yPosition, simpleRectangle);
 			simpleRectangle.setPosition(xPosition, yPosition);
-			
+
 
 			int xSize = wallTile.getSize().x;
 
-
+			std::cout << "X Coord: " << simpleRectangle.getPosition().x << "\n";
 
 			window.draw(simpleRectangle);
-			window.draw(scoreText);
+			//window.draw(scoreText);
 
 
 			window.display();
@@ -184,15 +184,19 @@ int main()
 	return 0;
 }
 
-void checkCollision(sf::RectangleShape &t_player, sf::RectangleShape t_wall, int t_index, float &xPosition, float &yPosition, float t_bumpBack)
+void checkCollision(int t_levelDataArray[], float& t_Xpos, float& t_yPos, sf::RectangleShape& t_player)
 {
+	int maxWidth = 600;
 	int maxHeight = 600;
 	sf::Vector2f playerPos = t_player.getPosition();
 
-	if (t_player.getGlobalBounds().intersects(t_wall.getGlobalBounds()) && playerPos.y > 600 - 40 * t_index && playerPos.y ) {
-		xPosition = playerPos.x + t_bumpBack;
+	for (int i = 0; i < 2; i += 2) //56 is size of array
+	{
+		 
+		if (playerPos.x > t_levelDataArray[i] * 50) {
+			
+			
+		}
 		
-		std::cout << "Collided";
 	}
-	
 }
