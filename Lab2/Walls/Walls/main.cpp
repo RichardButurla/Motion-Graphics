@@ -17,8 +17,20 @@
 #include <stdlib.h> 
 #include <time.h> 
 #include <fstream>
+#include <vector>
+#include <time.h>
+#include <random>
 
-void checkCollision(int t_levelDataArray[], float& t_Xpos, float& t_yPos, sf::RectangleShape& t_player);
+
+//Color Pallete
+sf::Color rustyRed{ 222, 60, 75 };
+sf::Color electricBlue{ 135, 245, 251 };
+sf::Color paleSilver{ (206, 195, 193) };
+sf::Color darkPurple{ (36, 1, 21,255 ) };
+
+bool checkEnemyPlayerCollision(sf::FloatRect t_player, sf::FloatRect t_enemyRect);
+bool checkEnemyBulletCollision(sf::FloatRect bullet, sf::FloatRect t_enemyRect);
+
 enum class GameStates
 {
 	None,
@@ -27,8 +39,61 @@ enum class GameStates
 	Lose
 };
 
+class Enemy
+{
+public:
+	Enemy();
+	~Enemy();
+
+	void update();
+	void move();
+	void draw(sf::RenderWindow& t_window);
+	sf::RectangleShape getEenmyShape() { return enemyShape; }
+	sf::Vector2f getPosition() { return m_position; }
+	void setPosition(sf::Vector2f t_pos) { m_position = t_pos; }
+	void setPosition(int t_x, int t_y) { m_position.x = t_x; m_position.y = m_position.y; }
+	void setAlive() { alive = true; }
+	void setDead() { alive = false; }
+	bool getAlive() const { return alive; }
+
+private:
+
+	sf::RectangleShape enemyShape;
+	sf::Vector2f m_position;
+	float speed = 10;
+	bool alive = false;
+};
+
+class Bullet
+{
+public:
+	 Bullet();
+	~Bullet();
+
+	void update();
+	void move();
+	void draw(sf::RenderWindow& t_window);
+	sf::RectangleShape getBulletShape() { return bulletShape; }
+	sf::Vector2f getPosition() { return m_position; }
+	void setPosition(sf::Vector2f t_pos) { m_position = t_pos; }
+	void fire(sf::Vector2f t_playerPos) { fired = true; m_position = t_playerPos; }
+	bool getFired() { return fired; }
+	void setFired(bool t_bool) { fired = t_bool; }
+
+private:
+
+	sf::RectangleShape bulletShape;
+	sf::Vector2f m_position {300, 0};
+	float speed = 10;
+	bool fired = false;
+	
+
+};
+
 int main()
 {
+	std:srand(static_cast<unsigned int>(time(nullptr)));
+
 	GameStates currentState = GameStates::Game;
 	sf::RenderWindow window(sf::VideoMode(600, 600), "First Graphics in C++");
 
@@ -49,6 +114,18 @@ int main()
 
 	winScreen.setTexture(winTexture);
 	loseScreen.setTexture(loseTexture);
+
+
+	//Bullets
+	static const int MAX_BULLETS = 100;
+	Bullet bulletArray[MAX_BULLETS];
+	int numberOfBulletsFired = 0;
+
+	//Eenemies
+	static const int MAX_ENEMIES = 10;
+	Enemy enemyArray[MAX_ENEMIES];
+	int numberOfEnemiesAlive = 0;
+	float spawnTimer = 0;
 
 	sf::Text restartText;
 	sf::Font arialFont;
@@ -73,11 +150,14 @@ int main()
 
 	simpleRectangle.setSize(sf::Vector2f(width, height));
 
-	simpleRectangle.setFillColor(sf::Color::Red);
+	simpleRectangle.setFillColor(rustyRed);
 
 	simpleRectangle.setPosition(0, 0);
 	simpleRectangle.setOrigin(width / 2, height / 2);
 	srand(time(NULL));
+
+	bool triggerStop = 0;
+	float timer = 0;
 
 	float xPosition = window.getSize().x / 2;
 	float yPosition = window.getSize().y - simpleRectangle.getSize().y;
@@ -90,11 +170,11 @@ int main()
 
 	sf::Vector2f endPoint = { 600, 0 };
 
-	int levelData[]{ 4,5,5,2,6,1,5,2, 6, 3, 5, 2, 4, 3, 3, 2, 4, 2, 5, 2, 5, 1, 5 ,2,6,2,6,2 ,5 ,3,5,3,6,3,7,2,6,3,5,3,4,2,5,2,5,2,5,2,6,3,6,2,7,2,7,3 };
+	int levelData[]{ 5,3,5,2,5,1,5,2,6,2, 5, 2, 5, 1, 5, 1, 5, 1, 5, 2, 5, 1, 5 ,2,6,2,6,2 ,5 ,3,5,3,6,3,7,2,6,3,5,3,4,2,5,2,5,2,5,2,6,3,6,2,7,2,7,3 };
 
 	sf::RectangleShape wallTile;
 	wallTile.setSize(sf::Vector2f(50, 50));
-	wallTile.setFillColor(sf::Color::Magenta);
+	wallTile.setFillColor(paleSilver);
 	float wallStartYPos = window.getSize().y - wallTile.getSize().y;
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
@@ -149,6 +229,16 @@ int main()
 
 
 				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+					if (!triggerStop)
+					{
+						numberOfBulletsFired++;
+						bulletArray[numberOfBulletsFired].fire(simpleRectangle.getPosition());
+						triggerStop = true;
+					}
+					
+				}
 
 				sf::Text scoreText;
 				sf::Font scoreFont;
@@ -178,19 +268,35 @@ int main()
 				int wallBumpBack = 5;
 				int numColumns = 0;
 
-				
+				timer += 0.032; //every frame
+				if (timer > 0.3)
+				{
+					triggerStop = false;
+					timer = 0;
+				}
+				spawnTimer += 0.032;
+				if (spawnTimer > 3)
+				{
+					enemyArray[numberOfEnemiesAlive].setAlive();
+					//Randomise x pos a bit
+					int randXPos = rand() % 50 + 25;
+					enemyArray[numberOfEnemiesAlive].setPosition(window.getSize().x / 2 - 100 + randXPos + randXPos, 0);
+					spawnTimer = 0;
+					numberOfEnemiesAlive++;
+				}
+
 
 				while (index < 56)
 				{
 					if (yOffset < 16)
 					{
-						yOffset += 0.0005;
+						yOffset += 0.00115;
 					}
 
 
 					wallStartXPos = 0;
 					numColumns = levelData[index];
-					wallTile.setFillColor(sf::Color::Magenta);
+					wallTile.setFillColor(rustyRed);
 					wallTile.setScale(numColumns, 1);
 					wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
 					window.draw(wallTile);
@@ -201,14 +307,14 @@ int main()
 					}
 
 					numColumns = levelData[index + 1];
-					wallTile.setFillColor(sf::Color::Cyan);
+					wallTile.setFillColor(electricBlue);
 					wallTile.setScale(numColumns, 1);
 					wallStartXPos = (levelData[index] * wallTile.getSize().x + 50);
 					wallTile.setPosition(wallStartXPos - 50, wallStartYPos + (yOffset * wallTile.getSize().y));
 					window.draw(wallTile);
 
 					numColumns = MAX_COLLUMNS - (levelData[index] + levelData[index + 1]);
-					wallTile.setFillColor(sf::Color::Magenta);
+					wallTile.setFillColor(rustyRed);
 					wallTile.setScale(numColumns, 1);
 					wallStartXPos = levelData[index] * wallTile.getSize().x + levelData[index + 1] * wallTile.getSize().x;
 					wallTile.setPosition(wallStartXPos, wallStartYPos + (yOffset * wallTile.getSize().y));
@@ -234,12 +340,41 @@ int main()
 
 				simpleRectangle.setPosition(xPosition, yPosition);
 
-
+				
 				int xSize = wallTile.getSize().x;
 
-				std::cout << "Yoffset: " << yOffset;
+				//CheckCollisions
+				for (int i = 0; i < MAX_ENEMIES; i++)
+				{
+					for (int j = 0; j < MAX_BULLETS; j++)
+					{
+						if (bulletArray[j].getFired() == true && enemyArray[i].getAlive() == true)
+						{
+							if (checkEnemyBulletCollision(bulletArray[j].getBulletShape().getGlobalBounds(), enemyArray[i].getEenmyShape().getGlobalBounds()))
+							{
+								enemyArray[i].setDead();
+								bulletArray[j].setFired(false);
+							}
+						}
+						
+					}
+					
+				}
+
 				
 				window.draw(simpleRectangle);
+
+				for (int i = 0; i < MAX_BULLETS; i++)
+				{
+					bulletArray[i].update();
+					bulletArray[i].draw(window);
+
+				}
+				for (int i = 0; i < MAX_ENEMIES; i++)
+				{
+					enemyArray[i].update();
+					enemyArray[i].draw(window);
+				}
 			}
 			if (currentState == GameStates::Lose)
 			{
@@ -275,3 +410,96 @@ int main()
 
 	return 0;
 }
+
+Bullet::Bullet()
+{
+	sf::Vector2f bulletSize = { 10,10 };
+	bulletShape.setFillColor(paleSilver);
+	bulletShape.setSize(bulletSize);
+	bulletShape.setOrigin(bulletSize.x / 2.0f, bulletSize.y / 2.0f);
+	bulletShape.setPosition(m_position);
+}
+
+Bullet::~Bullet()
+{
+}
+
+void Bullet::update()
+{
+	if (fired)
+	{
+		move();
+	}
+	if (bulletShape.getPosition().y < 0)
+	{
+		fired = false;
+	}
+	
+}
+
+void Bullet::move()
+{
+	m_position.y -= speed;
+	bulletShape.setPosition(m_position);
+}
+
+void Bullet::draw(sf::RenderWindow& t_window)
+{
+	if (fired) {
+		t_window.draw(bulletShape);
+	}
+	
+}
+
+Enemy::Enemy()
+{
+	sf::Vector2f enemySize = { 50,50 };
+	enemyShape.setFillColor(paleSilver);
+	enemyShape.setSize(enemySize);
+	enemyShape.setOrigin(enemySize.x / 2.0f, enemySize.y / 2.0f);
+	enemyShape.setPosition(m_position);
+}
+
+Enemy::~Enemy()
+{
+}
+
+void Enemy::update()
+{
+	if (alive)
+	{
+		move();	
+	}
+	
+}
+
+void Enemy::move()
+{
+	m_position.y += speed;
+	enemyShape.setPosition(m_position);
+}
+
+void Enemy::draw(sf::RenderWindow& t_window)
+{
+	if(alive)
+	t_window.draw(enemyShape);
+}
+
+bool checkEnemyPlayerCollision(sf::FloatRect t_player, sf::FloatRect t_enemyRect)
+{
+	if (t_player.intersects(t_enemyRect))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool checkEnemyBulletCollision(sf::FloatRect bullet, sf::FloatRect t_enemyRect)
+{
+	if (bullet.intersects(t_enemyRect))
+	{
+		return true;
+	}
+	return false;
+}
+

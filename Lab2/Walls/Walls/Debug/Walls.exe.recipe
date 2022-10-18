@@ -2,15 +2,15 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Debug\Walls.exe</FullPath>
+      <FullPath>C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Debug\Walls.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\ASSETS\FONTS\ariblk.ttf</FullPath>
+      <FullPath>C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\ASSETS\FONTS\ariblk.ttf</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\ASSETS\IMAGES\SFML-LOGO.png</FullPath>
+      <FullPath>C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\ASSETS\IMAGES\SFML-LOGO.png</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

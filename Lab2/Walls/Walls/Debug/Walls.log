@@ -1,47 +1,55 @@
 ﻿  main.cpp
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(65,45): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(67,30): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(68,30): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(80,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(82,18): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(187,24): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(194,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(195,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(205,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(206,63): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(54,54): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(207,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(212,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(213,62): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(214,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(238,15): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(250,37): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(142,45): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Walls\main.cpp(263,37): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(144,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(145,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(157,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(162,18): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-  Walls.vcxproj -> C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab2\Walls\Debug\Walls.exe
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(271,19): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(277,24): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(293,25): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(300,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(301,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(311,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(312,63): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(313,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(318,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(319,62): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(320,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(344,15): warning C4244: 'initializing': conversion from 'const T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(385,37): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(398,37): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Walls\main.cpp(95,5): warning C4102: 'std': unreferenced label
+  Walls.vcxproj -> C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab2\Walls\Debug\Walls.exe
