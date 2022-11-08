@@ -102,17 +102,19 @@ public:
 	void update();
 	void move();
 	void draw(sf::RenderWindow& t_window);
-	sf::RectangleShape getBulletShape() { return bulletShape; }
+	sf::Sprite getBulletShape() { return bulletSprite; }
 	sf::Vector2f getPosition() { return m_position; }
 	void setPosition(sf::Vector2f t_pos) { m_position = t_pos; }
 	void fire(sf::Vector2f t_playerPos) { fired = true; m_position = t_playerPos; }
 	bool getFired() { return fired; }
+	void setTexture(sf::Texture& t_bulletTexture) { bulletTexture = t_bulletTexture; bulletSprite.setTexture(bulletTexture);}
 	void setFired(bool t_bool) { fired = t_bool; }
-	void setMovingDirection(int t_horisontalSpeed) { horisontalSpeed = t_horisontalSpeed; }
+	void setXVelocity(int t_horisontalSpeed) { horisontalSpeed = t_horisontalSpeed; }
 
 private:
 
-	sf::RectangleShape bulletShape;
+	sf::Sprite bulletSprite;
+	sf::Texture bulletTexture;
 	sf::Vector2f m_position{ 300, 0 };
 	float verticalSpeed = 10;
 	float horisontalSpeed = 0;
@@ -123,22 +125,22 @@ private:
 
 int main()
 {
-std:srand(static_cast<unsigned int>(time(nullptr)));
+std:srand(static_cast<unsigned int>(time(nullptr))); //seed for randomisation
 
-	GameStates currentState = GameStates::Game;
+	GameStates currentState = GameStates::Game; //will control wether we are in game, wether we lost/won
 	sf::RenderWindow window(sf::VideoMode(1200, 800), "First Graphics in C++");
-
 	
 	sf::Font scoreFont;
 	sf::Text scoreText;
 	sf::Text messageText;
 	sf::Text livesText;
 
-
 	sf::Texture goatTex;
 	sf::Texture maceTex;
 	sf::Texture lifeTex;
+	sf::Texture bulletTex;
 
+	//Load textures
 	if (!scoreFont.loadFromFile("ASSETS/FONTS/ariblk.ttf"))
 	{
 		std::cout << "failed to load font";
@@ -155,7 +157,10 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 	{
 		std::cout << "failed to load Mace";
 	}
-
+	if (!bulletTex.loadFromFile("ASSETS/IMAGES/projectile.png"))
+	{
+		std::cout << "failed to load projectile";
+	}
 
 	//Bullets
 	static const int MAX_BULLETS = 1000;
@@ -167,13 +172,33 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 	//Floating Lives
 	static const int MAX_FLOATING_LIVES = 10;
 	FloatingLife floatingLives[MAX_FLOATING_LIVES];
-	float lifeSpawnTimer = 0;
+	float timeSinceLastLifeSpawned = 0;
 	int numberOfLivesSpawned = 0;
 
-	//Eenemies
-	static const int MAX_ENEMIES = 50;
+	//Enemies
+	static const int MAX_ENEMIES = 100;
+	int numberOfEnemiesAlive = 0;
 	Enemy enemyArray[MAX_ENEMIES];
-	for (int i = 0; i < MAX_ENEMIES; i++) //set texture for all enemies
+
+
+	//Player
+	sf::Sprite playerSprite;
+	int playerLives = 3;
+	sf::Vector2u textureSize = goatTex.getSize();
+	float width = 50;
+	float height = 50;
+	float playerXPos = window.getSize().x / 2;
+	float playerYPos = window.getSize().y - textureSize.y / 2;
+	int playerSpeed = 5;
+
+	playerSprite.setTexture(goatTex);
+	playerSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
+	playerSprite.setScale(0.5, 0.5);
+	playerSprite.setPosition(playerXPos, playerYPos);
+
+
+	//Set textrues for all Sprites
+	for (int i = 0; i < MAX_ENEMIES; i++)
 	{
 		enemyArray[i].setTexture(maceTex);
 	}
@@ -181,12 +206,13 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 	{
 		floatingLives[i].setTexture(lifeTex);
 	}
-	int numberOfEnemiesAlive = 0;
-	float spawnTimer = 0;
+	for (int i = 0; i < MAX_BULLETS; i++)
+	{
+		bulletArray[i].setTexture(bulletTex);
+	}
+	
 
-	int enemiesShot = 0;
-	int playerLives = 3;
-
+	//Set texts
 	scoreText.setFont(scoreFont);
 	scoreText.setFillColor(sf::Color::Red);
 	scoreText.setOutlineColor(sf::Color::White);
@@ -206,32 +232,15 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 	livesText.setPosition(10 , 20);
 	livesText.setString(std::to_string(playerLives));
 
-
-	sf::Sprite playerSprite;
-	sf::Vector2u textureSize = goatTex.getSize();
-	float width = 50;
-	float height = 50;
-
-	playerSprite.setTexture(goatTex);
-	playerSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
-	playerSprite.setScale(0.5, 0.5);
-
-
-	playerSprite.setPosition(0, 0);
-	srand(time(NULL));
-
+	//Game dependant variables
 	bool triggerStop = 0;
-	float timer = 0;
+	float timeSinceLastBulletFired = 0;
+	float timeSinceLastEnemySpawned = 0;
+	int enemiesShot = 0;
 
-	float xPosition = window.getSize().x / 2;
-	float yPosition = window.getSize().y - textureSize.y;
-	int speed = 5;
-
+	//GameLoop Clock/Time variables
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
-
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
-
-
 	sf::Clock clockForFrameRate;
 
 	clockForFrameRate.restart();
@@ -252,31 +261,33 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 
 		if (timeSinceLastUpdate > timePerFrame)
 		{
-			if (currentState == GameStates::Game)
+			if (currentState == GameStates::Game) //if we are in the game
 			{
-				sf::Vector2f lastPlayerPos = { xPosition,yPosition };
+				sf::Vector2f lastPlayerPos = { playerXPos,playerYPos };
 				horisontalBulletSpeed = 0;
+
+				//check all keypresses
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
-					yPosition -= speed;
+					playerYPos -= playerSpeed;
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				{
-					yPosition += speed;
+					playerYPos += playerSpeed;
 
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					xPosition -= speed;
+					playerXPos -= playerSpeed;
 
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
-					xPosition += speed;
+					playerXPos += playerSpeed;
 
 
 				}
@@ -290,45 +301,34 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				{
-					if (!triggerStop)
+					if (!triggerStop) //if off firing cooldown
 					{
 						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].setMovingDirection(horisontalBulletSpeed);
+						bulletArray[numberOfBulletsFired].setXVelocity(horisontalBulletSpeed); //either sets the X Velocity to 0, or any minus or plus digit 
 						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires with left offest
 
 						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].setMovingDirection(horisontalBulletSpeed);
+						bulletArray[numberOfBulletsFired].setXVelocity(horisontalBulletSpeed); //either sets the X Velocity to 0, or any minus or plus digit
 						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires with right offset
 						triggerStop = true;
 					}
 
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				{
-					std::cout << "Yes";
-				}
-				
+				//update Player and texts
+				playerSprite.setPosition(playerXPos, playerYPos);
 				scoreText.setString("Score: " + std::to_string(enemiesShot));
 				livesText.setString("Lives Left: " + std::to_string(playerLives));
 
-				for (int i = 0; i < MAX_ENEMIES; i++)
-				{
-					//std::cout << "Enemy" << i << " Xpos: " << enemyArray[i].getPosition().x << " Ypos: " << enemyArray[i].getPosition().y;
-				}
-
-
 				window.clear(lightBrown);
 				
-
-
-				timer += 0.032; //every frame
-				if (timer > 0.5)
+				timeSinceLastBulletFired += 0.032; //every frame
+				if (timeSinceLastBulletFired > 0.5)
 				{
 					triggerStop = false;
-					timer = 0;
+					timeSinceLastBulletFired = 0;
 				}
-				spawnTimer += 0.032;
-				if (spawnTimer > 0.3)
+				timeSinceLastEnemySpawned += 0.032;
+				if (timeSinceLastEnemySpawned > 0.3) //spawns enemies
 				{
 					if (numberOfEnemiesAlive < MAX_ENEMIES)
 						numberOfEnemiesAlive += 1;
@@ -336,35 +336,37 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 					enemyArray[numberOfEnemiesAlive].setAlive();
 					//Randomise x pos a bit
 					int randXPos = rand() % (window.getSize().x - 50) + 50;
-					if (numberOfEnemiesAlive != MAX_ENEMIES )
+					if (numberOfEnemiesAlive != MAX_ENEMIES ) //if we havent reached our last enemy, spawn at the top
 					{
 						enemyArray[numberOfEnemiesAlive].setPosition(window.getSize().x / 2 - 100 + randXPos + randXPos, 0);
 					}
 					
-					spawnTimer = 0;
+					timeSinceLastEnemySpawned = 0;
 					
 				}
 
-				lifeSpawnTimer += 0.032;
-				if (lifeSpawnTimer > 10)
+				timeSinceLastLifeSpawned += 0.032;
+				if (timeSinceLastLifeSpawned > 10)
 				{
 					floatingLives[numberOfLivesSpawned].setCollected(false);
 					if (numberOfLivesSpawned < MAX_FLOATING_LIVES)
 						numberOfLivesSpawned++;
 
-					lifeSpawnTimer = 0;
+					timeSinceLastLifeSpawned = 0;
 				}
 
-				playerSprite.setPosition(xPosition, yPosition);
+				
 
 				//CheckCollisions
 				for (int i = 0; i < MAX_ENEMIES; i++)
 				{
+					//check player collision with enemy
 					if (checkCollision(playerSprite.getGlobalBounds(), enemyArray[i].getEnemyBounds()) == true)
 					{
 						enemyArray[i].sendToTop();
 						playerLives--;
 					}
+					//check bullet collision with enemy
 					for (int j = 0; j < MAX_BULLETS; j++)
 					{
 						if (bulletArray[j].getFired() == true && enemyArray[i].getAlive() == true)
@@ -380,6 +382,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 					}
 
 				}
+				//check player collision with lives
 				for (int i = 0; i < MAX_FLOATING_LIVES; i++)
 				{
 					if (floatingLives[i].getCollected() == false)
@@ -390,23 +393,12 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 						}
 					}				
 				}
-
 				
-					
-				if (enemiesShot == MAX_ENEMIES - 1)
-				{
-					currentState = GameStates::Win;
-				}
-				if (playerLives <= 0)
-				{
-					currentState = GameStates::Lose;
-				}
-				
-
 				window.draw(playerSprite);
 				window.draw(scoreText);
 				window.draw(livesText);
 
+				//Update and draw
 				for (int i = 0; i < MAX_BULLETS; i++)
 				{
 					bulletArray[i].update();
@@ -424,6 +416,19 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 					floatingLives[i].draw(window);
 				}
 			}
+
+
+			//Check Game ending scenarios
+			if (enemiesShot == MAX_ENEMIES - 1)
+			{
+				currentState = GameStates::Win;
+			}
+			if (playerLives <= 0)
+			{
+				currentState = GameStates::Lose;
+			}
+			
+
 			if (currentState == GameStates::Win)
 			{
 				window.clear(lightBrown);
@@ -448,10 +453,8 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 Bullet::Bullet()
 {
 	sf::Vector2f bulletSize = { 10,10 };
-	bulletShape.setFillColor(sf::Color::Red);
-	bulletShape.setSize(bulletSize);
-	bulletShape.setOrigin(bulletSize.x / 2.0f, bulletSize.y / 2.0f);
-	bulletShape.setPosition(m_position);
+	bulletSprite.setOrigin(bulletSize.x / 2.0f, bulletSize.y / 2.0f);
+	bulletSprite.setPosition(m_position);
 }
 
 Bullet::~Bullet()
@@ -464,7 +467,7 @@ void Bullet::update()
 	{
 		move();
 	}
-	if (bulletShape.getPosition().x < 0)
+	if (bulletSprite.getPosition().x < 0)
 	{
 		fired = false;
 	}
@@ -474,14 +477,14 @@ void Bullet::update()
 void Bullet::move()
 {
 	m_position.y -= verticalSpeed;
-	m_position.x += horisontalSpeed;
-	bulletShape.setPosition(m_position);
+	m_position.x += horisontalSpeed; //usually zero unless we move sideways and fire
+	bulletSprite.setPosition(m_position);
 }
 
 void Bullet::draw(sf::RenderWindow& t_window)
 {
 	if (fired) {
-		t_window.draw(bulletShape);
+		t_window.draw(bulletSprite);
 	}
 
 }
@@ -542,7 +545,7 @@ bool checkCollision(sf::FloatRect t_floatRectOne, sf::FloatRect t_floatRectTwo)
 
 FloatingLife::FloatingLife()
 {
-	sf::Vector2f life = { 50,50 };
+	sf::Vector2f life = { 50.f,50.f };
 	lifeShape.setScale(0.1, 0.1);
 	lifeShape.setOrigin(life.x / 2.0f, life.y / 2.0f);
 	lifeShape.setPosition(m_position);
