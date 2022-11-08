@@ -24,9 +24,7 @@
 
 sf::Color lightBrown{ 244, 164, 96 };
 
-bool checkEnemyPlayerCollision(sf::FloatRect t_player, sf::FloatRect t_enemyRect);
-bool checkEnemyBulletCollision(sf::FloatRect bullet, sf::FloatRect t_enemyRect);
-bool checkPlayerHeartCollision(sf::FloatRect bullet, sf::FloatRect t_heartRect);
+bool checkCollision(sf::FloatRect t_floatRectOne, sf::FloatRect t_floatRectTwo);
 
 enum class GameStates
 {
@@ -164,6 +162,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 	Bullet bulletArray[MAX_BULLETS];
 	int numberOfBulletsFired = 0;
 	sf::Vector2f bulletFiringOffset = { 40,0 };
+	int horisontalBulletSpeed = 0;
 
 	//Floating Lives
 	static const int MAX_FLOATING_LIVES = 10;
@@ -256,6 +255,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 			if (currentState == GameStates::Game)
 			{
 				sf::Vector2f lastPlayerPos = { xPosition,yPosition };
+				horisontalBulletSpeed = 0;
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
@@ -282,47 +282,31 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					if (!triggerStop)
-					{
-							numberOfBulletsFired++;
-							bulletArray[numberOfBulletsFired].setMovingDirection(-10);
-							bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires to the left
-
-							numberOfBulletsFired++;
-							bulletArray[numberOfBulletsFired].setMovingDirection(-10);
-							bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires to the right
-
-							triggerStop = true;
-					}
+					horisontalBulletSpeed = -8;
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				{
+					horisontalBulletSpeed = 8;
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				{
 					if (!triggerStop)
 					{
 						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].setMovingDirection(10);
-						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires to the left
+						bulletArray[numberOfBulletsFired].setMovingDirection(horisontalBulletSpeed);
+						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires with left offest
 
 						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].setMovingDirection(10);
-						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires to the right
-
+						bulletArray[numberOfBulletsFired].setMovingDirection(horisontalBulletSpeed);
+						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires with right offset
 						triggerStop = true;
 					}
+
 				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					if (!triggerStop)
-					{
-						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires to the left
-						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires to the right
-						triggerStop = true;
-					}
-
+					std::cout << "Yes";
 				}
-
 				
 				scoreText.setString("Score: " + std::to_string(enemiesShot));
 				livesText.setString("Lives Left: " + std::to_string(playerLives));
@@ -376,7 +360,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 				//CheckCollisions
 				for (int i = 0; i < MAX_ENEMIES; i++)
 				{
-					if (checkEnemyPlayerCollision(playerSprite.getGlobalBounds(), enemyArray[i].getEnemyBounds()) == true)
+					if (checkCollision(playerSprite.getGlobalBounds(), enemyArray[i].getEnemyBounds()) == true)
 					{
 						enemyArray[i].sendToTop();
 						playerLives--;
@@ -385,7 +369,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 					{
 						if (bulletArray[j].getFired() == true && enemyArray[i].getAlive() == true)
 						{
-							if (checkEnemyBulletCollision(bulletArray[j].getBulletShape().getGlobalBounds(), enemyArray[i].getEnemyBounds()))
+							if (checkCollision(bulletArray[j].getBulletShape().getGlobalBounds(), enemyArray[i].getEnemyBounds()))
 							{
 								enemyArray[i].setDead();
 								enemiesShot++;
@@ -400,7 +384,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 				{
 					if (floatingLives[i].getCollected() == false)
 					{
-						if (checkPlayerHeartCollision(playerSprite.getGlobalBounds(), floatingLives[i].getLifeBounds())) {
+						if (checkCollision(playerSprite.getGlobalBounds(), floatingLives[i].getLifeBounds())) {
 							floatingLives[i].setCollected(true);
 							playerLives++;
 						}
@@ -547,27 +531,9 @@ void Enemy::checkOutofBounds(sf::RenderWindow& t_window)
 	}
 }
 
-bool checkEnemyPlayerCollision(sf::FloatRect t_player, sf::FloatRect t_enemyRect)
+bool checkCollision(sf::FloatRect t_floatRectOne, sf::FloatRect t_floatRectTwo)
 {
-	if (t_player.intersects(t_enemyRect))
-	{
-		return true;
-	}
-	return false;
-}
-
-bool checkEnemyBulletCollision(sf::FloatRect bullet, sf::FloatRect t_enemyRect)
-{
-	if (bullet.intersects(t_enemyRect))
-	{
-		return true;
-	}
-	return false;
-}
-
-bool checkPlayerHeartCollision(sf::FloatRect t_player, sf::FloatRect t_heartRect)
-{
-	if (t_player.intersects(t_heartRect))
+	if (t_floatRectOne.intersects(t_floatRectTwo))
 	{
 		return true;
 	}

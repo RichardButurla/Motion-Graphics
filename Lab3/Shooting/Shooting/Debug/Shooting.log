@@ -1,57 +1,57 @@
 ﻿  main.cpp
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(51,54): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(49,54): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(82,54): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(80,54): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(113,69): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(201,74): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(111,69): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(200,74): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(201,49): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(200,49): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(217,58): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(216,58): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(217,39): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(216,39): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(222,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(221,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(226,18): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
 C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(227,18): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(228,18): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(340,19): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(346,24): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(364,28): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(128,4): warning C4102: 'std': unreferenced label
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(546,37): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(324,19): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(330,24): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(348,28): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(126,4): warning C4102: 'std': unreferenced label
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(530,37): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(580,29): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(617,37): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(546,29): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\M.G\Motion-Graphics\Lab3\Shooting\Shooting\main.cpp(583,37): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
