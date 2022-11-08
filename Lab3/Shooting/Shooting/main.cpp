@@ -26,6 +26,7 @@ sf::Color lightBrown{ 244, 164, 96 };
 
 bool checkEnemyPlayerCollision(sf::FloatRect t_player, sf::FloatRect t_enemyRect);
 bool checkEnemyBulletCollision(sf::FloatRect bullet, sf::FloatRect t_enemyRect);
+bool checkPlayerHeartCollision(sf::FloatRect bullet, sf::FloatRect t_heartRect);
 
 enum class GameStates
 {
@@ -49,6 +50,8 @@ public:
 	void setPosition(sf::Vector2f t_pos) { m_position = t_pos; }
 	void setPosition(int t_x, int t_y) { m_position.x = t_x; m_position.y = m_position.y; }
 	void setCollected(bool t_bool) { collected = t_bool; }
+	bool getCollected() { return collected; }
+	sf::FloatRect getLifeBounds() { return lifeShape.getGlobalBounds(); }
 
 	void checkOutofBounds(sf::RenderWindow& t_window);
 	void setTexture(sf::Texture& t_texture) { lifeTex = t_texture; lifeShape.setTexture(lifeTex); }
@@ -358,7 +361,16 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 					}
 
 				}
-
+				for (int i = 0; i < MAX_FLOATING_LIVES; i++)
+				{
+					if (floatingLives[i].getCollected() == false)
+					{
+						if (checkPlayerHeartCollision(playerSprite.getGlobalBounds(), floatingLives[i].getLifeBounds())) {
+							floatingLives[i].setCollected(true);
+							playerLives++;
+						}
+					}				
+				}
 
 				
 					
@@ -511,6 +523,15 @@ bool checkEnemyPlayerCollision(sf::FloatRect t_player, sf::FloatRect t_enemyRect
 bool checkEnemyBulletCollision(sf::FloatRect bullet, sf::FloatRect t_enemyRect)
 {
 	if (bullet.intersects(t_enemyRect))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool checkPlayerHeartCollision(sf::FloatRect t_player, sf::FloatRect t_heartRect)
+{
+	if (t_player.intersects(t_heartRect))
 	{
 		return true;
 	}
