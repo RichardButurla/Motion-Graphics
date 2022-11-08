@@ -51,6 +51,7 @@ public:
 	void setPosition(int t_x, int t_y) { m_position.x = t_x; m_position.y = m_position.y; }
 	void setCollected(bool t_bool) { collected = t_bool; }
 	bool getCollected() { return collected; }
+
 	sf::FloatRect getLifeBounds() { return lifeShape.getGlobalBounds(); }
 
 	void checkOutofBounds(sf::RenderWindow& t_window);
@@ -60,7 +61,7 @@ private:
 	sf::Sprite lifeShape;
 	sf::Texture lifeTex;
 	sf::Vector2f m_position;
-	float speed = 10;
+	float verticalSpeed = 10;
 	bool collected = true;
 };
 
@@ -109,12 +110,14 @@ public:
 	void fire(sf::Vector2f t_playerPos) { fired = true; m_position = t_playerPos; }
 	bool getFired() { return fired; }
 	void setFired(bool t_bool) { fired = t_bool; }
+	void setMovingDirection(int t_horisontalSpeed) { horisontalSpeed = t_horisontalSpeed; }
 
 private:
 
 	sf::RectangleShape bulletShape;
 	sf::Vector2f m_position{ 300, 0 };
-	float speed = 10;
+	float verticalSpeed = 10;
+	float horisontalSpeed = 0;
 	bool fired = false;
 
 
@@ -157,9 +160,10 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 
 
 	//Bullets
-	static const int MAX_BULLETS = 100;
+	static const int MAX_BULLETS = 1000;
 	Bullet bulletArray[MAX_BULLETS];
 	int numberOfBulletsFired = 0;
+	sf::Vector2f bulletFiringOffset = { 40,0 };
 
 	//Floating Lives
 	static const int MAX_FLOATING_LIVES = 10;
@@ -215,7 +219,6 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 
 
 	playerSprite.setPosition(0, 0);
-	playerSprite.setOrigin(width / 2, height / 2);
 	srand(time(NULL));
 
 	bool triggerStop = 0;
@@ -277,12 +280,44 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 
 
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				{
+					if (!triggerStop)
+					{
+							numberOfBulletsFired++;
+							bulletArray[numberOfBulletsFired].setMovingDirection(-10);
+							bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires to the left
+
+							numberOfBulletsFired++;
+							bulletArray[numberOfBulletsFired].setMovingDirection(-10);
+							bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires to the right
+
+							triggerStop = true;
+					}
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
 					if (!triggerStop)
 					{
 						numberOfBulletsFired++;
-						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition());
+						bulletArray[numberOfBulletsFired].setMovingDirection(10);
+						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires to the left
+
+						numberOfBulletsFired++;
+						bulletArray[numberOfBulletsFired].setMovingDirection(10);
+						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires to the right
+
+						triggerStop = true;
+					}
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+					if (!triggerStop)
+					{
+						numberOfBulletsFired++;
+						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + bulletFiringOffset); //fires to the left
+						numberOfBulletsFired++;
+						bulletArray[numberOfBulletsFired].fire(playerSprite.getPosition() + -bulletFiringOffset); //fires to the right
 						triggerStop = true;
 					}
 
@@ -303,7 +338,7 @@ std:srand(static_cast<unsigned int>(time(nullptr)));
 
 
 				timer += 0.032; //every frame
-				if (timer > 0.3)
+				if (timer > 0.5)
 				{
 					triggerStop = false;
 					timer = 0;
@@ -454,7 +489,8 @@ void Bullet::update()
 
 void Bullet::move()
 {
-	m_position.y -= speed;
+	m_position.y -= verticalSpeed;
+	m_position.x += horisontalSpeed;
 	bulletShape.setPosition(m_position);
 }
 
@@ -560,7 +596,7 @@ void FloatingLife::update()
 
 void FloatingLife::move()
 {
-	m_position.y += speed;
+	m_position.y += verticalSpeed;
 	lifeShape.setPosition(m_position);
 }
 
