@@ -77,6 +77,7 @@ public:
 	void init(sf::Texture& t_bulletTexture);
 	void setFired(bool t_bool) { fired = t_bool; }
 	float getSpeed() { return m_speed; }
+	void checkBounds();
 
 	void setVelocity(sf::Vector2f t_velocity) { m_velocity = t_velocity; }
 	void rotateBulletSprite(sf::Vector2f t_mousePos, sf::Vector2f t_playerPos);
@@ -111,8 +112,6 @@ public:
 	sf::Vector2f getPos() { return m_location; }
 
 
-
-
 private:
 	sf::Sprite m_playerSprite;
 	sf::Texture m_playerTexture;
@@ -123,10 +122,11 @@ private:
 
 };
 
+sf::Vector2f screenSize = { 800,600 };
+
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "First Graphics in C++");
-
+	sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "First Graphics in C++");
 	
 	std::srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -170,7 +170,7 @@ int main()
 	}
 
 	//Bullets
-	static const int MAX_BULLETS = 50;
+	static const int MAX_BULLETS = 10;
 	Bullet bulletArray[MAX_BULLETS];
 	int numberOfBulletsFired = 0;
 	bool triggerStop = false;
@@ -233,15 +233,17 @@ int main()
 			{
 				if (!triggerStop) //if off firing cooldown
 				{
-					if (numberOfBulletsFired < MAX_BULLETS - 1)
+					for (int i = 0; i < MAX_BULLETS; i++)
 					{
-						sf::Vector2f bulletVelocity = thor::unitVector(static_cast<sf::Vector2f>(mousePos) - player.getPos()) * bulletArray[numberOfBulletsFired].getSpeed(); //set bullet in that direction
-						bulletArray[numberOfBulletsFired].setVelocity(bulletVelocity); //we give it unit vector because in bullet class it multiplies by speed
-						bulletArray[numberOfBulletsFired].fire(player.getPos());
-						numberOfBulletsFired++;
-						triggerStop = true;
-					}
-					
+						if (bulletArray[i].getFired() == false) {
+							sf::Vector2f bulletVelocity = thor::unitVector(static_cast<sf::Vector2f>(mousePos) - player.getPos()) * bulletArray[i].getSpeed(); //set bullet in that direction
+							bulletArray[i].setVelocity(bulletVelocity); //we give it unit vector because in bullet class it multiplies by speed
+							bulletArray[i].fire(player.getPos());
+							triggerStop = true;
+							break;
+
+						}
+					}				
 				}
 
 			}
@@ -411,6 +413,7 @@ Bullet::~Bullet()
 
 void Bullet::update()
 {
+	checkBounds();
 	m_position += m_velocity;
 	bulletSprite.setPosition(m_position);
 }
@@ -428,6 +431,14 @@ void Bullet::init(sf::Texture& t_bulletTexture)
 	bulletSprite.setTexture(bulletTexture);
 	bulletSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
 	bulletSprite.setScale(0.2, 0.2);
+}
+
+void Bullet::checkBounds()
+{
+	if (m_position.y > screenSize.y || m_position.x > screenSize.x || m_position.x < 0 || m_position.y < 0)
+	{
+		fired = false;
+	}
 }
 
 void Bullet::rotateBulletSprite(sf::Vector2f t_mousePos, sf::Vector2f t_playerPos)
