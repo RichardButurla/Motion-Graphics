@@ -1,3 +1,6 @@
+//Richard Buturla
+//C00272345
+
 #ifdef _DEBUG 
 #pragma comment(lib,"sfml-graphics-d.lib") 
 #pragma comment(lib,"sfml-audio-d.lib") 
@@ -17,19 +20,8 @@
 #include <stdlib.h> 
 #include <time.h> 
 #include <vector>
+#include "VectorAlgebra2D.h"
 
-//My own vector library
-
-float vectorLength(const sf::Vector2f t_vectorA);  // root x2 + y2
-float vectorLengthSquared(const sf::Vector2f t_vectorA); // x2 + y2
-sf::Vector2f vectorUnitVector(const sf::Vector2f t_vectorA);// length of ans is one, null in null out
-float vectorCrossProduct(const sf::Vector2f t_vectorA, const sf::Vector2f t_vectorB);  // Vx * Uy - Vy * Ux
-float vectorDotProduct(const sf::Vector2f t_vectorA, const sf::Vector2f t_vectorB);  // Vx * Uy + Vy * Ux
-float vectorAngleBetween(const sf::Vector2f t_vectorA, const sf::Vector2f t_vectorB); // result always 0>= && <=180
-sf::Vector2f vectorRotateBy(const sf::Vector2f t_vectorA, const float t_angleRadians); // anti-clockwise ({1,0},PI/2) = {0,1}
-sf::Vector2f vectorProjection(const sf::Vector2f t_vectorA, const sf::Vector2f t_onto);// ans parallel to second vector
-sf::Vector2f vectorRejection(const sf::Vector2f t_vectorA, const sf::Vector2f t_onto);// ans perpendicular to second vector
-float vectorScalarProjection(const sf::Vector2f t_vectorA, const sf::Vector2f t_onto);// scalar resolute
 
 const float PI = 3.14159265359f;
 
@@ -142,17 +134,29 @@ int main()
 
 	//Load Textures
 	sf::Texture playerTexture;
+	sf::Texture enemyTexture;
+	sf::Texture bulletTexture;
 
 	if (!playerTexture.loadFromFile("ASSETS/IMAGES/goat.png"))
+	{
+		std::cout << "player texture failed to load";
+	}
+	if (!enemyTexture.loadFromFile("ASSETS/IMAGES/Mace.png"))
+	{
+		std::cout << "player texture failed to load";
+	}
+	if (!bulletTexture.loadFromFile("ASSETS/IMAGES/projectile.png"))
 	{
 		std::cout << "player texture failed to load";
 	}
 
 
 
+
+
 	//Player
 	Player player(playerTexture);
-	sf::Vector2f mousePos;
+	sf::Vector2i mousePos;
 
 	//Enemies
 
@@ -161,7 +165,7 @@ int main()
 	
 	for (int i = 0; i < MAX_ENEMIES; i++)
 	{
-		enemyArray[i].init(playerTexture);
+		enemyArray[i].init(enemyTexture);
 		enemyArray[i].setAlive(true);
 	}
 
@@ -173,7 +177,7 @@ int main()
 	float timeSinceLastBulletFired = 0;
 	for (int i = 0; i < MAX_BULLETS; i++)
 	{
-		bulletArray[i].init(playerTexture);
+		bulletArray[i].init(bulletTexture);
 	}
 
 
@@ -198,14 +202,11 @@ int main()
 
 		if (timeSinceLastUpdate > timePerFrame)
 		{
-
+			 mousePos = sf::Mouse::getPosition(window);
 			window.clear();
 			if (sf::Event::MouseMoved == event.type)
 			{ //always gets the mouse position when mouse is moved
-				
-				mousePos.x = static_cast<float>(event.mouseMove.x);
-				mousePos.y = static_cast<float>(event.mouseMove.y);
-				player.rotatePlayer(mousePos);
+				player.rotatePlayer(static_cast<sf::Vector2f>(mousePos));
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 			{
@@ -234,7 +235,7 @@ int main()
 				{
 					if (numberOfBulletsFired < MAX_BULLETS - 1)
 					{
-						sf::Vector2f bulletVelocity = vectorUnitVector(mousePos - player.getPos()) * bulletArray[numberOfBulletsFired].getSpeed(); //set bullet in that direction
+						sf::Vector2f bulletVelocity = thor::unitVector(static_cast<sf::Vector2f>(mousePos) - player.getPos()) * bulletArray[numberOfBulletsFired].getSpeed(); //set bullet in that direction
 						bulletArray[numberOfBulletsFired].setVelocity(bulletVelocity); //we give it unit vector because in bullet class it multiplies by speed
 						bulletArray[numberOfBulletsFired].fire(player.getPos());
 						numberOfBulletsFired++;
@@ -378,7 +379,7 @@ void EnemyEntity::init(sf::Texture& t_zombieTexture)
 void EnemyEntity::chasePlayer(sf::Vector2f t_playerLocation)
 {
 	sf::Vector2f directionVector = t_playerLocation - m_body.getPosition();
-	sf::Vector2f directionNormal = vectorUnitVector(directionVector);
+	sf::Vector2f directionNormal = thor::unitVector(directionVector);
 	m_velocity = directionNormal * m_speed;
 	m_location = m_velocity;
 
@@ -440,129 +441,4 @@ void Bullet::rotateBulletSprite(sf::Vector2f t_mousePos, sf::Vector2f t_playerPo
 
 	bulletSprite.setRotation(-rotation);
 }
-
-
-
-//Name: Richard Buturla
-
-
-/// <summary>
-/// get length of vector using sqrt of the sum of the squares
-/// </summary>
-/// <param name="t_vector">input vector</param>
-/// <returns>length</returns>
-float vectorLength(const sf::Vector2f t_vectorA)
-{
-	float sumOfSquares = (t_vectorA.x * t_vectorA.x) + (t_vectorA.y * t_vectorA.y);
-	const float length = std::sqrt(sumOfSquares);
-	return length;
-}
-/// <summary>
-/// gets length squared of a vector using vectoe length
-/// </summary>
-/// <param name="t_vectorA"> input vector</param>
-/// <returns>length squared</returns>
-float vectorLengthSquared(const sf::Vector2f t_vectorA)
-{
-	const float lengthSquared = (t_vectorA.x * t_vectorA.x) + (t_vectorA.y * t_vectorA.y);
-	return lengthSquared;
-}
-/// <summary>
-/// gets the cross product of 2 vectors
-/// </summary>
-/// <param name="t_vectorA"> first input vector</param>
-/// <param name="t_VectorB"> second input vector</param>
-/// <returns> Cross product</returns>
-float vectorCrossProduct(const sf::Vector2f t_vectorA, const sf::Vector2f t_VectorB)
-{
-	const float crossProduct = (t_vectorA.x * t_VectorB.y) - (t_vectorA.y * t_VectorB.x);
-	return crossProduct;
-}
-/// <summary>
-/// gets the dot product of 2 vectors
-/// </summary>
-/// <param name="t_vectorA"> input vector 1</param>
-/// <param name="t_VectorB"> input vector 2</param>
-/// <returns> dotProduct</returns>
-float vectorDotProduct(const sf::Vector2f t_vectorA, const sf::Vector2f t_VectorB)
-{
-	const float dotProduct = (t_vectorA.x * t_VectorB.x) + (t_vectorA.y * t_VectorB.y);
-	return dotProduct;
-}
-/// <summary>
-/// Finds the angle between 2 vectors
-/// </summary>
-/// <param name="t_vectorA"> input vector 1</param>
-/// <param name="t_VectorB"> input vector 2</param>
-/// <returns> angle between in degrees</returns>
-float vectorAngleBetween(const sf::Vector2f t_vectorA, const sf::Vector2f t_VectorB)
-{
-	float theta = (vectorDotProduct(t_vectorA, t_VectorB)) / (vectorLength(t_vectorA) * (vectorLength(t_VectorB)));
-	const float angleBetween = (acos(theta)) * (180 / PI); // multiply by 180/PI to get degrees. calculations are in radians.
-	return angleBetween;
-}
-/// <summary>
-/// Rotates a vector with radians
-/// </summary>
-/// <param name="t_vectorA"> input vector</param>
-/// <param name="t_angleRadians"> angle in radians</param>
-/// <returns> the rotated vector</returns>
-sf::Vector2f vectorRotateBy(const sf::Vector2f t_vectorA, const  float t_angleRadians)
-{
-	sf::Vector2f rotatedVector;
-	rotatedVector.x = ((t_vectorA.x * cos(t_angleRadians)) - (t_vectorA.y * sin(t_angleRadians)));
-	rotatedVector.y = ((t_vectorA.x * sin(t_angleRadians)) + (t_vectorA.y * cos(t_angleRadians)));
-	return rotatedVector;
-}
-
-/// <summary>
-/// Projects one vector onto another vector
-/// </summary>
-/// <param name="t_vectorA"> input vector that is projected</param>
-/// <param name="t_onto"> input vector that is projected onto</param>
-/// <returns> vector resolute of vector A in the direction of vector B</returns>
-sf::Vector2f vectorProjection(const sf::Vector2f t_vectorA, const  sf::Vector2f t_onto)
-{
-	sf::Vector2f answer;
-	answer.x = (((vectorDotProduct(t_vectorA, t_onto)) / vectorLength(t_onto))) * (t_onto.x / vectorLength(t_onto));
-	answer.y = (((vectorDotProduct(t_vectorA, t_onto)) / vectorLength(t_onto))) * (t_onto.y / vectorLength(t_onto));
-	return answer;
-}
-/// <summary>
-/// Gets the orthogonal projection of vector a onto the plane orthogonal to b
-/// </summary>
-/// <param name="t_vectorA"> input vector that is rejected</param>
-/// <param name="t_onto"> input vector that is rejected from </param>
-/// <returns> vector resolute of vector A perpendicular to vector B </returns>
-sf::Vector2f vectorRejection(const sf::Vector2f t_vectorA, const  sf::Vector2f t_onto)
-{
-	sf::Vector2f answer;
-	answer = t_vectorA - vectorProjection(t_vectorA, t_onto);
-	return answer;
-}
-/// <summary>
-/// Gets the length of the vector Projection
-/// </summary>
-/// <param name="t_vector"> input vector that is projected</param>
-/// <param name="t_onto"> input vector that is projected onto</param>
-/// <returns> length</returns>
-float vectorScalarProjection(const sf::Vector2f t_vector, const  sf::Vector2f t_onto)
-{
-	const float length = (vectorDotProduct(t_vector, t_onto)) / (vectorLength(t_onto));
-	return length;
-}
-
-/// <summary>
-/// Gets the unit vector of a vector
-/// </summary>
-/// <param name="t_vectorA">input vector</param>
-/// <returns> the unit vector </returns>
-sf::Vector2f vectorUnitVector(const sf::Vector2f t_vectorA)
-{
-	sf::Vector2f answer;
-	answer.x = t_vectorA.x / vectorLength(t_vectorA);
-	answer.y = t_vectorA.y / vectorLength(t_vectorA);
-	return answer;
-}
-
 
