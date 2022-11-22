@@ -72,12 +72,14 @@ public:
 	sf::Sprite getBulletShape() { return bulletSprite; }
 	sf::Vector2f getPosition() { return m_position; }
 	void setPosition(sf::Vector2f t_pos) { m_position = t_pos; }
-	void fire(sf::Vector2f t_playerPos) { fired = true; m_position = t_playerPos; }
+	void fire(sf::Vector2f t_playerPos) { bulletSprite.setPosition(t_playerPos); m_position = t_playerPos; fired = true; }
 	bool getFired() { return fired; }
 	void init(sf::Texture& t_bulletTexture);
 	void setFired(bool t_bool) { fired = t_bool; }
 	float getSpeed() { return m_speed; }
 	void checkBounds();
+
+	sf::Sprite getBody() { return bulletSprite; }
 
 	void setVelocity(sf::Vector2f t_velocity) { m_velocity = t_velocity; }
 	void rotateBulletSprite(sf::Vector2f t_mousePos, sf::Vector2f t_playerPos);
@@ -122,7 +124,7 @@ private:
 
 };
 
-sf::Vector2f screenSize = { 800,600 };
+sf::Vector2f screenSize = { 1200,800 };
 
 int main()
 {
@@ -160,7 +162,7 @@ int main()
 
 	//Enemies
 
-	static const int MAX_ENEMIES = 3;
+	static const int MAX_ENEMIES = 1;
 	EnemyEntity enemyArray[MAX_ENEMIES];
 	
 	for (int i = 0; i < MAX_ENEMIES; i++)
@@ -172,7 +174,7 @@ int main()
 	//Bullets
 	static const int MAX_BULLETS = 10;
 	Bullet bulletArray[MAX_BULLETS];
-	int numberOfBulletsFired = 0;
+	int currentBullet = 0;
 	bool triggerStop = false;
 	float timeSinceLastBulletFired = 0;
 	for (int i = 0; i < MAX_BULLETS; i++)
@@ -233,7 +235,7 @@ int main()
 			{
 				if (!triggerStop) //if off firing cooldown
 				{
-					for (int i = 0; i < MAX_BULLETS; i++)
+					for (int i = 0; i < MAX_BULLETS; i++) //looks for a bullet not fired, reuses old ones too
 					{
 						if (bulletArray[i].getFired() == false) {
 							sf::Vector2f bulletVelocity = thor::unitVector(static_cast<sf::Vector2f>(mousePos) - player.getPos()) * bulletArray[i].getSpeed(); //set bullet in that direction
@@ -248,9 +250,38 @@ int main()
 
 			}
 
+			//Collision Checking,
+			for (int i = 0; i < MAX_BULLETS; i++)
+			{
+				//only check if bulletes are fired,
+				if (bulletArray[i].getFired() == true)
+				{
+					//only if enemies are alive
+					for (int j = 0; j < MAX_ENEMIES; j++)
+					{
+						if (enemyArray[j].getAlive() == true)
+						{
+							//check collision
+							if (bulletArray[i].getBody().getGlobalBounds().intersects(enemyArray[j].getBody().getGlobalBounds()))
+							{
+								bulletArray[i].setPosition({ -100, -100 });
+								bulletArray[i].setFired(false);
+								enemyArray[j].setAlive(false);
+								break;
+							}
+						}
+					}
+					
+				}
+
+				
+
+
+			}
+
 			//update stuff here
 			timeSinceLastBulletFired += 0.032; //every frame
-			if (timeSinceLastBulletFired > 0.5)
+			if (timeSinceLastBulletFired > 1)
 			{
 				triggerStop = false;
 				timeSinceLastBulletFired = 0;
@@ -367,7 +398,11 @@ void EnemyEntity::update()
 
 void EnemyEntity::render(sf::RenderWindow& t_window)
 {
-	t_window.draw(m_body);
+	if (m_alive)
+	{
+		t_window.draw(m_body);
+	}
+	
 }
 
 void EnemyEntity::init(sf::Texture& t_zombieTexture)
@@ -414,14 +449,22 @@ Bullet::~Bullet()
 void Bullet::update()
 {
 	checkBounds();
-	m_position += m_velocity;
-	bulletSprite.setPosition(m_position);
+	if (fired)
+	{
+		m_position += m_velocity;
+		bulletSprite.setPosition(m_position);
+	}
+	
 }
 
 
 void Bullet::draw(sf::RenderWindow& t_window)
 {
-	t_window.draw(bulletSprite);
+	if (fired)
+	{
+		t_window.draw(bulletSprite);
+	}
+	
 }
 
 void Bullet::init(sf::Texture& t_bulletTexture)
