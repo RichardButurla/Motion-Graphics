@@ -111,7 +111,14 @@ public:
 	void addHorisontalSpeed(float speed) { m_location.x += speed; }
 	void addVerticalSpeed(float speed) { m_location.y += speed; }
 
+	void setLives(int t_lives) { m_livesLeft = t_lives; }
+	void setPos(sf::Vector2f t_position) { m_location = t_position; m_playerSprite.setPosition(m_location);}
+
+	sf::Sprite getBody() { return m_playerSprite; }
+
 	sf::Vector2f getPos() { return m_location; }
+
+	int getLives() { return m_livesLeft; }
 
 
 private:
@@ -121,20 +128,25 @@ private:
 	sf::Vector2f m_velocity = {0.f,0.f};
 	sf::Vector2f m_location;
 
+	int m_livesLeft = 3;
+
 
 };
 
-sf::Vector2f screenSize = { 1200,800 };
+sf::Vector2f screenSize = { 1400,1000 };
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "First Graphics in C++");
-	
+
 	std::srand(static_cast<unsigned int>(time(nullptr)));
 
 	int playerSpeed = 10;
+	float gameTime = 0;
 
-	//Load Textures
+	//Load Textures and fonts
+	sf::Font font;
+
 	sf::Texture playerTexture;
 	sf::Texture enemyTexture;
 	sf::Texture bulletTexture;
@@ -151,19 +163,45 @@ int main()
 	{
 		std::cout << "player texture failed to load";
 	}
+	if (!font.loadFromFile("ASSETS/FONTS/ariblk.ttf"))
+	{
+		std::cout << "failed to load font";
+	}
+
+	sf::Text enemiesLeftText;
+	sf::Text playerLivesText;
+
+	enemiesLeftText.setFont(font);
+	enemiesLeftText.setFillColor(sf::Color::Red);
+	enemiesLeftText.setOutlineColor(sf::Color::White);
+	enemiesLeftText.setCharacterSize(20U);
+	enemiesLeftText.setPosition(screenSize.x / 2 - 150, 20);
 
 
+	playerLivesText.setFont(font);
+	playerLivesText.setFillColor(sf::Color::Red);
+	playerLivesText.setOutlineColor(sf::Color::White);
+	playerLivesText.setCharacterSize(20U);
+	playerLivesText.setPosition(500, 20);
+	playerLivesText.setPosition(screenSize.x - 400, 20);
 
 
 
 	//Player
 	Player player(playerTexture);
+	player.setPos({screenSize.x / 2, screenSize.y / 2});
+	int playerLives = player.getLives();
 	sf::Vector2i mousePos;
 
 	//Enemies
 
-	static const int MAX_ENEMIES = 1;
+	static const int MAX_ENEMIES = 50;
 	EnemyEntity enemyArray[MAX_ENEMIES];
+	int enemiesAlive = MAX_ENEMIES;
+	int noOfCurrentEnemies = 0;
+	float timeSinceLastEnemySpawned = 0;
+	float enemySpawnTime = 1;
+	float enemyAliveTimerDecrement = 0.03;
 	
 	for (int i = 0; i < MAX_ENEMIES; i++)
 	{
@@ -181,6 +219,9 @@ int main()
 	{
 		bulletArray[i].init(bulletTexture);
 	}
+
+	enemiesLeftText.setString("Enemies left remaining: " + std::to_string(enemiesAlive));
+	playerLivesText.setString("Player Lives left remaining: " + std::to_string(playerLives));
 
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
@@ -251,6 +292,7 @@ int main()
 			}
 
 			//Collision Checking,
+			//Check bullets against enemies
 			for (int i = 0; i < MAX_BULLETS; i++)
 			{
 				//only check if bulletes are fired,
@@ -267,29 +309,62 @@ int main()
 								bulletArray[i].setPosition({ -100, -100 });
 								bulletArray[i].setFired(false);
 								enemyArray[j].setAlive(false);
+								enemiesAlive--;
 								break;
 							}
 						}
-					}
-					
+					}				
 				}
-
+			}
+			//Check collision of player against Enemies
+			for (int i = 0; i < enemiesAlive; i++)
+			{
+				if (enemyArray[i].getAlive() == true)
+				{
+					if (player.getBody().getGlobalBounds().intersects(enemyArray[i].getBody().getGlobalBounds()))
+					{
+						player.setLives(player.getLives() - 1);
+						enemyArray[i].setAlive(false);
+					}
+				}
 				
-
-
 			}
 
 			//update stuff here
+
+			gameTime += 0.016;
+			if (gameTime > 1)
+			{
+				gameTime = 0;
+				enemySpawnTime -= enemyAliveTimerDecrement;
+			}
+
+			
+
+			timeSinceLastEnemySpawned += 0.016;
+			if (timeSinceLastEnemySpawned > enemySpawnTime)
+			{
+				timeSinceLastEnemySpawned = 0;
+				if (noOfCurrentEnemies < MAX_ENEMIES)
+				{
+					noOfCurrentEnemies++;
+				}
+				
+			}
+
 			timeSinceLastBulletFired += 0.032; //every frame
-			if (timeSinceLastBulletFired > 1)
+			if (timeSinceLastBulletFired > 0.8)
 			{
 				triggerStop = false;
 				timeSinceLastBulletFired = 0;
 			}
 
+			enemiesLeftText.setString("Enemies left remaining: " + std::to_string(enemiesAlive));
+			playerLivesText.setString("Player Lives left remaining: " + std::to_string(player.getLives()));
+
 			player.update();
 
-			for (int i = 0; i < MAX_ENEMIES; i++)
+			for (int i = 0; i < noOfCurrentEnemies; i++)
 			{
 				enemyArray[i].update();
 			}
@@ -298,10 +373,10 @@ int main()
 				bulletArray[i].update();
 			}
 
-			//draw player here
+			//draw stuff here
 			player.render(window);
 
-			for (int i = 0; i < MAX_ENEMIES; i++)
+			for (int i = 0; i < noOfCurrentEnemies; i++)
 			{
 				enemyArray[i].chasePlayer(player.getPos());
 				enemyArray[i].render(window);
@@ -310,6 +385,8 @@ int main()
 			{
 				bulletArray[i].draw(window);
 			}
+			window.draw(playerLivesText);
+			window.draw(enemiesLeftText);
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
@@ -370,13 +447,13 @@ EnemyEntity::EnemyEntity()
 		m_spawnLocation = { 50.0f,50.0f };
 		break;
 	case 2:
-		m_spawnLocation = { 800, 20.0f };
+		m_spawnLocation = { screenSize.x, 20.0f };
 		break;
 	case 3:
-		m_spawnLocation = { 50.0f, 600 };
+		m_spawnLocation = { 50.0f, screenSize.y };
 		break;
 	case 4:
-		m_spawnLocation = { 800, 600 };
+		m_spawnLocation = screenSize;
 	default:
 		break;
 	}
@@ -387,12 +464,6 @@ EnemyEntity::EnemyEntity()
 
 void EnemyEntity::update()
 {
-	if (!m_alive) //respawn
-	{
-		m_body.setPosition(m_spawnLocation);
-		m_alive = true;
-	}
-
 	m_body.move(m_location); //moves enemy to a location which is changed constantly by chasePlayer function
 }
 
