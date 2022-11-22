@@ -135,9 +135,18 @@ private:
 
 sf::Vector2f screenSize = { 1400,1000 };
 
+enum class GameStates
+{
+	None,
+	Win,
+	Lose,
+	Game
+};
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "First Graphics in C++");
+	GameStates currentGameState = GameStates::Game;
 
 	std::srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -170,6 +179,13 @@ int main()
 
 	sf::Text enemiesLeftText;
 	sf::Text playerLivesText;
+	sf::Text screenText;
+
+	screenText.setFont(font);
+	screenText.setFillColor(sf::Color::Red);
+	screenText.setOutlineColor(sf::Color::White);
+	screenText.setCharacterSize(20U);
+	screenText.setPosition(window.getSize().x / 2 - 50, window.getSize().y / 2);
 
 	enemiesLeftText.setFont(font);
 	enemiesLeftText.setFillColor(sf::Color::Red);
@@ -245,148 +261,172 @@ int main()
 
 		if (timeSinceLastUpdate > timePerFrame)
 		{
-			 mousePos = sf::Mouse::getPosition(window);
+			 
 			window.clear();
-			if (sf::Event::MouseMoved == event.type)
-			{ //always gets the mouse position when mouse is moved
-				player.rotatePlayer(static_cast<sf::Vector2f>(mousePos));
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-			{
-				player.addVerticalSpeed(-playerSpeed);
 
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			if (currentGameState == GameStates::Game)
 			{
-				player.addVerticalSpeed(playerSpeed);
-
-			}
-
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-			{
-				player.addHorisontalSpeed(-playerSpeed);
-
-
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-			{
-				player.addHorisontalSpeed(playerSpeed);
-			}
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			{
-				if (!triggerStop) //if off firing cooldown
+				mousePos = sf::Mouse::getPosition(window);
+				if (sf::Event::MouseMoved == event.type)
+				{ //always gets the mouse position when mouse is moved
+					player.rotatePlayer(static_cast<sf::Vector2f>(mousePos));
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 				{
-					for (int i = 0; i < MAX_BULLETS; i++) //looks for a bullet not fired, reuses old ones too
-					{
-						if (bulletArray[i].getFired() == false) {
-							sf::Vector2f bulletVelocity = thor::unitVector(static_cast<sf::Vector2f>(mousePos) - player.getPos()) * bulletArray[i].getSpeed(); //set bullet in that direction
-							bulletArray[i].setVelocity(bulletVelocity); //we give it unit vector because in bullet class it multiplies by speed
-							bulletArray[i].fire(player.getPos());
-							triggerStop = true;
-							break;
+					player.addVerticalSpeed(-playerSpeed);
 
-						}
-					}				
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+				{
+					player.addVerticalSpeed(playerSpeed);
+
 				}
 
-			}
-
-			//Collision Checking,
-			//Check bullets against enemies
-			for (int i = 0; i < MAX_BULLETS; i++)
-			{
-				//only check if bulletes are fired,
-				if (bulletArray[i].getFired() == true)
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 				{
-					//only if enemies are alive
-					for (int j = 0; j < MAX_ENEMIES; j++)
+					player.addHorisontalSpeed(-playerSpeed);
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+				{
+					player.addHorisontalSpeed(playerSpeed);
+				}
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					if (!triggerStop) //if off firing cooldown
 					{
-						if (enemyArray[j].getAlive() == true)
+						for (int i = 0; i < MAX_BULLETS; i++) //looks for a bullet not fired, reuses old ones too
 						{
-							//check collision
-							if (bulletArray[i].getBody().getGlobalBounds().intersects(enemyArray[j].getBody().getGlobalBounds()))
-							{
-								bulletArray[i].setPosition({ -100, -100 });
-								bulletArray[i].setFired(false);
-								enemyArray[j].setAlive(false);
-								enemiesAlive--;
+							if (bulletArray[i].getFired() == false) {
+								sf::Vector2f bulletVelocity = thor::unitVector(static_cast<sf::Vector2f>(mousePos) - player.getPos()) * bulletArray[i].getSpeed(); //set bullet in that direction
+								bulletArray[i].setVelocity(bulletVelocity); //we give it unit vector because in bullet class it multiplies by speed
+								bulletArray[i].fire(player.getPos());
+								triggerStop = true;
 								break;
+
 							}
 						}
-					}				
+					}
+
 				}
-			}
-			//Check collision of player against Enemies
-			for (int i = 0; i < enemiesAlive; i++)
-			{
-				if (enemyArray[i].getAlive() == true)
+
+				//Collision Checking,
+				//Check bullets against enemies
+				for (int i = 0; i < MAX_BULLETS; i++)
 				{
-					if (player.getBody().getGlobalBounds().intersects(enemyArray[i].getBody().getGlobalBounds()))
+					//only check if bulletes are fired,
+					if (bulletArray[i].getFired() == true)
 					{
-						player.setLives(player.getLives() - 1);
-						enemyArray[i].setAlive(false);
+						//only if enemies are alive
+						for (int j = 0; j < MAX_ENEMIES; j++)
+						{
+							if (enemyArray[j].getAlive() == true)
+							{
+								//check collision
+								if (bulletArray[i].getBody().getGlobalBounds().intersects(enemyArray[j].getBody().getGlobalBounds()))
+								{
+									bulletArray[i].setPosition({ -100, -100 });
+									bulletArray[i].setFired(false);
+									enemyArray[j].setAlive(false);
+									enemiesAlive--;
+									break;
+								}
+							}
+						}
 					}
 				}
-				
-			}
-
-			//update stuff here
-
-			gameTime += 0.016;
-			if (gameTime > 1)
-			{
-				gameTime = 0;
-				enemySpawnTime -= enemyAliveTimerDecrement;
-			}
-
-			
-
-			timeSinceLastEnemySpawned += 0.016;
-			if (timeSinceLastEnemySpawned > enemySpawnTime)
-			{
-				timeSinceLastEnemySpawned = 0;
-				if (noOfCurrentEnemies < MAX_ENEMIES)
+				//Check collision of player against Enemies
+				for (int i = 0; i < enemiesAlive; i++)
 				{
-					noOfCurrentEnemies++;
+					if (enemyArray[i].getAlive() == true)
+					{
+						if (player.getBody().getGlobalBounds().intersects(enemyArray[i].getBody().getGlobalBounds()))
+						{
+							player.setLives(player.getLives() - 1);
+							enemyArray[i].setAlive(false);
+						}
+					}
+
 				}
-				
-			}
 
-			timeSinceLastBulletFired += 0.032; //every frame
-			if (timeSinceLastBulletFired > 0.8)
+				//update stuff here
+
+				gameTime += 0.016;
+				if (gameTime > 1)
+				{
+					gameTime = 0;
+					enemySpawnTime -= enemyAliveTimerDecrement;
+				}
+
+
+
+				timeSinceLastEnemySpawned += 0.016;
+				if (timeSinceLastEnemySpawned > enemySpawnTime)
+				{
+					timeSinceLastEnemySpawned = 0;
+					if (noOfCurrentEnemies < MAX_ENEMIES)
+					{
+						noOfCurrentEnemies++;
+					}
+
+				}
+
+				timeSinceLastBulletFired += 0.032; //every frame
+				if (timeSinceLastBulletFired > 0.8)
+				{
+					triggerStop = false;
+					timeSinceLastBulletFired = 0;
+				}
+
+				enemiesLeftText.setString("Enemies left remaining: " + std::to_string(enemiesAlive));
+				playerLivesText.setString("Player Lives left remaining: " + std::to_string(player.getLives()));
+
+				player.update();
+
+				if (player.getLives() <= 0)
+				{
+					currentGameState = GameStates::Lose;
+					screenText.setString("You lose!");
+				}
+				if (enemiesAlive <= 0)
+				{
+					currentGameState = GameStates::Win;
+					screenText.setString("You win!");
+				}
+
+				for (int i = 0; i < noOfCurrentEnemies; i++)
+				{
+					enemyArray[i].update();
+				}
+				for (int i = 0; i < MAX_BULLETS; i++)
+				{
+					bulletArray[i].update();
+				}
+
+
+				//draw stuff here
+				player.render(window);
+
+				for (int i = 0; i < noOfCurrentEnemies; i++)
+				{
+					enemyArray[i].chasePlayer(player.getPos());
+					enemyArray[i].render(window);
+				}
+				for (int i = 0; i < MAX_BULLETS; i++)
+				{
+					bulletArray[i].draw(window);
+				}
+				window.draw(playerLivesText);
+				window.draw(enemiesLeftText);
+
+
+			}
+			//Either win or lose screen
+			if (currentGameState != GameStates::Game)
 			{
-				triggerStop = false;
-				timeSinceLastBulletFired = 0;
+				window.draw(screenText);
 			}
-
-			enemiesLeftText.setString("Enemies left remaining: " + std::to_string(enemiesAlive));
-			playerLivesText.setString("Player Lives left remaining: " + std::to_string(player.getLives()));
-
-			player.update();
-
-			for (int i = 0; i < noOfCurrentEnemies; i++)
-			{
-				enemyArray[i].update();
-			}
-			for (int i = 0; i < MAX_BULLETS; i++)
-			{
-				bulletArray[i].update();
-			}
-
-			//draw stuff here
-			player.render(window);
-
-			for (int i = 0; i < noOfCurrentEnemies; i++)
-			{
-				enemyArray[i].chasePlayer(player.getPos());
-				enemyArray[i].render(window);
-			}
-			for (int i = 0; i < MAX_BULLETS; i++)
-			{
-				bulletArray[i].draw(window);
-			}
-			window.draw(playerLivesText);
-			window.draw(enemiesLeftText);
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
