@@ -19,13 +19,48 @@
 #include <iostream>
 #include <vector>
 
-enum class AnimationState
+enum class RobotAnimationState
 {
 	None,
 	RunningRight,
 	RunningLeft,
 	GoingUp,
 	GoingDown
+};
+
+class Flower
+{
+public:
+	Flower(sf::Texture& t_texture);
+	~Flower();
+
+	void update();
+	void updateAnimation();
+	void render(sf::RenderWindow& t_window);
+
+	void setupAnimation();
+
+	static const int MAX_ANIMATIONS = 1;
+	static const int MAX_FRAMES = 4;
+
+private:
+	sf::Sprite m_flowerSprite;
+	sf::Texture m_flowerTexture;
+
+	sf::Vector2f m_position{ 800,300 };
+
+	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
+
+	int frameWidth;
+	int frameHeight;
+	int currentCollumn = 0;
+	int m_currentFrame = 0;
+
+	int cols;
+	int rows;
+
+	sf::Clock m_clock;
+
 };
 
 class Robot
@@ -41,7 +76,7 @@ public:
 	void setupAnimations();
 
 	void setVelocity(sf::Vector2f t_velocity) { m_velocity = t_velocity; }
-	void setAnimationState(AnimationState t_state) { m_currentAnimationState = t_state; }
+	void setAnimationState(RobotAnimationState t_state) { m_currentAnimationState = t_state; }
 	void checkAnimationState();
 
 	//Animation Methods
@@ -51,8 +86,6 @@ public:
 	void animateClimbUp();
 	void animateClimbDown();
 
-	static const int MAX_ROWS = 4;
-	static const int MAX_COLLUMS = 8;
 	static const int MAX_ANIMATIONS = 3;
 	static const int MAX_FRAMES = 9;
 
@@ -67,7 +100,7 @@ private:
 	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
 
 
-	AnimationState m_currentAnimationState = AnimationState::None;
+	RobotAnimationState m_currentAnimationState = RobotAnimationState::None;
 
 	int cols;
 	int rows;
@@ -105,6 +138,13 @@ int main()
 	}
 	Robot robot(robotTexture);
 
+	sf::Texture flowerTexture;
+	if (!flowerTexture.loadFromFile("ASSETS/IMAGES/flowerAnimation.png"))
+	{
+		std::cout << "failed to load flower Texture";
+	}
+	Flower flower(flowerTexture);
+
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -132,12 +172,12 @@ int main()
 			{
 				if (event.key.code == sf::Keyboard::Left)
 				{
-					robot.setAnimationState(AnimationState::None);
+					robot.setAnimationState(RobotAnimationState::None);
 				}
 
 				if (event.key.code == sf::Keyboard::Right)
 				{
-					robot.setAnimationState(AnimationState::None);
+					robot.setAnimationState(RobotAnimationState::None);
 				}
 			}
 
@@ -145,25 +185,25 @@ int main()
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
-					robot.setAnimationState(AnimationState::GoingUp);
+					robot.setAnimationState(RobotAnimationState::GoingUp);
 					robotVelocity.y = -robotSpeed;
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				{
-					robot.setAnimationState(AnimationState::GoingDown);
+					robot.setAnimationState(RobotAnimationState::GoingDown);
 					robotVelocity.y = robotSpeed;
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					robot.setAnimationState(AnimationState::RunningLeft);
+					robot.setAnimationState(RobotAnimationState::RunningLeft);
 					robotVelocity.x = -robotSpeed;
 				}
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
-					robot.setAnimationState(AnimationState::RunningRight);
+					robot.setAnimationState(RobotAnimationState::RunningRight);
 					robotVelocity.x = robotSpeed;
 				}
 			}
@@ -177,9 +217,11 @@ int main()
 
 			//Update here
 			robot.update();
+			flower.update();
 
 			//Draw here
 			robot.render(window);
+			flower.render(window);
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
@@ -232,17 +274,17 @@ void Robot::setupAnimations()
 {
 	currentRow = 4;
 	int animationState = 0;
-	animationState = static_cast<int>(AnimationState::RunningLeft);
+	animationState = static_cast<int>(RobotAnimationState::RunningLeft);
 	for (int i = 0; i < 8; i++)
 	{
 		m_animationFrames[animationState][i] = sf::IntRect{frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight};
 	}
-	animationState = static_cast<int>(AnimationState::RunningRight);
+	animationState = static_cast<int>(RobotAnimationState::RunningRight);
 	for (int i = 0; i < 8; i++)
 	{
 		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight };
 	}
-	animationState = static_cast<int>(AnimationState::None);
+	animationState = static_cast<int>(RobotAnimationState::None);
 	currentRow = 0;
 	for (int i = 7; i < 9; i++)
 	{
@@ -255,19 +297,19 @@ void Robot::checkAnimationState()
 {
 	switch (m_currentAnimationState)
 	{
-	case AnimationState::None:
+	case RobotAnimationState::None:
 		animateIdle();
 		break;
-	case AnimationState::RunningRight:
+	case RobotAnimationState::RunningRight:
 		animateRunRight();
 		break;
-	case AnimationState::RunningLeft:
+	case RobotAnimationState::RunningLeft:
 		animateRunLeft();
 		break;
-	case AnimationState::GoingUp:
+	case RobotAnimationState::GoingUp:
 		//animateClimbUp();
 		break;
-	case AnimationState::GoingDown:
+	case RobotAnimationState::GoingDown:
 		//animateClimbDown();
 		break;
 	default:
@@ -278,7 +320,7 @@ void Robot::checkAnimationState()
 void Robot::animateRunRight()
 {
 	int animationState = 0;
-	animationState = static_cast<int>(AnimationState::RunningRight);
+	animationState = static_cast<int>(RobotAnimationState::RunningRight);
 
 	if (m_clock.getElapsedTime().asSeconds() > 0.1)
 	{
@@ -296,7 +338,7 @@ void Robot::animateRunRight()
 void Robot::animateRunLeft()
 {
 	int animationState = 0;
-	animationState = static_cast<int>(AnimationState::RunningLeft);
+	animationState = static_cast<int>(RobotAnimationState::RunningLeft);
 
 	if (m_clock.getElapsedTime().asSeconds() > 0.1)
 	{
@@ -314,7 +356,7 @@ void Robot::animateRunLeft()
 void Robot::animateIdle()
 {
 	int animationState = 0;
-	animationState = static_cast<int>(AnimationState::None);
+	animationState = static_cast<int>(RobotAnimationState::None);
 
 	if (m_clock.getElapsedTime().asSeconds() > 0.1)
 	{
@@ -371,4 +413,61 @@ void Robot::animateClimbDown()
 	sf::IntRect Walkingrect = { frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
 	m_robotSprite.setTextureRect(Walkingrect);
 	m_robotSprite.setScale(-1, 1);
+}
+
+Flower::Flower(sf::Texture& t_texture) : m_flowerTexture(t_texture)
+{
+	m_flowerSprite.setTexture(m_flowerTexture);
+	m_flowerSprite.setPosition(m_position);
+	cols = 4;
+	rows = 1;
+
+	frameWidth = m_flowerTexture.getSize().x / 4.f;
+	frameHeight = m_flowerTexture.getSize().y / 1.f;
+
+	m_flowerSprite.setOrigin(frameWidth / 2.f, frameHeight / 2.f);
+	m_flowerSprite.setPosition(m_position);
+
+	setupAnimation();
+}
+
+Flower::~Flower()
+{
+}
+
+void Flower::update()
+{
+	updateAnimation();
+}
+
+void Flower::updateAnimation()
+{
+	int animationState = 0;
+
+	if (m_clock.getElapsedTime().asSeconds() > 0.5)
+	{
+		m_currentFrame++;
+		m_clock.restart();
+	}
+	if (m_currentFrame >= MAX_FRAMES)
+	{
+		m_currentFrame = 0;
+	}
+	m_flowerSprite.setTextureRect(m_animationFrames[animationState][m_currentFrame]);
+}
+
+void Flower::render(sf::RenderWindow& t_window)
+{
+	t_window.draw(m_flowerSprite);
+}
+
+void Flower::setupAnimation()
+{
+
+	int animationState = 0;
+	for (int i = 0; i < MAX_FRAMES; i++)
+	{
+		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, 0, frameWidth , frameHeight };
+	}
+	
 }
