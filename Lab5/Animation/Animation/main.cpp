@@ -46,6 +46,23 @@ private:
 	sf::Vector2f m_velocity;
 };
 
+class Rain
+{
+public:
+
+	Rain();
+	~Rain();
+
+	void update();
+	void render(sf::RenderWindow& t_window);
+	void initialise();
+
+	static const int MAX_RAINDROPS = 5;
+private:
+	
+	RainDrop* raindrops[MAX_RAINDROPS];
+};
+
 class Flower
 {
 public:
@@ -163,11 +180,7 @@ int main()
 	}
 	Flower flower(flowerTexture);
 
-	sf::Vector2f raindropPos{ 800,200 };
-	sf::Vector2f raindropVel{ 0,5 };
-	sf::Vector2f raindropSize{ 10,50 };
-	sf::Color raindropColor{ sf::Color::Blue };
-	RainDrop raindrop(raindropPos, raindropVel, raindropColor, raindropSize);
+	Rain rain;
 
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
@@ -242,12 +255,12 @@ int main()
 			//Update here
 			robot.update();
 			flower.update();
-			raindrop.update();
+			rain.update();
 
 			//Draw here
 			robot.render(window);
 			flower.render(window);
-			raindrop.render(window);
+			rain.render(window);
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
@@ -513,6 +526,7 @@ RainDrop::RainDrop(sf::Vector2f& t_position, sf::Vector2f& t_velocity, sf::Color
 
 RainDrop::~RainDrop()
 {
+
 }
 
 void RainDrop::update()
@@ -524,4 +538,45 @@ void RainDrop::update()
 void RainDrop::render(sf::RenderWindow& t_window)
 {
 	t_window.draw(m_raindropShape);
+}
+
+Rain::Rain()
+{
+	initialise();
+}
+
+Rain::~Rain()
+{
+	
+}
+
+void Rain::update()
+{
+	for (int i = 0; i < MAX_RAINDROPS; i++)
+	{
+		raindrops[i]->update();
+	}
+}
+
+void Rain::render(sf::RenderWindow& t_window)
+{
+	for (int i = 0; i < MAX_RAINDROPS; i++)
+	{
+		raindrops[i]->render(t_window);
+	}
+}
+
+void Rain::initialise()
+{
+	sf::Vector2f raindropPos{ 800,200 };
+	sf::Vector2f raindropVel{ 0,5 };
+	sf::Vector2f raindropSize{ 10,50 };
+	sf::Color raindropColor{ sf::Color::Blue };
+	
+
+	for (int i = 0; i < MAX_RAINDROPS; i++)
+	{
+		raindropPos.x = std::rand() % 200 + 700;
+		raindrops[i] = new RainDrop(raindropPos, raindropVel, raindropColor, raindropSize);
+	}
 }
