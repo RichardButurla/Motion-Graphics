@@ -1,4 +1,4 @@
 ﻿  main.cpp
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab5\Animation\Animation\main.cpp(168,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab5\Animation\Animation\main.cpp(168,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Animation.vcxproj -> C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab5\Animation\Debug\Animation.exe
+C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(200,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(200,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Animation.vcxproj -> C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Debug\Animation.exe

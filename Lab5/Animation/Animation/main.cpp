@@ -17,6 +17,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
 
 enum class AnimationState
 {
@@ -34,7 +35,10 @@ public:
 	~Robot();
 
 	void update();
+	void updateAnimation();
 	void render(sf::RenderWindow& t_window);
+
+	void setupAnimations();
 
 	void setVelocity(sf::Vector2f t_velocity) { m_velocity = t_velocity; }
 	void setAnimationState(AnimationState t_state) { m_currentAnimationState = t_state; }
@@ -47,6 +51,11 @@ public:
 	void animateClimbUp();
 	void animateClimbDown();
 
+	static const int MAX_ROWS = 4;
+	static const int MAX_COLLUMS = 8;
+	static const int MAX_ANIMATIONS = 3;
+	static const int MAX_FRAMES = 8;
+
 
 private:
 	sf::Sprite m_robotSprite;
@@ -54,6 +63,8 @@ private:
 
 	sf::Vector2f m_position{300,300};
 	sf::Vector2f m_velocity;
+
+	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
 
 
 	AnimationState m_currentAnimationState = AnimationState::None;
@@ -67,6 +78,8 @@ private:
 	sf::Clock m_clock;
 	int currentCollumn = 0;
 	int currentRow = 4;
+
+	int m_currentFrame = 0;
 
 
 };
@@ -115,29 +128,48 @@ int main()
 			window.clear();
 			robotVelocity = { 0,0 };
 			//Handle Key Input
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			if (sf::Event::KeyPressed)
 			{
-				robot.setAnimationState(AnimationState::GoingUp);
-				robotVelocity.y = -robotSpeed;
-			}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+				{
+					robot.setAnimationState(AnimationState::GoingUp);
+					robotVelocity.y = -robotSpeed;
+				}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			{
-				robot.setAnimationState(AnimationState::GoingDown);
-				robotVelocity.y = robotSpeed;
-			}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+				{
+					robot.setAnimationState(AnimationState::GoingDown);
+					robotVelocity.y = robotSpeed;
+				}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			{
-				robot.setAnimationState(AnimationState::RunningLeft);
-				robotVelocity.x = -robotSpeed;
-			}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				{
+					robot.setAnimationState(AnimationState::RunningLeft);
+					robotVelocity.x = -robotSpeed;
+				}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			{
-				robot.setAnimationState(AnimationState::RunningRight);
-				robotVelocity.x = robotSpeed;
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				{
+					robot.setAnimationState(AnimationState::RunningRight);
+					robotVelocity.x = robotSpeed;
+				}
 			}
+			
+
+			/*if (sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::Left)
+				{
+					robot.setAnimationState(AnimationState::None);
+				}
+
+				if (event.key.code == sf::Keyboard::Right)
+				{
+					robot.setAnimationState(AnimationState::None);
+				}
+			}*/
+
+
 			robot.setVelocity(robotVelocity);
 
 
@@ -167,6 +199,8 @@ Robot::Robot(sf::Texture& t_texture) : m_robotTexture(t_texture)
 
 	m_robotSprite.setOrigin(frameWidth / 2, frameHeight / 2);
 
+	setupAnimations();
+
 }
 
 Robot::~Robot()
@@ -179,11 +213,33 @@ void Robot::update()
 	m_robotSprite.setPosition(m_position);
 
 	checkAnimationState();
+	updateAnimation();
+}
+
+void Robot::updateAnimation()
+{
+	
 }
 
 void Robot::render(sf::RenderWindow& t_window)
 {
 	t_window.draw(m_robotSprite);
+}
+
+void Robot::setupAnimations()
+{
+	currentRow = 4;
+	int animationState = 0;
+	animationState = static_cast<int>(AnimationState::RunningLeft);
+	for (int i = 0; i < 8; i++)
+	{
+		m_animationFrames[animationState][i] = sf::IntRect{frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight};
+	}
+	animationState = static_cast<int>(AnimationState::RunningRight);
+	for (int i = 0; i < 8; i++)
+	{
+		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight };
+	}
 }
 
 
@@ -192,7 +248,7 @@ void Robot::checkAnimationState()
 	switch (m_currentAnimationState)
 	{
 	case AnimationState::None:
-
+		//animateIdle();
 		break;
 	case AnimationState::RunningRight:
 		animateRunRight();
@@ -201,10 +257,10 @@ void Robot::checkAnimationState()
 		animateRunLeft();
 		break;
 	case AnimationState::GoingUp:
-		animateClimbUp();
+		//animateClimbUp();
 		break;
 	case AnimationState::GoingDown:
-		animateClimbDown();
+		//animateClimbDown();
 		break;
 	default:
 		break;
@@ -213,44 +269,49 @@ void Robot::checkAnimationState()
 
 void Robot::animateRunRight()
 {
+	int animationState = 0;
+	animationState = static_cast<int>(AnimationState::RunningRight);
+
 	if (m_clock.getElapsedTime().asSeconds() > 0.1)
 	{
-		currentCollumn++;
+		m_currentFrame++;
 		m_clock.restart();
 	}
-	if (currentCollumn > 7)
+	if (m_currentFrame > 7)
 	{
-		currentCollumn = 0;
+		m_currentFrame = 0;
 	}
-
-	//Walking Right
-	sf::IntRect Walkingrect = { frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
-	m_robotSprite.setTextureRect(Walkingrect);
+	m_robotSprite.setTextureRect(m_animationFrames[animationState][m_currentFrame]);
 	m_robotSprite.setScale(1, 1);
 }
 
 void Robot::animateRunLeft()
 {
+	int animationState = 0;
+	animationState = static_cast<int>(AnimationState::RunningLeft);
 
 	if (m_clock.getElapsedTime().asSeconds() > 0.1)
 	{
-		currentCollumn++;
+		m_currentFrame++;
 		m_clock.restart();
 	}
-	if (currentCollumn > 7 )
+	if (m_currentFrame > 7)
 	{
-		currentCollumn = 0;
+		m_currentFrame = 0;
 	}
-
-	//Walking.
-	sf::IntRect Walkingrect = { frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
-	m_robotSprite.setTextureRect(Walkingrect);
+	m_robotSprite.setTextureRect(m_animationFrames[animationState][m_currentFrame]);
 	m_robotSprite.setScale(-1, 1);
 }
 
 void Robot::animateIdle()
 {
-	
+	currentRow = 0;
+	currentCollumn = 4;	
+
+	//Walking.
+	sf::IntRect idleRect = { frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
+	m_robotSprite.setTextureRect(idleRect);
+	m_robotSprite.setScale(1, 1);
 }
 
 void Robot::animateClimbUp()
