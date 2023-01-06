@@ -54,7 +54,7 @@ public:
 	static const int MAX_ROWS = 4;
 	static const int MAX_COLLUMS = 8;
 	static const int MAX_ANIMATIONS = 3;
-	static const int MAX_FRAMES = 8;
+	static const int MAX_FRAMES = 9;
 
 
 private:
@@ -128,6 +128,19 @@ int main()
 			window.clear();
 			robotVelocity = { 0,0 };
 			//Handle Key Input
+			if (sf::Event::KeyReleased)
+			{
+				if (event.key.code == sf::Keyboard::Left)
+				{
+					robot.setAnimationState(AnimationState::None);
+				}
+
+				if (event.key.code == sf::Keyboard::Right)
+				{
+					robot.setAnimationState(AnimationState::None);
+				}
+			}
+
 			if (sf::Event::KeyPressed)
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -156,18 +169,7 @@ int main()
 			}
 			
 
-			/*if (sf::Event::KeyReleased)
-			{
-				if (event.key.code == sf::Keyboard::Left)
-				{
-					robot.setAnimationState(AnimationState::None);
-				}
-
-				if (event.key.code == sf::Keyboard::Right)
-				{
-					robot.setAnimationState(AnimationState::None);
-				}
-			}*/
+			
 
 
 			robot.setVelocity(robotVelocity);
@@ -240,6 +242,12 @@ void Robot::setupAnimations()
 	{
 		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight };
 	}
+	animationState = static_cast<int>(AnimationState::None);
+	currentRow = 0;
+	for (int i = 7; i < 9; i++)
+	{
+		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight };
+	}
 }
 
 
@@ -248,7 +256,7 @@ void Robot::checkAnimationState()
 	switch (m_currentAnimationState)
 	{
 	case AnimationState::None:
-		//animateIdle();
+		animateIdle();
 		break;
 	case AnimationState::RunningRight:
 		animateRunRight();
@@ -305,12 +313,23 @@ void Robot::animateRunLeft()
 
 void Robot::animateIdle()
 {
-	currentRow = 0;
-	currentCollumn = 4;	
+	int animationState = 0;
+	animationState = static_cast<int>(AnimationState::None);
 
-	//Walking.
-	sf::IntRect idleRect = { frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
-	m_robotSprite.setTextureRect(idleRect);
+	if (m_clock.getElapsedTime().asSeconds() > 0.1)
+	{
+		m_currentFrame++;
+		m_clock.restart();
+	}
+	if (m_currentFrame < 7)
+	{
+		m_currentFrame = 7;
+	}
+	if (m_currentFrame > 8)
+	{
+		m_currentFrame = 7;
+	}
+	m_robotSprite.setTextureRect(m_animationFrames[animationState][m_currentFrame]);
 	m_robotSprite.setScale(1, 1);
 }
 
