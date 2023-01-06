@@ -28,6 +28,24 @@ enum class RobotAnimationState
 	GoingDown
 };
 
+class RainDrop
+{
+public:
+	RainDrop(sf::Vector2f& t_position, sf::Vector2f& t_velocity,sf::Color& t_color, sf::Vector2f& t_size);
+	~RainDrop();
+
+	void update();
+	void render(sf::RenderWindow& t_window);
+
+	void setPosition(sf::Vector2f t_position) { m_position = t_position; }
+
+private:
+	sf::RectangleShape m_raindropShape;
+
+	sf::Vector2f m_position;
+	sf::Vector2f m_velocity;
+};
+
 class Flower
 {
 public:
@@ -145,6 +163,12 @@ int main()
 	}
 	Flower flower(flowerTexture);
 
+	sf::Vector2f raindropPos{ 800,200 };
+	sf::Vector2f raindropVel{ 0,5 };
+	sf::Vector2f raindropSize{ 10,50 };
+	sf::Color raindropColor{ sf::Color::Blue };
+	RainDrop raindrop(raindropPos, raindropVel, raindropColor, raindropSize);
+
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -218,10 +242,12 @@ int main()
 			//Update here
 			robot.update();
 			flower.update();
+			raindrop.update();
 
 			//Draw here
 			robot.render(window);
 			flower.render(window);
+			raindrop.render(window);
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
@@ -415,6 +441,10 @@ void Robot::animateClimbDown()
 	m_robotSprite.setScale(-1, 1);
 }
 
+
+
+
+
 Flower::Flower(sf::Texture& t_texture) : m_flowerTexture(t_texture)
 {
 	m_flowerSprite.setTexture(m_flowerTexture);
@@ -467,7 +497,31 @@ void Flower::setupAnimation()
 	int animationState = 0;
 	for (int i = 0; i < MAX_FRAMES; i++)
 	{
-		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, 0, frameWidth , frameHeight };
+		m_animationFrames[animationState][i] = sf::IntRect{ (frameWidth - 3) * i, 0, frameWidth - 3 , frameHeight };
 	}
 	
+}
+
+RainDrop::RainDrop(sf::Vector2f& t_position, sf::Vector2f& t_velocity, sf::Color& t_color, sf::Vector2f& t_size) :
+	m_position(t_position),
+	m_velocity(t_velocity)
+{
+	m_raindropShape.setSize(t_size);
+	m_raindropShape.setFillColor(t_color);
+	m_raindropShape.setPosition(m_position);
+}
+
+RainDrop::~RainDrop()
+{
+}
+
+void RainDrop::update()
+{
+	m_position += m_velocity;
+	m_raindropShape.setPosition(m_position);
+}
+
+void RainDrop::render(sf::RenderWindow& t_window)
+{
+	t_window.draw(m_raindropShape);
 }

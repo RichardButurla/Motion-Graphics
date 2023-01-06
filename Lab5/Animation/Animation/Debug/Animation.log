@@ -1,6 +1,6 @@
 ﻿  main.cpp
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(244,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(244,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(425,43): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(426,44): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(270,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(270,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(455,43): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(456,44): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   Animation.vcxproj -> C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Debug\Animation.exe
