@@ -38,6 +38,8 @@ public:
 	void render(sf::RenderWindow& t_window);
 
 	void setPosition(sf::Vector2f t_position) { m_position = t_position; }
+	sf::Vector2f getPosition() { return m_position; }
+	sf::FloatRect getBoundingBox() { return m_raindropShape.getGlobalBounds(); }
 
 private:
 	sf::RectangleShape m_raindropShape;
@@ -55,12 +57,27 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& t_window);
-	void initialise();
 
-	static const int MAX_RAINDROPS = 5;
+	void setPosition(sf::Vector2f t_pos) { m_rainPosition = t_pos; }
+	void startRaining() { m_raining = true; }
+
+	bool checkRainCollision(sf::FloatRect t_otherBoundingBox);
+
+	static const int MAX_RAINDROPS = 100;
 private:
 	
 	RainDrop* raindrops[MAX_RAINDROPS];
+	sf::Clock m_rainSpawnClock;
+	sf::Time m_rainSpawnTime{ sf::seconds(0.05) };
+	unsigned int m_currentRainDrop = 0;
+	unsigned int m_numberOfRaindrops = 0;
+	bool m_raining{ false };
+
+	sf::Vector2f m_rainPosition{ 800,200 };
+	float maxYDistance = 500;
+	sf::Vector2f raindropVel{ 0,5 };
+	sf::Vector2f raindropSize{ 2,10 };
+	sf::Color raindropColor{ sf::Color::Blue };
 };
 
 class Flower
@@ -75,6 +92,10 @@ public:
 
 	void setupAnimation();
 
+	void setGrowing(bool t_boolean) { m_growing = true; }
+	sf::FloatRect getBoundingBox() { return m_flowerSprite.getGlobalBounds(); }
+
+
 	static const int MAX_ANIMATIONS = 1;
 	static const int MAX_FRAMES = 4;
 
@@ -82,7 +103,7 @@ private:
 	sf::Sprite m_flowerSprite;
 	sf::Texture m_flowerTexture;
 
-	sf::Vector2f m_position{ 800,300 };
+	sf::Vector2f m_position{ 800,500 };
 
 	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
 
@@ -95,6 +116,8 @@ private:
 	int rows;
 
 	sf::Clock m_clock;
+
+	bool m_growing{ false };
 
 };
 
@@ -129,7 +152,7 @@ private:
 	sf::Sprite m_robotSprite;
 	sf::Texture m_robotTexture;
 
-	sf::Vector2f m_position{300,300};
+	sf::Vector2f m_position{300,500};
 	sf::Vector2f m_velocity;
 
 	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
@@ -164,6 +187,8 @@ int main()
 		std::cout << "failed to load font";
 	}
 
+
+
 	sf::Texture robotTexture;
 	float robotSpeed = 5;
 	sf::Vector2f robotVelocity = { 0,0 };
@@ -180,7 +205,19 @@ int main()
 	}
 	Flower flower(flowerTexture);
 
+	sf::Texture cloudTexture;
+	if (!cloudTexture.loadFromFile("ASSETS/IMAGES/cloud.png"))
+	{
+		std::cout << "failed to load cloud Texture";
+	}
+
+	sf::Sprite rainCloud;
+	rainCloud.setTexture(cloudTexture);
+	sf::Vector2u cloudTextureSize = cloudTexture.getSize();
+	rainCloud.setOrigin(cloudTextureSize.x / 2, cloudTextureSize.y / 2);
+	rainCloud.setPosition(800, 100);
 	Rain rain;
+	rain.setPosition(rainCloud.getPosition());
 
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
@@ -243,6 +280,11 @@ int main()
 					robot.setAnimationState(RobotAnimationState::RunningRight);
 					robotVelocity.x = robotSpeed;
 				}
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+				{
+					rain.startRaining();
+				}
 			}
 			
 
@@ -251,6 +293,11 @@ int main()
 
 			robot.setVelocity(robotVelocity);
 
+			//Check collision
+			if (rain.checkRainCollision(flower.getBoundingBox()))
+			{
+				flower.setGrowing(true);
+			}
 
 			//Update here
 			robot.update();
@@ -258,9 +305,13 @@ int main()
 			rain.update();
 
 			//Draw here
+			
 			robot.render(window);
 			flower.render(window);
+			window.draw(rainCloud);
 			rain.render(window);
+
+			
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
@@ -486,16 +537,18 @@ void Flower::update()
 void Flower::updateAnimation()
 {
 	int animationState = 0;
-
-	if (m_clock.getElapsedTime().asSeconds() > 0.5)
+	if (m_growing)
 	{
-		m_currentFrame++;
-		m_clock.restart();
+		if (m_clock.getElapsedTime().asSeconds() > 1.5)
+		{
+			if (m_currentFrame < MAX_FRAMES - 1)
+			{
+				m_currentFrame++;
+				m_clock.restart();
+			}
+		}
 	}
-	if (m_currentFrame >= MAX_FRAMES)
-	{
-		m_currentFrame = 0;
-	}
+	
 	m_flowerSprite.setTextureRect(m_animationFrames[animationState][m_currentFrame]);
 }
 
@@ -526,7 +579,7 @@ RainDrop::RainDrop(sf::Vector2f& t_position, sf::Vector2f& t_velocity, sf::Color
 
 RainDrop::~RainDrop()
 {
-
+	std::cout << "RaindDrop Destructor called";
 }
 
 void RainDrop::update()
@@ -542,7 +595,7 @@ void RainDrop::render(sf::RenderWindow& t_window)
 
 Rain::Rain()
 {
-	initialise();
+
 }
 
 Rain::~Rain()
@@ -552,7 +605,36 @@ Rain::~Rain()
 
 void Rain::update()
 {
-	for (int i = 0; i < MAX_RAINDROPS; i++)
+	if (m_raining)
+	{
+		if (m_rainSpawnClock.getElapsedTime() > m_rainSpawnTime)
+		{
+			sf::Vector2f raindropPosition;
+			int xOffset = 200;
+			if (m_currentRainDrop < MAX_RAINDROPS)
+			{
+				raindropPosition.x = std::rand() % (xOffset) + (m_rainPosition.x - xOffset / 2);
+				raindropPosition.y = m_rainPosition.y;
+				raindrops[m_currentRainDrop] = new RainDrop(raindropPosition, raindropVel, raindropColor, raindropSize);
+				m_numberOfRaindrops++;
+				m_currentRainDrop++;
+			}
+		}
+
+		for (int i = 0; i < m_numberOfRaindrops; i++)
+		{
+			if (raindrops[i]->getPosition().y > m_rainPosition.y + maxYDistance)
+			{
+				sf::Vector2f raindropPosition;
+				int xOffset = 200;
+				raindropPosition.x = std::rand() % (xOffset)+(m_rainPosition.x - xOffset / 2);
+				raindropPosition.y = m_rainPosition.y;
+				raindrops[i]->setPosition(raindropPosition);
+			}
+		}
+	}
+
+	for (int i = 0; i < m_numberOfRaindrops; i++)
 	{
 		raindrops[i]->update();
 	}
@@ -560,23 +642,21 @@ void Rain::update()
 
 void Rain::render(sf::RenderWindow& t_window)
 {
-	for (int i = 0; i < MAX_RAINDROPS; i++)
+	for (int i = 0; i < m_numberOfRaindrops; i++)
 	{
 		raindrops[i]->render(t_window);
 	}
 }
 
-void Rain::initialise()
+bool Rain::checkRainCollision(sf::FloatRect t_otherBoundingBox)
 {
-	sf::Vector2f raindropPos{ 800,200 };
-	sf::Vector2f raindropVel{ 0,5 };
-	sf::Vector2f raindropSize{ 10,50 };
-	sf::Color raindropColor{ sf::Color::Blue };
-	
-
-	for (int i = 0; i < MAX_RAINDROPS; i++)
+	for (int i = 0; i < m_numberOfRaindrops; i++)
 	{
-		raindropPos.x = std::rand() % 200 + 700;
-		raindrops[i] = new RainDrop(raindropPos, raindropVel, raindropColor, raindropSize);
+		if (t_otherBoundingBox.intersects(raindrops[i]->getBoundingBox()))
+		{
+			return true;
+		}
 	}
+	return false;
 }
+
