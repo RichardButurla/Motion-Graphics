@@ -24,6 +24,8 @@ enum class RobotAnimationState
 	None,
 	RunningRight,
 	RunningLeft,
+	JumpingRight,
+	JumpingLeft,
 	GoingUp,
 	GoingDown
 };
@@ -127,7 +129,7 @@ public:
 	Robot(sf::Texture & t_texture);
 	~Robot();
 
-	void update();
+	void update(double t_deltaTime);
 	void updateAnimation();
 	void render(sf::RenderWindow& t_window);
 
@@ -143,9 +145,14 @@ public:
 	void animateIdle();
 	void animateClimbUp();
 	void animateClimbDown();
+	void animateJumpRight();
+	void animateJumpLeft();
 
-	static const int MAX_ANIMATIONS = 3;
+	static const int MAX_ANIMATIONS = 4;
 	static const int MAX_FRAMES = 9;
+
+	const static int JUMP_VELOCITY = -1700;
+	constexpr static float robotGravity = 200.8;
 
 
 private:
@@ -156,6 +163,8 @@ private:
 	sf::Vector2f m_velocity;
 
 	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
+
+	
 
 
 	RobotAnimationState m_currentAnimationState = RobotAnimationState::None;
@@ -171,6 +180,7 @@ private:
 	int currentRow = 4;
 
 	int m_currentFrame = 0;
+	int m_jumpingFrame = 0;
 
 
 };
@@ -190,7 +200,7 @@ int main()
 
 
 	sf::Texture robotTexture;
-	float robotSpeed = 5;
+	float robotSpeed = 300;
 	sf::Vector2f robotVelocity = { 0,0 };
 	if (!robotTexture.loadFromFile("ASSETS/IMAGES/character_robot_sheet.png"))
 	{
@@ -253,6 +263,7 @@ int main()
 				{
 					robot.setAnimationState(RobotAnimationState::None);
 				}
+
 			}
 
 			if (sf::Event::KeyPressed)
@@ -281,13 +292,40 @@ int main()
 					robotVelocity.x = robotSpeed;
 				}
 
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
+					&& sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+					robot.setAnimationState(RobotAnimationState::JumpingRight);
+					robotVelocity.x = robotSpeed;
+					robotVelocity.y = Robot::JUMP_VELOCITY;
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
+					&& sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+					robot.setAnimationState(RobotAnimationState::JumpingLeft);
+					robotVelocity.x = -robotSpeed;
+					robotVelocity.y = Robot::JUMP_VELOCITY;
+				}
+
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 				{
 					rain.startRaining();
 				}
+
+				if (event.key.code == sf::Keyboard::Space && //jump running
+					sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				{
+					robot.setAnimationState(RobotAnimationState::JumpingRight);
+				}
+				if (event.key.code == sf::Keyboard::Space && //jump running
+					sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+				{
+					robot.setAnimationState(RobotAnimationState::JumpingLeft);
+				}
+				
 			}
 			
-
+			
 			
 
 
@@ -300,7 +338,7 @@ int main()
 			}
 
 			//Update here
-			robot.update();
+			robot.update(timePerFrame.asSeconds());
 			flower.update();
 			rain.update();
 
@@ -341,9 +379,18 @@ Robot::~Robot()
 {
 }
 
-void Robot::update()
+void Robot::update(double t_deltaTime)
 {
-	m_position += m_velocity;
+	m_velocity.y += robotGravity;
+
+	m_position.x += m_velocity.x * t_deltaTime;
+	m_position.y += m_velocity.y * t_deltaTime;
+
+	if (m_position.y > 700)
+	{
+		m_position.y = 700;
+	}
+
 	m_robotSprite.setPosition(m_position);
 
 	checkAnimationState();
@@ -380,6 +427,21 @@ void Robot::setupAnimations()
 	{
 		m_animationFrames[animationState][i] = sf::IntRect{ frameWidth * i, frameHeight * currentRow, frameWidth , frameHeight };
 	}
+	
+	animationState = static_cast<int>(RobotAnimationState::JumpingRight);
+	currentRow = 0;
+	currentCollumn = 1;
+	m_animationFrames[animationState][0] = sf::IntRect{ frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
+	currentRow = 1;
+	currentCollumn = 5;
+	m_animationFrames[animationState][1] = sf::IntRect{ frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
+	currentRow = 2;
+	currentCollumn = 8;
+	m_animationFrames[animationState][2] = sf::IntRect{ frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
+	currentRow = 0;
+	currentCollumn = 2;
+	m_animationFrames[animationState][3] = sf::IntRect{ frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
+
 }
 
 
@@ -389,12 +451,22 @@ void Robot::checkAnimationState()
 	{
 	case RobotAnimationState::None:
 		animateIdle();
+		m_jumpingFrame = 0;
+
+		break;
+	case RobotAnimationState::JumpingRight:
+		animateJumpRight();
+		break;
+	case RobotAnimationState::JumpingLeft:
+		animateJumpLeft();
 		break;
 	case RobotAnimationState::RunningRight:
 		animateRunRight();
+		m_jumpingFrame = 0;
 		break;
 	case RobotAnimationState::RunningLeft:
 		animateRunLeft();
+		m_jumpingFrame = 0;
 		break;
 	case RobotAnimationState::GoingUp:
 		//animateClimbUp();
@@ -502,6 +574,48 @@ void Robot::animateClimbDown()
 	//Walking.
 	sf::IntRect Walkingrect = { frameWidth * currentCollumn, frameHeight * currentRow, frameWidth , frameHeight };
 	m_robotSprite.setTextureRect(Walkingrect);
+	m_robotSprite.setScale(-1, 1);
+}
+
+void Robot::animateJumpRight()
+{
+	int animationState = 0;
+	animationState = static_cast<int>(RobotAnimationState::JumpingRight);
+
+	if (m_clock.getElapsedTime().asSeconds() > 0.1)
+	{
+		m_jumpingFrame++;
+		m_clock.restart();
+	}
+	if (m_jumpingFrame > 3)
+	{
+		m_jumpingFrame = 3;
+		setAnimationState(RobotAnimationState::RunningRight);
+	}
+	m_robotSprite.setTextureRect(m_animationFrames[animationState][m_jumpingFrame]);
+	m_robotSprite.setScale(1, 1);
+}
+
+void Robot::animateJumpLeft()
+{
+	int animationState = 0;
+	animationState = static_cast<int>(RobotAnimationState::JumpingRight);
+
+	if (m_clock.getElapsedTime().asSeconds() > 0.1)
+	{
+		m_jumpingFrame++;
+		m_clock.restart();
+	}
+	if (m_jumpingFrame > 3)
+	{
+		m_jumpingFrame = 3;
+		setAnimationState(RobotAnimationState::RunningLeft);
+	}
+	if (m_clock.getElapsedTime().asSeconds() > 1)
+	{
+		setAnimationState(RobotAnimationState::RunningLeft);
+	}
+	m_robotSprite.setTextureRect(m_animationFrames[animationState][m_jumpingFrame]);
 	m_robotSprite.setScale(-1, 1);
 }
 
