@@ -105,7 +105,7 @@ private:
 	sf::Sprite m_flowerSprite;
 	sf::Texture m_flowerTexture;
 
-	sf::Vector2f m_position{ 800,500 };
+	sf::Vector2f m_position{ 800,700 };
 
 	sf::IntRect m_animationFrames[MAX_ANIMATIONS][MAX_FRAMES];
 
@@ -148,6 +148,9 @@ public:
 	void animateJumpRight();
 	void animateJumpLeft();
 
+	void landingLeft();
+	void landingRight();
+
 	static const int MAX_ANIMATIONS = 4;
 	static const int MAX_FRAMES = 9;
 
@@ -176,6 +179,7 @@ private:
 	int frameHeight;
 
 	sf::Clock m_clock;
+	sf::Clock m_transitionClock;
 	int currentCollumn = 0;
 	int currentRow = 4;
 
@@ -221,11 +225,20 @@ int main()
 		std::cout << "failed to load cloud Texture";
 	}
 
+	sf::Texture backgroundTexture;
+	if (!backgroundTexture.loadFromFile("ASSETS/IMAGES/background.jpg"))
+	{
+		std::cout << "failed to load background Texture";
+	}
+	sf::Sprite backgroundSprite;
+	backgroundSprite.setTexture(backgroundTexture);
+	backgroundSprite.setScale(2.f, 2.6f);
+
 	sf::Sprite rainCloud;
 	rainCloud.setTexture(cloudTexture);
 	sf::Vector2u cloudTextureSize = cloudTexture.getSize();
 	rainCloud.setOrigin(cloudTextureSize.x / 2, cloudTextureSize.y / 2);
-	rainCloud.setPosition(800, 100);
+	rainCloud.setPosition(800, 300);
 	Rain rain;
 	rain.setPosition(rainCloud.getPosition());
 
@@ -316,11 +329,13 @@ int main()
 					sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
 					robot.setAnimationState(RobotAnimationState::JumpingRight);
+					robot.landingRight();
 				}
 				if (event.key.code == sf::Keyboard::Space && //jump running
 					sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
 					robot.setAnimationState(RobotAnimationState::JumpingLeft);
+					robot.landingLeft();
 				}
 				
 			}
@@ -343,7 +358,7 @@ int main()
 			rain.update();
 
 			//Draw here
-			
+			window.draw(backgroundSprite);
 			robot.render(window);
 			flower.render(window);
 			window.draw(rainCloud);
@@ -617,6 +632,15 @@ void Robot::animateJumpLeft()
 	}
 	m_robotSprite.setTextureRect(m_animationFrames[animationState][m_jumpingFrame]);
 	m_robotSprite.setScale(-1, 1);
+}
+
+void Robot::landingLeft()
+{
+
+}
+
+void Robot::landingRight()
+{
 }
 
 
