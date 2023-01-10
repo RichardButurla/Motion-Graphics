@@ -18,6 +18,36 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+static const int SCREEN_WIDTH = 602;
+static const int SCREEN_HEIGHT = 400;
+
+class Ground
+{
+public:
+	Ground(sf::Texture& t_texture);
+	~Ground();
+
+	void render(sf::RenderWindow& t_window);
+	void update(sf::Time t_deltaTime);
+
+	static const int MAX_GROUND_SPRITES = 2;
+private:
+	sf::Sprite m_groundSprites[MAX_GROUND_SPRITES];
+	sf::Texture m_groundTexture;
+
+	sf::Vector2f m_positions[MAX_GROUND_SPRITES]
+	{
+		{0,SCREEN_HEIGHT - 100},
+		{SCREEN_WIDTH,SCREEN_HEIGHT - 100}
+	};
+	sf::Vector2f m_velocities[MAX_GROUND_SPRITES]
+	{
+		{-2,0},
+		{-2,0}
+	};
+
+};
+
 class Dino
 {
 public:
@@ -43,7 +73,7 @@ private:
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1200, 800), "First Graphics in C++");
+	sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "First Graphics in C++");
 
 	std::srand(static_cast<unsigned int>(time(nullptr)));
 	sf::Font font;
@@ -51,9 +81,12 @@ int main()
 	sf::Texture dinotexture;
 	if (!dinotexture.loadFromFile("ASSETS/IMAGES/dino-spritesheet.png"))
 	{
-		std::cout << "failed to load cloud Texture";
+		std::cout << "failed to load spritesheet Texture";
 	}
 	Dino dinosaur(dinotexture);
+
+	sf::Texture groundTexture = dinotexture;
+	Ground ground(groundTexture);
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -97,9 +130,11 @@ int main()
 
 			//Update here
 			dinosaur.update(timePerFrame);
+			ground.update(timePerFrame);
 
 			//Draw here
 			dinosaur.render(window);
+			ground.render(window);
 
 
 
@@ -133,9 +168,48 @@ void Dino::render(sf::RenderWindow& t_window)
 {
 	t_window.draw(m_dinoSprite);
 
-	if (m_position.y > t_window.getSize().y - 200)
+	if (m_position.y > (SCREEN_HEIGHT / 3 ) * 2)
 	{
 		m_velocity.y = 0;
-		m_position.y = t_window.getSize().y - 199;
+		m_position.y = (SCREEN_HEIGHT / 3) * 2;
+	}
+}
+
+Ground::Ground(sf::Texture& t_texture) : m_groundTexture(t_texture)
+{
+	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
+	{
+		m_groundSprites[i].setTexture(t_texture);
+	}
+	sf::Vector2f textureSize = static_cast<sf::Vector2f>(t_texture.getSize());
+	m_groundSprites[0].setTextureRect(sf::IntRect(0,(textureSize.y / 6) * 4.7, textureSize.x / 2, textureSize.y));
+	m_groundSprites[1].setTextureRect(sf::IntRect(textureSize.x / 2, (textureSize.y / 6) * 4.7, textureSize.x / 2, textureSize.y));
+
+	
+}
+
+Ground::~Ground()
+{
+}
+
+void Ground::render(sf::RenderWindow& t_window)
+{
+	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
+	{
+		t_window.draw(m_groundSprites[i]);
+	}
+}
+
+void Ground::update(sf::Time t_deltaTime)
+{
+	
+	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
+	{
+		if (m_positions[i].x < 0 - SCREEN_WIDTH)
+		{
+			m_positions[i].x = SCREEN_WIDTH - 7;
+		}
+		m_positions[i].x += m_velocities[i].x;
+		m_groundSprites[i].setPosition(m_positions[i]);
 	}
 }
