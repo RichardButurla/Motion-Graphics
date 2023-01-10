@@ -1,0 +1,16 @@
+﻿  main.cpp
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(127,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(139,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  DinoGame.vcxproj -> C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\Debug\DinoGame.exe

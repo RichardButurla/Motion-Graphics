@@ -1,32 +1,32 @@
 ﻿  main.cpp
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(73,26): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(158,45): warning C4305: 'initializing': truncation from 'double' to 'const float'
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(240,65): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(73,26): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(158,45): warning C4305: 'initializing': truncation from 'double' to 'const float'
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(240,65): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(240,41): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(240,41): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(387,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(387,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(401,31): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(387,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(387,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(401,31): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(402,31): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(402,31): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(657,43): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(658,44): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(762,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(775,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(783,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(791,20): warning C4018: '<': signed/unsigned mismatch
-  Animation.vcxproj -> C:\Users\Richie\Desktop\MotionGraohics\Motion-Graphics\Lab5\Animation\Debug\Animation.exe
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(657,43): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(658,44): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(762,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(775,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(783,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Animation\main.cpp(791,20): warning C4018: '<': signed/unsigned mismatch
+  Animation.vcxproj -> C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab5\Animation\Debug\Animation.exe
