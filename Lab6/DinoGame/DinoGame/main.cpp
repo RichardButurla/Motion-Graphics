@@ -35,6 +35,11 @@ private:
 	sf::Sprite m_groundSprites[MAX_GROUND_SPRITES];
 	sf::Texture m_groundTexture;
 
+	sf::Clock m_groundClock;
+	sf::Time m_timeSinceLastSpeedIncrease = sf::seconds(1);
+
+	float speedIncrease = -0.1;
+
 	sf::Vector2f m_positions[MAX_GROUND_SPRITES]
 	{
 		{0,SCREEN_HEIGHT - 100},
@@ -42,8 +47,8 @@ private:
 	};
 	sf::Vector2f m_velocities[MAX_GROUND_SPRITES]
 	{
-		{-2,0},
-		{-2,0}
+		{-5,0},
+		{-5,0}
 	};
 
 };
@@ -202,7 +207,14 @@ void Ground::render(sf::RenderWindow& t_window)
 
 void Ground::update(sf::Time t_deltaTime)
 {
-	
+	if (m_groundClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
+	{
+		m_groundClock.restart();
+		for (int i = 0; i < MAX_GROUND_SPRITES; i++)
+		{
+			m_velocities[i].x += speedIncrease;
+		}
+	}
 	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
 	{
 		if (m_positions[i].x < 0 - SCREEN_WIDTH)
@@ -213,3 +225,5 @@ void Ground::update(sf::Time t_deltaTime)
 		m_groundSprites[i].setPosition(m_positions[i]);
 	}
 }
+
+

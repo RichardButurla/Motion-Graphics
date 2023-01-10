@@ -1,19 +1,11 @@
 ﻿  main.cpp
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(162,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(41,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(167,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(185,107): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-          and
-          [
-              T=int
-          ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(185,91): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(190,107): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
@@ -22,12 +14,7 @@ C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGam
           [
               T=int
           ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(185,70): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(186,124): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(190,91): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
@@ -36,7 +23,12 @@ C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGam
           [
               T=int
           ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(186,108): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(190,70): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(191,124): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
@@ -45,12 +37,21 @@ C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGam
           [
               T=int
           ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(186,87): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(191,108): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=int
+          ]
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(191,87): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(186,62): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\motion graphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(191,62): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
