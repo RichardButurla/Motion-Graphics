@@ -40,15 +40,17 @@ public:
 
 	void randomiseObstacle();
 	void setCactusObstacle();
+	void setBirdObstacle();
 
 
 private:
 	ObstacleType m_obstacleType;
 	sf::Sprite m_obstacleSprite;
 	sf::Texture m_obstacleTexture;
+	sf::IntRect m_currentFrame; 
 
-	sf::Vector2f m_position{300,300};
-	sf::Vector2f m_velocity;
+	sf::Vector2f m_position{300,266 };
+	sf::Vector2f m_velocity{-5,0};
 
 };
 
@@ -293,11 +295,17 @@ Obstacle::~Obstacle()
 
 void Obstacle::render(sf::RenderWindow& t_window)
 {
+	m_obstacleSprite.setTextureRect(m_currentFrame);
 	t_window.draw(m_obstacleSprite);
 }
 
 void Obstacle::update(double t_deltaTime)
 {
+	if (m_position.x + m_currentFrame.width < 0)
+	{
+		m_position.x = SCREEN_WIDTH;
+	}
+
 	m_position += m_velocity;
 	m_obstacleSprite.setPosition(m_position);
 }
@@ -307,7 +315,8 @@ void Obstacle::init(sf::Texture& t_texture)
 	m_obstacleTexture = t_texture;
 	m_obstacleSprite.setTexture(t_texture);
 
-	m_obstacleSprite.setTextureRect(sf::IntRect(408, 0, 75, 55));
+	m_currentFrame = sf::IntRect(180, 0, 48, 50);
+	m_obstacleSprite.setTextureRect(m_currentFrame);
 
 }
 
@@ -321,11 +330,11 @@ void Obstacle::randomiseObstacle()
 			break;
 
 	case ObstacleType::Cactus:
-
+		setCactusObstacle();
 		break;
 
 	case ObstacleType::Bird:
-
+		setBirdObstacle();
 		break;
 	default:
 		break;
@@ -343,20 +352,24 @@ void Obstacle::setCactusObstacle()
 	{
 		randNumberOfCacti = std::rand() % 3 + 1;
 		randStartCactusOffset = std::rand() % 4;
-		m_obstacleSprite.setTextureRect(sf::IntRect(225 + (18 * randStartCactusOffset), 0, (18 * randNumberOfCacti), 50));
+		m_currentFrame = (sf::IntRect(225 + (18 * randStartCactusOffset), 0, (18 * randNumberOfCacti), 50));
 	}
-	else if(randCactusType == 1)//big cactus which will have a max of 2 bundles
+	else if(randCactusType == 2)//big cactus which will have a max of 2 bundles
 	{
 		randNumberOfCacti = std::rand() % 2;
 		randStartCactusOffset = std::rand() % 3; 
-		m_obstacleSprite.setTextureRect(sf::IntRect(333 + (randStartCactusOffset * 25), 0, (randNumberOfCacti * 25), 55));
+		m_currentFrame = (sf::IntRect(333 + (randStartCactusOffset * 25), 0, (randNumberOfCacti * 25), 55));
 	}
 	else //triple cactus
 	{
-		m_obstacleSprite.setTextureRect(sf::IntRect(408, 0, 75, 55));
-	}
+		m_currentFrame = (sf::IntRect(408, 0, 75, 55));
+	} 
 }
 
+void Obstacle::setBirdObstacle()
+{
+	m_currentFrame = sf::IntRect(180, 0, 48, 50);
+}
 
 /////////////////////////////////
 
