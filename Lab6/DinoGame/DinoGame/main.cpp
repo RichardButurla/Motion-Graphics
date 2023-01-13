@@ -21,6 +21,53 @@
 static const int SCREEN_WIDTH = 602;
 static const int SCREEN_HEIGHT = 400;
 
+enum class ObstacleType
+{
+	None,
+	Cactus,
+	Bird
+};
+
+class Obstacle
+{
+public:
+	Obstacle();
+	~Obstacle();
+
+	void render(sf::RenderWindow& t_window);
+	void update(double t_deltaTime);
+	void init(sf::Texture& t_texture);
+
+	void randomiseObstacle();
+	void setCactusObstacle();
+
+
+private:
+	ObstacleType m_obstacleType;
+	sf::Sprite m_obstacleSprite;
+	sf::Texture m_obstacleTexture;
+
+	sf::Vector2f m_position{300,300};
+	sf::Vector2f m_velocity;
+
+};
+
+class Obstacles
+{
+public:
+	Obstacles(sf::Texture& t_texture);
+	~Obstacles();
+
+	void update(double t_deltaTime);
+	void render(sf::RenderWindow& t_window);
+
+private:
+	static const int MAX_OBSTACLES = 1;
+	Obstacle m_obstacles[MAX_OBSTACLES];
+
+ };
+
+
 class Ground
 {
 public:
@@ -63,13 +110,15 @@ public:
 	void update(sf::Time t_deltaTime);
 	void render(sf::RenderWindow& t_window);
 	
-	void jump() { m_velocity.y = -10; }
+	void jump() { if (!inAir)m_velocity.y = -10; inAir = true; }
 
 	static constexpr double GRAVITY = 38.2;
 
 private:
 	sf::Sprite m_dinoSprite;
 	sf::Texture m_dinoTexture;
+
+	bool inAir{ false };
 
 	sf::Vector2f m_position{100,400};
 	sf::Vector2f m_velocity;
@@ -92,6 +141,8 @@ int main()
 
 	sf::Texture groundTexture = dinotexture;
 	Ground ground(groundTexture);
+
+	Obstacles obstacles(dinotexture);
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -136,10 +187,12 @@ int main()
 			//Update here
 			dinosaur.update(timePerFrame);
 			ground.update(timePerFrame);
+			obstacles.update(timePerFrame.asSeconds());
 
 			//Draw here
 			dinosaur.render(window);
 			ground.render(window);
+			obstacles.render(window);
 
 
 
@@ -175,6 +228,7 @@ void Dino::render(sf::RenderWindow& t_window)
 
 	if (m_position.y > (SCREEN_HEIGHT / 3 ) * 2)
 	{
+		inAir = false;
 		m_velocity.y = 0;
 		m_position.y = (SCREEN_HEIGHT / 3) * 2;
 	}
@@ -227,3 +281,110 @@ void Ground::update(sf::Time t_deltaTime)
 }
 
 
+
+Obstacle::Obstacle()
+{
+
+}
+
+Obstacle::~Obstacle()
+{
+}
+
+void Obstacle::render(sf::RenderWindow& t_window)
+{
+	t_window.draw(m_obstacleSprite);
+}
+
+void Obstacle::update(double t_deltaTime)
+{
+	m_position += m_velocity;
+	m_obstacleSprite.setPosition(m_position);
+}
+
+void Obstacle::init(sf::Texture& t_texture)
+{
+	m_obstacleTexture = t_texture;
+	m_obstacleSprite.setTexture(t_texture);
+
+	m_obstacleSprite.setTextureRect(sf::IntRect(408, 0, 75, 55));
+
+}
+
+void Obstacle::randomiseObstacle()
+{
+	int obstacleType = std::rand() % 2 + 1;
+
+	switch (static_cast<ObstacleType>(obstacleType))
+	{
+	case ObstacleType::None:
+			break;
+
+	case ObstacleType::Cactus:
+
+		break;
+
+	case ObstacleType::Bird:
+
+		break;
+	default:
+		break;
+	}
+	
+}
+
+void Obstacle::setCactusObstacle()
+{
+	int randCactusType = std::rand() % 3 + 1; //this will deicde wether we use the big or small cactus parts of the texture
+	int randNumberOfCacti; //number of cacti together
+	int randStartCactusOffset; //from where in the png do we start the texture rect. max of 4 to ensure 3 cacti together is possible
+
+	if (randCactusType == 1) //small Cactus
+	{
+		randNumberOfCacti = std::rand() % 3 + 1;
+		randStartCactusOffset = std::rand() % 4;
+		m_obstacleSprite.setTextureRect(sf::IntRect(225 + (18 * randStartCactusOffset), 0, (18 * randNumberOfCacti), 50));
+	}
+	else if(randCactusType == 1)//big cactus which will have a max of 2 bundles
+	{
+		randNumberOfCacti = std::rand() % 2;
+		randStartCactusOffset = std::rand() % 3; 
+		m_obstacleSprite.setTextureRect(sf::IntRect(333 + (randStartCactusOffset * 25), 0, (randNumberOfCacti * 25), 55));
+	}
+	else //triple cactus
+	{
+		m_obstacleSprite.setTextureRect(sf::IntRect(408, 0, 75, 55));
+	}
+}
+
+
+/////////////////////////////////
+
+
+Obstacles::Obstacles(sf::Texture& t_texture)
+{
+	for (int i = 0; i < MAX_OBSTACLES; i++)
+	{
+		m_obstacles[i].init(t_texture);
+	}
+}
+
+Obstacles::~Obstacles()
+{
+}
+
+void Obstacles::update(double t_deltaTime)
+{
+	for (int i = 0; i < MAX_OBSTACLES; i++)
+	{
+		m_obstacles[i].update(t_deltaTime);
+	}
+}
+
+void Obstacles::render(sf::RenderWindow& t_window)
+{
+	for (int i = 0; i < MAX_OBSTACLES; i++)
+	{
+		m_obstacles[i].render(t_window);
+	}
+}
