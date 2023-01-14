@@ -24,8 +24,8 @@ static const int SCREEN_HEIGHT = 400;
 enum class ObstacleType
 {
 	None,
-	Cactus,
-	Bird
+	Bird,
+	Cactus
 };
 
 class Obstacle
@@ -70,18 +70,20 @@ private:
  };
 
 
-class Ground
+class Scene
 {
 public:
-	Ground(sf::Texture& t_texture);
-	~Ground();
+	Scene(sf::Texture& t_texture);
+	~Scene();
 
 	void render(sf::RenderWindow& t_window);
 	void update(sf::Time t_deltaTime);
 
 	static const int MAX_GROUND_SPRITES = 2;
+	static const int MAX_CLOUD_SPRITES = 4;
 private:
 	sf::Sprite m_groundSprites[MAX_GROUND_SPRITES];
+	sf::Sprite m_cloudSprites[MAX_CLOUD_SPRITES];
 	sf::Texture m_groundTexture;
 
 	sf::Clock m_groundClock;
@@ -89,16 +91,25 @@ private:
 
 	float speedIncrease = -0.1;
 
-	sf::Vector2f m_positions[MAX_GROUND_SPRITES]
+	sf::Vector2f m_groundPositions[MAX_GROUND_SPRITES]
 	{
 		{0,SCREEN_HEIGHT - 100},
 		{SCREEN_WIDTH,SCREEN_HEIGHT - 100}
 	};
-	sf::Vector2f m_velocities[MAX_GROUND_SPRITES]
+	sf::Vector2f m_groundVelocities[MAX_GROUND_SPRITES]
 	{
 		{-5,0},
 		{-5,0}
 	};
+
+	sf::Vector2f m_cloudPositions[MAX_CLOUD_SPRITES]
+	{
+		{SCREEN_WIDTH,100},
+		{SCREEN_WIDTH + 170,130},
+		{SCREEN_WIDTH + (170 * 2),160}
+	};
+	float m_cloudSpeed = -0.7;
+	
 
 };
 
@@ -142,7 +153,7 @@ int main()
 	Dino dinosaur(dinotexture);
 
 	sf::Texture groundTexture = dinotexture;
-	Ground ground(groundTexture);
+	Scene ground(groundTexture);
 
 	Obstacles obstacles(dinotexture);
 
@@ -236,7 +247,7 @@ void Dino::render(sf::RenderWindow& t_window)
 	}
 }
 
-Ground::Ground(sf::Texture& t_texture) : m_groundTexture(t_texture)
+Scene::Scene(sf::Texture& t_texture) : m_groundTexture(t_texture)
 {
 	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
 	{
@@ -246,39 +257,53 @@ Ground::Ground(sf::Texture& t_texture) : m_groundTexture(t_texture)
 	m_groundSprites[0].setTextureRect(sf::IntRect(0,(textureSize.y / 6) * 4.7, textureSize.x / 2, textureSize.y));
 	m_groundSprites[1].setTextureRect(sf::IntRect(textureSize.x / 2, (textureSize.y / 6) * 4.7, textureSize.x / 2, textureSize.y));
 
+	for (int i = 0; i < MAX_CLOUD_SPRITES; i++)
+	{
+		m_cloudSprites[i].setTexture(t_texture);
+		m_cloudSprites[i].setTextureRect(sf::IntRect(85, 0,48,50));
+	}
 	
 }
 
-Ground::~Ground()
+Scene::~Scene()
 {
 }
 
-void Ground::render(sf::RenderWindow& t_window)
+void Scene::render(sf::RenderWindow& t_window)
 {
 	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
 	{
 		t_window.draw(m_groundSprites[i]);
 	}
+	for (int i = 0; i < MAX_CLOUD_SPRITES; i++)
+	{
+		t_window.draw(m_cloudSprites[i]);
+	}
 }
 
-void Ground::update(sf::Time t_deltaTime)
+void Scene::update(sf::Time t_deltaTime)
 {
 	if (m_groundClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
 	{
 		m_groundClock.restart();
 		for (int i = 0; i < MAX_GROUND_SPRITES; i++)
 		{
-			m_velocities[i].x += speedIncrease;
+			m_groundVelocities[i].x += speedIncrease;
 		}
 	}
 	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
 	{
-		if (m_positions[i].x < 0 - SCREEN_WIDTH)
+		if (m_groundPositions[i].x < 0 - SCREEN_WIDTH)
 		{
-			m_positions[i].x = SCREEN_WIDTH - 7;
+			m_groundPositions[i].x = SCREEN_WIDTH - 7;
 		}
-		m_positions[i].x += m_velocities[i].x;
-		m_groundSprites[i].setPosition(m_positions[i]);
+		m_groundPositions[i].x += m_groundVelocities[i].x;
+		m_groundSprites[i].setPosition(m_groundPositions[i]);
+	}
+	for (int i = 0; i < MAX_CLOUD_SPRITES; i++)
+	{
+		m_cloudPositions[i].x += m_cloudSpeed;
+		m_cloudSprites[i].setPosition(m_cloudPositions[i]);
 	}
 }
 
@@ -304,6 +329,7 @@ void Obstacle::update(double t_deltaTime)
 	if (m_position.x + m_currentFrame.width < 0)
 	{
 		m_position.x = SCREEN_WIDTH;
+		randomiseObstacle();
 	}
 
 	m_position += m_velocity;
@@ -323,6 +349,7 @@ void Obstacle::init(sf::Texture& t_texture)
 void Obstacle::randomiseObstacle()
 {
 	int obstacleType = std::rand() % 2 + 1;
+	obstacleType = 2;
 
 	switch (static_cast<ObstacleType>(obstacleType))
 	{
@@ -348,6 +375,8 @@ void Obstacle::setCactusObstacle()
 	int randNumberOfCacti; //number of cacti together
 	int randStartCactusOffset; //from where in the png do we start the texture rect. max of 4 to ensure 3 cacti together is possible
 
+	
+
 	if (randCactusType == 1) //small Cactus
 	{
 		randNumberOfCacti = std::rand() % 3 + 1;
@@ -356,7 +385,7 @@ void Obstacle::setCactusObstacle()
 	}
 	else if(randCactusType == 2)//big cactus which will have a max of 2 bundles
 	{
-		randNumberOfCacti = std::rand() % 2;
+		randNumberOfCacti = std::rand() % 2 + 1;
 		randStartCactusOffset = std::rand() % 3; 
 		m_currentFrame = (sf::IntRect(333 + (randStartCactusOffset * 25), 0, (randNumberOfCacti * 25), 55));
 	}
@@ -364,6 +393,8 @@ void Obstacle::setCactusObstacle()
 	{
 		m_currentFrame = (sf::IntRect(408, 0, 75, 55));
 	} 
+
+	
 }
 
 void Obstacle::setBirdObstacle()
