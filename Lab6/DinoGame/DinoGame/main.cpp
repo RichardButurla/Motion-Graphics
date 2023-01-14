@@ -19,7 +19,7 @@
 #include <iostream>
 
 static const int SCREEN_WIDTH = 602;
-static const int SCREEN_HEIGHT = 400;
+static const int SCREEN_HEIGHT = 140;
 
 enum class ObstacleType
 {
@@ -49,8 +49,8 @@ private:
 	sf::Texture m_obstacleTexture;
 	sf::IntRect m_currentFrame; 
 
-	sf::Vector2f m_position{300,266 };
-	sf::Vector2f m_velocity{-5,0};
+	sf::Vector2f m_position{300,263 };
+	sf::Vector2f m_velocity{-355,0};
 
 };
 
@@ -93,22 +93,23 @@ private:
 
 	sf::Vector2f m_groundPositions[MAX_GROUND_SPRITES]
 	{
-		{0,SCREEN_HEIGHT - 100},
-		{SCREEN_WIDTH,SCREEN_HEIGHT - 100}
+		{0,SCREEN_HEIGHT - 20},
+		{SCREEN_WIDTH,SCREEN_HEIGHT - 20}
 	};
 	sf::Vector2f m_groundVelocities[MAX_GROUND_SPRITES]
 	{
-		{-5,0},
-		{-5,0}
+		{-355,0},
+		{-355,0}
 	};
 
 	sf::Vector2f m_cloudPositions[MAX_CLOUD_SPRITES]
 	{
-		{SCREEN_WIDTH,100},
-		{SCREEN_WIDTH + 170,130},
-		{SCREEN_WIDTH + (170 * 2),160}
+		{SCREEN_WIDTH,20},
+		{SCREEN_WIDTH + 170,40},
+		{SCREEN_WIDTH + (170 * 2),30},
+		{SCREEN_WIDTH + (170 * 3),60}
 	};
-	float m_cloudSpeed = -0.7;
+	float m_cloudSpeed = -40;
 	
 
 };
@@ -123,9 +124,9 @@ public:
 	void update(sf::Time t_deltaTime);
 	void render(sf::RenderWindow& t_window);
 	
-	void jump() { if (!inAir)m_velocity.y = -10; inAir = true; }
+	void jump() { if (!inAir)m_velocity.y = -11; inAir = true; }
 
-	static constexpr double GRAVITY = 38.2;
+	static constexpr double GRAVITY = 40;
 
 private:
 	sf::Sprite m_dinoSprite;
@@ -133,7 +134,7 @@ private:
 
 	bool inAir{ false };
 
-	sf::Vector2f m_position{100,400};
+	sf::Vector2f m_position{30,400};
 	sf::Vector2f m_velocity;
 
 };
@@ -239,11 +240,11 @@ void Dino::render(sf::RenderWindow& t_window)
 {
 	t_window.draw(m_dinoSprite);
 
-	if (m_position.y > (SCREEN_HEIGHT / 3 ) * 2)
+	if (m_position.y > SCREEN_HEIGHT - 56 )
 	{
 		inAir = false;
 		m_velocity.y = 0;
-		m_position.y = (SCREEN_HEIGHT / 3) * 2;
+		m_position.y = SCREEN_HEIGHT - 56;
 	}
 }
 
@@ -297,12 +298,18 @@ void Scene::update(sf::Time t_deltaTime)
 		{
 			m_groundPositions[i].x = SCREEN_WIDTH - 7;
 		}
-		m_groundPositions[i].x += m_groundVelocities[i].x;
+		m_groundPositions[i].x += m_groundVelocities[i].x * t_deltaTime.asSeconds();
 		m_groundSprites[i].setPosition(m_groundPositions[i]);
 	}
 	for (int i = 0; i < MAX_CLOUD_SPRITES; i++)
 	{
-		m_cloudPositions[i].x += m_cloudSpeed;
+		
+		if (m_cloudPositions[i].x < 0 - 50)
+		{
+			m_cloudPositions[i].x = SCREEN_WIDTH - 7;		
+		}
+		std::cout << "\nPos X for Cloud " << i << " is: " << m_cloudPositions[i].x;
+		m_cloudPositions[i].x += m_cloudSpeed * t_deltaTime.asSeconds();
 		m_cloudSprites[i].setPosition(m_cloudPositions[i]);
 	}
 }
@@ -332,7 +339,7 @@ void Obstacle::update(double t_deltaTime)
 		randomiseObstacle();
 	}
 
-	m_position += m_velocity;
+	m_position.x += m_velocity.x * t_deltaTime;
 	m_obstacleSprite.setPosition(m_position);
 }
 
@@ -382,16 +389,19 @@ void Obstacle::setCactusObstacle()
 		randNumberOfCacti = std::rand() % 3 + 1;
 		randStartCactusOffset = std::rand() % 4;
 		m_currentFrame = (sf::IntRect(225 + (18 * randStartCactusOffset), 0, (18 * randNumberOfCacti), 50));
+		m_position.y = 96;
 	}
 	else if(randCactusType == 2)//big cactus which will have a max of 2 bundles
 	{
 		randNumberOfCacti = std::rand() % 2 + 1;
 		randStartCactusOffset = std::rand() % 3; 
 		m_currentFrame = (sf::IntRect(333 + (randStartCactusOffset * 25), 0, (randNumberOfCacti * 25), 55));
+		m_position.y = 82; 
 	}
 	else //triple cactus
 	{
 		m_currentFrame = (sf::IntRect(408, 0, 75, 55));
+		m_position.y = 82;
 	} 
 
 	
