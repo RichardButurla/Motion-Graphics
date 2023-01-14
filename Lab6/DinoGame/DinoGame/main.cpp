@@ -126,6 +126,8 @@ public:
 	void render(sf::RenderWindow& t_window);
 	
 	void jump() { if (!inAir)m_velocity.y = -11; inAir = true; }
+	void duck() { isDucking = true; }
+	void stand() { isDucking = false; }
 
 	static constexpr double GRAVITY = 40;
 
@@ -134,13 +136,18 @@ private:
 	sf::Texture m_dinoTexture;
 
 	bool inAir{ false };
+	bool isDucking{ false };
 
 	sf::Vector2f m_position{30,400};
 	sf::Vector2f m_velocity;
 
-	sf::Clock m_clock;
-	sf::Time m_frameTime = sf::seconds(0.05);
-	int currentFrame = 0;
+	sf::Clock m_runningClock;
+	sf::Time m_runningFrameTime = sf::seconds(0.05);
+	int m_runningCurrentFrame = 0;
+
+	sf::Clock m_duckingClock;
+	sf::Time m_duckingFrameTime = sf::seconds(0.075);
+	int m_duckingCurrentFrame = 0;
 
 };
 
@@ -188,7 +195,10 @@ int main()
 			//Handle Key Input
 			if (sf::Event::KeyReleased)
 			{
-				
+				if (event.key.code == sf::Keyboard::Down)
+				{
+					dinosaur.stand();
+				}
 			}
 
 			if (sf::Event::KeyPressed)
@@ -197,6 +207,10 @@ int main()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				{
 					dinosaur.jump();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+				{
+					dinosaur.duck();
 				}
 			}
 
@@ -246,20 +260,37 @@ void Dino::update(sf::Time t_deltaTime)
 
 void Dino::updateDinoAnimation()
 {
-	if (m_clock.getElapsedTime() > m_frameTime)
+	if (isDucking)
 	{
-		m_clock.restart();
-		currentFrame++;
-		if (currentFrame == 1) //useless frame for animation
+		if (m_duckingClock.getElapsedTime() > m_duckingFrameTime)
 		{
-			currentFrame++;
+			m_duckingClock.restart();
+			m_duckingCurrentFrame++;
+			if (m_duckingCurrentFrame > 1)
+			{
+				m_duckingCurrentFrame = 0;
+			}
 		}
-		if (currentFrame > 3)
-		{
-			currentFrame = 0;
-		}
+		m_dinoSprite.setTextureRect(sf::IntRect(940 + (m_duckingCurrentFrame * 59), 0, 59, 50));
 	}
-	m_dinoSprite.setTextureRect(sf::IntRect(675 + (currentFrame * 44), 0, 48, 50));
+	else
+	{
+		if (m_runningClock.getElapsedTime() > m_runningFrameTime)
+		{
+			m_runningClock.restart();
+			m_runningCurrentFrame++;
+			if (m_runningCurrentFrame == 1) //useless frame for animation
+			{
+				m_runningCurrentFrame++;
+			}
+			if (m_runningCurrentFrame > 3)
+			{
+				m_runningCurrentFrame = 0;
+			}
+		}
+		m_dinoSprite.setTextureRect(sf::IntRect(675 + (m_runningCurrentFrame * 44), 0, 48, 50));
+	}
+	
 }
 
 void Dino::render(sf::RenderWindow& t_window)
