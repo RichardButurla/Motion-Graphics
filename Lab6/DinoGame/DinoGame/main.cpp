@@ -122,6 +122,7 @@ public:
 	~Dino();
 
 	void update(sf::Time t_deltaTime);
+	void updateDinoAnimation();
 	void render(sf::RenderWindow& t_window);
 	
 	void jump() { if (!inAir)m_velocity.y = -11; inAir = true; }
@@ -136,6 +137,10 @@ private:
 
 	sf::Vector2f m_position{30,400};
 	sf::Vector2f m_velocity;
+
+	sf::Clock m_clock;
+	sf::Time m_frameTime = sf::seconds(0.05);
+	int currentFrame = 0;
 
 };
 
@@ -231,9 +236,30 @@ Dino::~Dino()
 
 void Dino::update(sf::Time t_deltaTime)
 {
+	if(!inAir)
+	updateDinoAnimation();
+
 	m_velocity.y += GRAVITY * t_deltaTime.asSeconds();;
 	m_position += m_velocity;
 	m_dinoSprite.setPosition(m_position);
+}
+
+void Dino::updateDinoAnimation()
+{
+	if (m_clock.getElapsedTime() > m_frameTime)
+	{
+		m_clock.restart();
+		currentFrame++;
+		if (currentFrame == 1) //useless frame for animation
+		{
+			currentFrame++;
+		}
+		if (currentFrame > 3)
+		{
+			currentFrame = 0;
+		}
+	}
+	m_dinoSprite.setTextureRect(sf::IntRect(675 + (currentFrame * 44), 0, 48, 50));
 }
 
 void Dino::render(sf::RenderWindow& t_window)
