@@ -17,6 +17,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 static const int SCREEN_WIDTH = 602;
 static const int SCREEN_HEIGHT = 140;
@@ -157,18 +159,49 @@ int main()
 
 	std::srand(static_cast<unsigned int>(time(nullptr)));
 	sf::Font font;
+	if (!font.loadFromFile("ASSETS/FONTS/PressStart2P-Regular.ttf"))
+	{
+		std::cout << "failed to load font";
+	}
 
-	sf::Texture dinotexture;
-	if (!dinotexture.loadFromFile("ASSETS/IMAGES/dino-spritesheet.png"))
+	sf::Texture spriteSheetTexture;
+	if (!spriteSheetTexture.loadFromFile("ASSETS/IMAGES/dino-spritesheet.png"))
 	{
 		std::cout << "failed to load spritesheet Texture";
 	}
-	Dino dinosaur(dinotexture);
+	Dino dinosaur(spriteSheetTexture);
 
-	sf::Texture groundTexture = dinotexture;
-	Scene ground(groundTexture);
+	Scene ground(spriteSheetTexture);
 
-	Obstacles obstacles(dinotexture);
+	Obstacles obstacles(spriteSheetTexture);
+
+	sf::Sprite gameOverTextSprite;
+	gameOverTextSprite.setTexture(spriteSheetTexture);
+	gameOverTextSprite.setTextureRect(sf::IntRect(483, 13, 193, 30));
+	gameOverTextSprite.setPosition(SCREEN_WIDTH / 2.9, SCREEN_HEIGHT / 4);
+
+	sf::Sprite replayButtonSprite;
+	replayButtonSprite.setTexture(spriteSheetTexture);
+	replayButtonSprite.setTextureRect(sf::IntRect(0, 0, 40, 40));
+	replayButtonSprite.setPosition(SCREEN_WIDTH / 2.13, SCREEN_HEIGHT / 2);
+
+	sf::Color Grey{ 50,50,50 };
+	sf::Text currentScoreText;
+	currentScoreText.setFont(font);
+	currentScoreText.setFillColor(Grey);
+	currentScoreText.setOutlineColor(sf::Color::Black);
+	currentScoreText.setCharacterSize(12U);
+	currentScoreText.setString("00000");
+	currentScoreText.setPosition(SCREEN_WIDTH - currentScoreText.getGlobalBounds().width - 10, 0);
+
+	sf::Clock scoreClock;
+	sf::Time scoreTime = sf::seconds(0.25);
+	float currentScore = 0;
+	float scoreIncrement = 0.016;
+	float currentScoreMultiplier = 1;
+
+	
+	bool gameOver = false;
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -212,20 +245,49 @@ int main()
 				{
 					dinosaur.duck();
 				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+				{
+					gameOver = true;
+				}
 			}
+
+
 
 			//Check collision
 			
 
+			//Update Score
+			if (scoreClock.getElapsedTime() > scoreTime)
+			{
+				scoreClock.restart();
+				currentScoreMultiplier += 0.4;			
+			}
+
+			currentScore += scoreIncrement * currentScoreMultiplier;
+			std::ostringstream scoreString;
+			scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
+			currentScoreText.setString(scoreString.str());
+
 			//Update here
-			dinosaur.update(timePerFrame);
-			ground.update(timePerFrame);
-			obstacles.update(timePerFrame.asSeconds());
+			if (!gameOver)
+			{
+				dinosaur.update(timePerFrame);
+				ground.update(timePerFrame);
+				obstacles.update(timePerFrame.asSeconds());
+			}
+			
 
 			//Draw here
 			dinosaur.render(window);
 			ground.render(window);
 			obstacles.render(window);
+			window.draw(currentScoreText);
+			if (gameOver)
+			{
+				window.draw(gameOverTextSprite);
+				window.draw(replayButtonSprite);
+			}
+			
 
 
 
@@ -365,7 +427,6 @@ void Scene::update(sf::Time t_deltaTime)
 		{
 			m_cloudPositions[i].x = SCREEN_WIDTH - 7;		
 		}
-		std::cout << "\nPos X for Cloud " << i << " is: " << m_cloudPositions[i].x;
 		m_cloudPositions[i].x += m_cloudSpeed * t_deltaTime.asSeconds();
 		m_cloudSprites[i].setPosition(m_cloudPositions[i]);
 	}
