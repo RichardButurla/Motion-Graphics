@@ -44,6 +44,13 @@ public:
 	void setCactusObstacle();
 	void setBirdObstacle();
 
+	void stop() { m_velocity.x = 0; }
+	void release() { m_velocity.x = m_speed; }
+	void sendToBack() { m_position.x = SCREEN_WIDTH + 7; }
+
+	float getXPosition() { return m_position.x; }
+	float getWidth() { return m_currentFrame.width; }
+
 
 private:
 	ObstacleType m_obstacleType;
@@ -52,6 +59,7 @@ private:
 	sf::IntRect m_currentFrame; 
 
 	sf::Vector2f m_position{300,263 };
+	float m_speed = -355;
 	sf::Vector2f m_velocity{-355,0};
 
 };
@@ -65,9 +73,12 @@ public:
 	void update(double t_deltaTime);
 	void render(sf::RenderWindow& t_window);
 
+	void checkObstaclePositions();
+
 private:
-	static const int MAX_OBSTACLES = 1;
+	static const int MAX_OBSTACLES = 2;
 	Obstacle m_obstacles[MAX_OBSTACLES];
+	bool chanceOfSecondObject = false;
 
  };
 
@@ -260,7 +271,7 @@ int main()
 			if (scoreClock.getElapsedTime() > scoreTime)
 			{
 				scoreClock.restart();
-				currentScoreMultiplier += 0.4;			
+				currentScoreMultiplier += 0.1;			
 			}
 
 			currentScore += scoreIncrement * currentScoreMultiplier;
@@ -287,9 +298,6 @@ int main()
 				window.draw(gameOverTextSprite);
 				window.draw(replayButtonSprite);
 			}
-			
-
-
 
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
@@ -432,8 +440,6 @@ void Scene::update(sf::Time t_deltaTime)
 	}
 }
 
-
-
 Obstacle::Obstacle()
 {
 
@@ -451,12 +457,6 @@ void Obstacle::render(sf::RenderWindow& t_window)
 
 void Obstacle::update(double t_deltaTime)
 {
-	if (m_position.x + m_currentFrame.width < 0)
-	{
-		m_position.x = SCREEN_WIDTH;
-		randomiseObstacle();
-	}
-
 	m_position.x += m_velocity.x * t_deltaTime;
 	m_obstacleSprite.setPosition(m_position);
 }
@@ -538,7 +538,10 @@ Obstacles::Obstacles(sf::Texture& t_texture)
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
 		m_obstacles[i].init(t_texture);
+		m_obstacles[i].randomiseObstacle();
 	}
+	m_obstacles[1].stop();
+	m_obstacles[1].sendToBack();
 }
 
 Obstacles::~Obstacles()
@@ -547,9 +550,45 @@ Obstacles::~Obstacles()
 
 void Obstacles::update(double t_deltaTime)
 {
+	checkObstaclePositions();
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
 		m_obstacles[i].update(t_deltaTime);
+	}
+}
+
+void Obstacles::checkObstaclePositions()
+{
+	for (int i = 0; i < MAX_OBSTACLES; i++)
+	{
+		if (m_obstacles[i].getXPosition() + m_obstacles[i].getWidth() < 0)
+		{
+			m_obstacles[i].sendToBack();
+			m_obstacles[i].randomiseObstacle();
+			if (i == 0)
+			{
+				chanceOfSecondObject = true;
+			}
+			if (i == 1) //obstacle 1 is the second obstacle that we somtimes thow in. Obstacle 0 is the main one.
+			{
+				m_obstacles[i].stop();
+			}
+		}
+	}
+	//if both obstacles are not on screen and obstacle 0 is past halfway point
+	if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 && m_obstacles[1].getXPosition() >= SCREEN_WIDTH)
+	{
+		if (chanceOfSecondObject)
+		{
+			//randomise chance of extra obstacle
+			int randNum = std::rand() % 3 + 1;
+			if (randNum == 3)
+			{
+				m_obstacles[1].release();
+			}
+			chanceOfSecondObject = false;
+		}
+		
 	}
 }
 

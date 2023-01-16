@@ -1,26 +1,22 @@
 ﻿  main.cpp
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(94,22): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(147,30): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(151,30): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(181,70): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(186,71): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(200,30): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(263,34): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(318,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(52,42): warning C4244: 'return': conversion from 'T' to 'float', possible loss of data
           with
-          [
-              T=float
-          ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(377,107): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-          and
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(377,91): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(105,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(158,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(162,30): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(192,70): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(197,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(211,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(274,34): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(326,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(385,107): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
@@ -29,12 +25,7 @@ C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\ma
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(377,70): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(378,124): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(385,91): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
@@ -43,7 +34,12 @@ C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\ma
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(378,108): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(385,70): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(386,124): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
@@ -52,12 +48,21 @@ C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\ma
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(378,87): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(386,108): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=int
+          ]
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(386,87): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(378,62): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MotionGraphics\Motion-Graphics\Lab6\DinoGame\DinoGame\main.cpp(386,62): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=float
