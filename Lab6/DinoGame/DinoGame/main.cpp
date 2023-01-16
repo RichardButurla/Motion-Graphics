@@ -318,9 +318,11 @@ int main()
 			//Update Clocks
 			if (scoreClock.getElapsedTime() > scoreTime)
 			{
-				scoreClock.restart();
-				currentScore += scoreIncrement * currentScoreMultiplier;
-				
+				if (!gameOver)
+				{
+					scoreClock.restart();
+					currentScore += scoreIncrement * currentScoreMultiplier;
+				}				
 			}
 			if (speedClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
 			{
