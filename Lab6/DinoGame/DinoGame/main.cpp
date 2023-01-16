@@ -216,9 +216,10 @@ int main()
 	currentScoreText.setPosition(SCREEN_WIDTH - currentScoreText.getGlobalBounds().width - 10, 0);
 
 	sf::Clock scoreClock;
-	sf::Time scoreTime = sf::seconds(0.25);
+	sf::Time scoreTime = sf::seconds(0.05);
 	float currentScore = 0;
-	float scoreIncrement = 0.016;
+	int scoreIncreaseCap = 100;
+	float scoreIncrement = 0.45;
 	float currentScoreMultiplier = 1;
 
 	sf::Clock speedClock;
@@ -250,7 +251,7 @@ int main()
 		{
 			window.clear(sf::Color::White);
 			//Handle Mouse Input
-			if (sf::Event::MouseButtonPressed)
+			if (sf::Event::MouseButtonReleased)
 			{
 				if (gameOver)
 				{
@@ -271,7 +272,7 @@ int main()
 						//reset variables
 						SPEED_INCREASE = -0.1;
 						currentScore = 0;
-						scoreIncrement = 0.016;
+						scoreIncrement = 0.5;
 						currentScoreMultiplier = 1;
 
 						//reset Timers
@@ -319,7 +320,8 @@ int main()
 			if (scoreClock.getElapsedTime() > scoreTime)
 			{
 				scoreClock.restart();
-				currentScoreMultiplier += 0.1;			
+				currentScore += scoreIncrement * currentScoreMultiplier;
+				
 			}
 			if (speedClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
 			{
@@ -327,7 +329,11 @@ int main()
 				//SPEED_INCREASE -= 0.1;
 			}
 
-			currentScore += scoreIncrement * currentScoreMultiplier;
+			if (static_cast<int>(currentScore) % scoreIncreaseCap == 0)
+			{
+				currentScoreMultiplier += 0.1;
+				scoreIncreaseCap += 100;
+			}
 			std::ostringstream scoreString;
 			scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
 			currentScoreText.setString(scoreString.str());
@@ -565,6 +571,7 @@ void Obstacle::init(sf::Texture& t_texture)
 void Obstacle::randomiseObstacle()
 {
 	int randNum = std::rand() % 10 + 1;
+	randNum = 1;
 
 	if (randNum == 1 || randNum <= 7)
 	{
@@ -576,6 +583,7 @@ void Obstacle::randomiseObstacle()
 		m_obstacleType = ObstacleType::Bird;
 		setBirdObstacle();
 	}
+
 }
 
 void Obstacle::setCactusObstacle()
@@ -585,6 +593,7 @@ void Obstacle::setCactusObstacle()
 	int randNumberOfCacti; //number of cacti together
 	int randStartCactusOffset; //from where in the png do we start the texture rect. max of 4 to ensure 3 cacti together is possible
 
+	randCactusType = 10;
 	
 	//60 percent chance
 	if (randCactusType >= 1 && randCactusType <= 6) //small Cactus
