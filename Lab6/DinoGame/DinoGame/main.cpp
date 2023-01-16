@@ -249,6 +249,41 @@ int main()
 		if (timeSinceLastUpdate > timePerFrame)
 		{
 			window.clear(sf::Color::White);
+			//Handle Mouse Input
+			if (sf::Event::MouseButtonPressed)
+			{
+				if (gameOver)
+				{
+					sf::Vector2f buttonPos = replayButtonSprite.getPosition();
+					sf::FloatRect buttonRect = replayButtonSprite.getGlobalBounds();
+					sf::Vector2i mousePos;
+					mousePos.x = event.mouseButton.x;
+					mousePos.y = event.mouseButton.y;
+
+					if (mousePos.x > buttonPos.x && mousePos.x < buttonPos.x + buttonRect.width
+						&& mousePos.y > buttonPos.y && mousePos.y < buttonPos.y + buttonRect.height)
+					{
+						//Create fresh Objects
+						dinosaur = Dino(spriteSheetTexture);
+						scene = Scene(spriteSheetTexture);
+						obstacles =Obstacles(spriteSheetTexture);
+
+						//reset variables
+						SPEED_INCREASE = -0.1;
+						currentScore = 0;
+						scoreIncrement = 0.016;
+						currentScoreMultiplier = 1;
+
+						//reset Timers
+						speedClock.restart();
+						scoreClock.restart();
+
+						gameOver = false;
+					}
+				}
+				
+			}
+
 			//Handle Key Input
 			if (sf::Event::KeyReleased)
 			{
