@@ -92,6 +92,9 @@ private:
 	Obstacle m_obstacles[MAX_OBSTACLES];
 	bool chanceOfSecondObject = false;
 
+	sf::Clock m_clock;
+	sf::Time secondObstacleSpawnTime = sf::seconds(5);
+
  };
 
 
@@ -310,10 +313,6 @@ int main()
 					gameOver = true;
 				}
 			}
-
-
-
-			//Check collision
 			
 
 			//Update Clocks
@@ -355,9 +354,9 @@ int main()
 			
 
 			//Draw here
-			dinosaur.render(window);
 			scene.render(window);
 			obstacles.render(window);
+			dinosaur.render(window);
 			window.draw(currentScoreText);
 			if (gameOver)
 			{
@@ -571,9 +570,8 @@ void Obstacle::init(sf::Texture& t_texture)
 void Obstacle::randomiseObstacle()
 {
 	int randNum = std::rand() % 10 + 1;
-	randNum = 1;
 
-	if (randNum == 1 || randNum <= 7)
+	if (randNum == 1 || randNum <= 8)
 	{
 		m_obstacleType = ObstacleType::Cactus;
 		setCactusObstacle();
@@ -592,8 +590,6 @@ void Obstacle::setCactusObstacle()
 	int randCactusType = std::rand() % 10 + 1; 
 	int randNumberOfCacti; //number of cacti together
 	int randStartCactusOffset; //from where in the png do we start the texture rect. max of 4 to ensure 3 cacti together is possible
-
-	randCactusType = 10;
 	
 	//60 percent chance
 	if (randCactusType >= 1 && randCactusType <= 6) //small Cactus
@@ -667,36 +663,34 @@ void Obstacles::update(double t_deltaTime)
 void Obstacles::checkObstaclePositions()
 {
 	int xOffset = 30;
-	
-	if (m_obstacles[0].getXPosition() + xOffset < 0)
+
+	if (m_clock.getElapsedTime() > secondObstacleSpawnTime)
 	{
-		m_obstacles[0].randomiseObstacle();
-		m_obstacles[0].sendToBack();
 		chanceOfSecondObject = true;
 	}
-	if (m_obstacles[1].getXPosition() + xOffset < 0)
+	
+	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
-		m_obstacles[1].randomiseObstacle();
-		m_obstacles[1].sendToBack();
-		m_obstacles[1].stop();
+		if (m_obstacles[i].getXPosition() + xOffset < 0)
+		{
+			m_obstacles[i].randomiseObstacle();
+			m_obstacles[i].sendToBack();
+			if (i == 1)
+			{
+				m_obstacles[i].stop();
+			}
+		}
 	}
 
-	//if both obstacles are not on screen and obstacle 0 is past halfway point
-	//if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 && m_obstacles[1].getXPosition() >= SCREEN_WIDTH)
-	//{
-	//	if (chanceOfSecondObject)
-	//	{
-	//		//randomise chance of extra obstacle
-	//		int randNum = std::rand() % 3 + 1;
-	//		if (randNum == 3)
-	//		{
-	//			m_obstacles[1].release();
-	//			chanceOfSecondObject = false;
-	//		}
-	//		
-	//	}
-	//	
-	//}
+	if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 - xOffset && chanceOfSecondObject == true)
+	{
+		m_obstacles[1].release();
+		chanceOfSecondObject = false;
+		m_clock.restart();
+	}
+	
+
+	
 }
 
 bool Obstacles::checkCollision(const sf::FloatRect& t_other)
