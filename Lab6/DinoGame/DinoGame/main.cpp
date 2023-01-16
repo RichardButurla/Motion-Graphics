@@ -22,6 +22,8 @@
 
 static const int SCREEN_WIDTH = 602;
 static const int SCREEN_HEIGHT = 140;
+static double SPEED_INCREASE = -0.1;
+bool DEBUG_MODE = false;
 
 enum class ObstacleType
 {
@@ -37,7 +39,8 @@ public:
 	~Obstacle();
 
 	void render(sf::RenderWindow& t_window);
-	void update(double t_deltaTime);
+	void update(double t_deltaTime); 
+	void updateBirdAnimation();
 	void init(sf::Texture& t_texture);
 
 	void randomiseObstacle();
@@ -46,10 +49,11 @@ public:
 
 	void stop() { m_velocity.x = 0; }
 	void release() { m_velocity.x = m_speed; }
-	void sendToBack() { m_position.x = SCREEN_WIDTH + 7; }
+	void sendToBack() { m_position.x = SCREEN_WIDTH + 7 + extraDistance; }
+	void increaseObstacleDistance() { extraDistance -= SPEED_INCREASE; }
 
 	float getXPosition() { return m_position.x; }
-	float getWidth() { return m_currentFrame.width; }
+	sf::FloatRect getBoundingBox() { return m_obstacleSprite.getGlobalBounds(); }
 
 
 private:
@@ -58,9 +62,16 @@ private:
 	sf::Texture m_obstacleTexture;
 	sf::IntRect m_currentFrame; 
 
-	sf::Vector2f m_position{300,263 };
+	sf::RectangleShape m_hitbox;
+
+	sf::Vector2f m_position{SCREEN_WIDTH,193 };
+	float extraDistance = 0; //when speed increases, distance between spawning obsatcles needs to increase also.
 	float m_speed = -355;
 	sf::Vector2f m_velocity{-355,0};
+
+	sf::Clock birdAnimationClock;
+	sf::Time birdFrameTime = sf::seconds(0.3);
+	int m_currentBirdFrame = 0;
 
 };
 
@@ -74,6 +85,7 @@ public:
 	void render(sf::RenderWindow& t_window);
 
 	void checkObstaclePositions();
+	bool checkCollision(const sf::FloatRect& t_other);
 
 private:
 	static const int MAX_OBSTACLES = 2;
@@ -98,11 +110,6 @@ private:
 	sf::Sprite m_groundSprites[MAX_GROUND_SPRITES];
 	sf::Sprite m_cloudSprites[MAX_CLOUD_SPRITES];
 	sf::Texture m_groundTexture;
-
-	sf::Clock m_groundClock;
-	sf::Time m_timeSinceLastSpeedIncrease = sf::seconds(1);
-
-	float speedIncrease = -0.1;
 
 	sf::Vector2f m_groundPositions[MAX_GROUND_SPRITES]
 	{
@@ -142,11 +149,14 @@ public:
 	void duck() { isDucking = true; }
 	void stand() { isDucking = false; }
 
+	const sf::FloatRect getBoundingBox() const { return m_dinoSprite.getGlobalBounds(); }
+
 	static constexpr double GRAVITY = 40;
 
 private:
 	sf::Sprite m_dinoSprite;
 	sf::Texture m_dinoTexture;
+	sf::RectangleShape hitBox;
 
 	bool inAir{ false };
 	bool isDucking{ false };
@@ -182,7 +192,7 @@ int main()
 	}
 	Dino dinosaur(spriteSheetTexture);
 
-	Scene ground(spriteSheetTexture);
+	Scene scene(spriteSheetTexture);
 
 	Obstacles obstacles(spriteSheetTexture);
 
@@ -210,6 +220,9 @@ int main()
 	float currentScore = 0;
 	float scoreIncrement = 0.016;
 	float currentScoreMultiplier = 1;
+
+	sf::Clock speedClock;
+	sf::Time m_timeSinceLastSpeedIncrease = sf::seconds(1);
 
 	
 	bool gameOver = false;
@@ -267,11 +280,16 @@ int main()
 			//Check collision
 			
 
-			//Update Score
+			//Update Clocks
 			if (scoreClock.getElapsedTime() > scoreTime)
 			{
 				scoreClock.restart();
 				currentScoreMultiplier += 0.1;			
+			}
+			if (speedClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
+			{
+				speedClock.restart();
+				//SPEED_INCREASE -= 0.1;
 			}
 
 			currentScore += scoreIncrement * currentScoreMultiplier;
@@ -279,18 +297,25 @@ int main()
 			scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
 			currentScoreText.setString(scoreString.str());
 
+			//Check Collisions
+			if (obstacles.checkCollision(dinosaur.getBoundingBox()))
+			{
+				gameOver = true;
+			}
+			
+
 			//Update here
 			if (!gameOver)
 			{
 				dinosaur.update(timePerFrame);
-				ground.update(timePerFrame);
+				scene.update(timePerFrame);
 				obstacles.update(timePerFrame.asSeconds());
 			}
 			
 
 			//Draw here
 			dinosaur.render(window);
-			ground.render(window);
+			scene.render(window);
 			obstacles.render(window);
 			window.draw(currentScoreText);
 			if (gameOver)
@@ -341,7 +366,8 @@ void Dino::updateDinoAnimation()
 				m_duckingCurrentFrame = 0;
 			}
 		}
-		m_dinoSprite.setTextureRect(sf::IntRect(940 + (m_duckingCurrentFrame * 59), 0, 59, 50));
+		m_dinoSprite.setTextureRect(sf::IntRect(940 + (m_duckingCurrentFrame * 59), 20, 59, 30));
+		m_position.y += 20;
 	}
 	else
 	{
@@ -365,6 +391,16 @@ void Dino::updateDinoAnimation()
 
 void Dino::render(sf::RenderWindow& t_window)
 {
+	if (DEBUG_MODE)
+	{
+		hitBox.setFillColor(sf::Color::White);
+		hitBox.setOutlineColor(sf::Color::Red);
+		hitBox.setOutlineThickness(3);
+		hitBox.setSize({ m_dinoSprite.getGlobalBounds().width,m_dinoSprite.getGlobalBounds().height });
+		hitBox.setPosition(m_position);
+		t_window.draw(hitBox);
+	}
+
 	t_window.draw(m_dinoSprite);
 
 	if (m_position.y > SCREEN_HEIGHT - 56 )
@@ -411,21 +447,13 @@ void Scene::render(sf::RenderWindow& t_window)
 
 void Scene::update(sf::Time t_deltaTime)
 {
-	if (m_groundClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
-	{
-		m_groundClock.restart();
-		for (int i = 0; i < MAX_GROUND_SPRITES; i++)
-		{
-			m_groundVelocities[i].x += speedIncrease;
-		}
-	}
 	for (int i = 0; i < MAX_GROUND_SPRITES; i++)
 	{
 		if (m_groundPositions[i].x < 0 - SCREEN_WIDTH)
 		{
 			m_groundPositions[i].x = SCREEN_WIDTH - 7;
 		}
-		m_groundPositions[i].x += m_groundVelocities[i].x * t_deltaTime.asSeconds();
+		m_groundPositions[i].x += (m_groundVelocities[i].x + SPEED_INCREASE) * t_deltaTime.asSeconds();
 		m_groundSprites[i].setPosition(m_groundPositions[i]);
 	}
 	for (int i = 0; i < MAX_CLOUD_SPRITES; i++)
@@ -451,14 +479,42 @@ Obstacle::~Obstacle()
 
 void Obstacle::render(sf::RenderWindow& t_window)
 {
+	if (DEBUG_MODE)
+	{
+		m_hitbox.setFillColor(sf::Color::White);
+		m_hitbox.setOutlineColor(sf::Color::Red);
+		m_hitbox.setOutlineThickness(3);
+		m_hitbox.setSize({ m_obstacleSprite.getGlobalBounds().width,m_obstacleSprite.getGlobalBounds().height });
+		m_hitbox.setPosition(m_position);
+		t_window.draw(m_hitbox);
+	}
+
 	m_obstacleSprite.setTextureRect(m_currentFrame);
 	t_window.draw(m_obstacleSprite);
 }
 
 void Obstacle::update(double t_deltaTime)
 {
-	m_position.x += m_velocity.x * t_deltaTime;
+	if (m_obstacleType == ObstacleType::Bird)
+	{
+		updateBirdAnimation();
+	}
+	m_position.x += (m_velocity.x + SPEED_INCREASE) * t_deltaTime;
 	m_obstacleSprite.setPosition(m_position);
+}
+
+void Obstacle::updateBirdAnimation()
+{
+	if (birdAnimationClock.getElapsedTime() > birdFrameTime )
+	{
+		birdAnimationClock.restart();
+		m_currentBirdFrame++;
+	}
+	if (m_currentBirdFrame > 1)
+	{
+		m_currentBirdFrame = 0;
+	}
+	m_currentFrame = sf::IntRect(132 + (m_currentBirdFrame * 48), 10, 48, 30);
 }
 
 void Obstacle::init(sf::Texture& t_texture)
@@ -473,49 +529,45 @@ void Obstacle::init(sf::Texture& t_texture)
 
 void Obstacle::randomiseObstacle()
 {
-	int obstacleType = std::rand() % 2 + 1;
-	obstacleType = 2;
+	int randNum = std::rand() % 10 + 1;
 
-	switch (static_cast<ObstacleType>(obstacleType))
+	if (randNum == 1 || randNum <= 7)
 	{
-	case ObstacleType::None:
-			break;
-
-	case ObstacleType::Cactus:
+		m_obstacleType = ObstacleType::Cactus;
 		setCactusObstacle();
-		break;
-
-	case ObstacleType::Bird:
-		setBirdObstacle();
-		break;
-	default:
-		break;
 	}
-	
+	else
+	{
+		m_obstacleType = ObstacleType::Bird;
+		setBirdObstacle();
+	}
 }
 
 void Obstacle::setCactusObstacle()
 {
-	int randCactusType = std::rand() % 3 + 1; //this will deicde wether we use the big or small cactus parts of the texture
+	//this will deicde wether we use the big or small cactus parts of the texture and has a preference to the middle
+	int randCactusType = std::rand() % 10 + 1; 
 	int randNumberOfCacti; //number of cacti together
 	int randStartCactusOffset; //from where in the png do we start the texture rect. max of 4 to ensure 3 cacti together is possible
 
 	
-
-	if (randCactusType == 1) //small Cactus
+	//60 percent chance
+	if (randCactusType >= 1 && randCactusType <= 6) //small Cactus
 	{
 		randNumberOfCacti = std::rand() % 3 + 1;
 		randStartCactusOffset = std::rand() % 4;
 		m_currentFrame = (sf::IntRect(225 + (18 * randStartCactusOffset), 0, (18 * randNumberOfCacti), 50));
 		m_position.y = 96;
 	}
-	else if(randCactusType == 2)//big cactus which will have a max of 2 bundles
+	//20 percent
+	else if(randCactusType >= 7 && randCactusType <= 9)//big cactus which will have a max of 2 bundles
 	{
 		randNumberOfCacti = std::rand() % 2 + 1;
 		randStartCactusOffset = std::rand() % 3; 
 		m_currentFrame = (sf::IntRect(333 + (randStartCactusOffset * 25), 0, (randNumberOfCacti * 25), 55));
 		m_position.y = 82; 
 	}
+	//10 percent
 	else //triple cactus
 	{
 		m_currentFrame = (sf::IntRect(408, 0, 75, 55));
@@ -527,7 +579,18 @@ void Obstacle::setCactusObstacle()
 
 void Obstacle::setBirdObstacle()
 {
-	m_currentFrame = sf::IntRect(180, 0, 48, 50);
+	int randPossiblePos = std::rand() % 2 + 1;
+
+	if (randPossiblePos == 1)
+	{
+		m_position.y = 86;
+	}
+	else
+	{
+		m_position.y = 70;
+	}
+
+	m_currentFrame = sf::IntRect(132, 0, 48, 50);
 }
 
 /////////////////////////////////
@@ -559,37 +622,51 @@ void Obstacles::update(double t_deltaTime)
 
 void Obstacles::checkObstaclePositions()
 {
+	int xOffset = 30;
+	
+	if (m_obstacles[0].getXPosition() + xOffset < 0)
+	{
+		m_obstacles[0].randomiseObstacle();
+		m_obstacles[0].sendToBack();
+		chanceOfSecondObject = true;
+	}
+	if (m_obstacles[1].getXPosition() + xOffset < 0)
+	{
+		m_obstacles[1].randomiseObstacle();
+		m_obstacles[1].sendToBack();
+		m_obstacles[1].stop();
+	}
+
+	//if both obstacles are not on screen and obstacle 0 is past halfway point
+	//if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 && m_obstacles[1].getXPosition() >= SCREEN_WIDTH)
+	//{
+	//	if (chanceOfSecondObject)
+	//	{
+	//		//randomise chance of extra obstacle
+	//		int randNum = std::rand() % 3 + 1;
+	//		if (randNum == 3)
+	//		{
+	//			m_obstacles[1].release();
+	//			chanceOfSecondObject = false;
+	//		}
+	//		
+	//	}
+	//	
+	//}
+}
+
+bool Obstacles::checkCollision(const sf::FloatRect& t_other)
+{
+	sf::FloatRect newBox = t_other;
+	newBox.width -= 20;
+	newBox.height -= 5;
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
-		if (m_obstacles[i].getXPosition() + m_obstacles[i].getWidth() < 0)
-		{
-			m_obstacles[i].sendToBack();
-			m_obstacles[i].randomiseObstacle();
-			if (i == 0)
-			{
-				chanceOfSecondObject = true;
-			}
-			if (i == 1) //obstacle 1 is the second obstacle that we somtimes thow in. Obstacle 0 is the main one.
-			{
-				m_obstacles[i].stop();
-			}
+		if (newBox.intersects(m_obstacles[i].getBoundingBox())) {
+			return true;
 		}
 	}
-	//if both obstacles are not on screen and obstacle 0 is past halfway point
-	if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 && m_obstacles[1].getXPosition() >= SCREEN_WIDTH)
-	{
-		if (chanceOfSecondObject)
-		{
-			//randomise chance of extra obstacle
-			int randNum = std::rand() % 3 + 1;
-			if (randNum == 3)
-			{
-				m_obstacles[1].release();
-			}
-			chanceOfSecondObject = false;
-		}
-		
-	}
+	return false;
 }
 
 void Obstacles::render(sf::RenderWindow& t_window)
