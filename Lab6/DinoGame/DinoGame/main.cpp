@@ -218,9 +218,13 @@ int main()
 	currentScoreText.setString("00000");
 	currentScoreText.setPosition(SCREEN_WIDTH - currentScoreText.getGlobalBounds().width - 10, 0);
 
+	sf::Clock scoreAnimationDurationClock;
+	sf::Clock scoreAnimationClock;
+	bool playingScoreAnimation = false;
+
 	sf::Clock scoreClock;
 	sf::Time scoreTime = sf::seconds(0.05);
-	float currentScore = 0;
+	float currentScore = 70;
 	int scoreIncreaseCap = 100;
 	float scoreIncrement = 0.45;
 	float currentScoreMultiplier = 1;
@@ -320,24 +324,65 @@ int main()
 			{
 				if (!gameOver)
 				{
+					if (static_cast<int>(currentScore) / scoreIncreaseCap == 1)
+					{
+						playingScoreAnimation = true;
+						scoreAnimationDurationClock.restart();
+						scoreAnimationClock.restart();
+						currentScoreMultiplier += 0.1;
+						scoreIncreaseCap += 100;
+					}
 					scoreClock.restart();
 					currentScore += scoreIncrement * currentScoreMultiplier;
 				}				
 			}
+
+
 			if (speedClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
 			{
 				speedClock.restart();
 				//SPEED_INCREASE -= 0.1;
 			}
-
-			if (static_cast<int>(currentScore) % scoreIncreaseCap == 0)
+			std::cout << "animation clock: " << scoreAnimationClock.getElapsedTime().asSeconds() << "\n";
+			if (playingScoreAnimation)
 			{
-				currentScoreMultiplier += 0.1;
-				scoreIncreaseCap += 100;
+				if (scoreAnimationDurationClock.getElapsedTime() < sf::seconds(3))
+				{
+					if (scoreAnimationClock.getElapsedTime() < sf::seconds(0.25))
+					{				
+						currentScoreText.setFillColor(Grey);
+						currentScoreText.setOutlineColor(sf::Color::Black);
+					}
+					if (scoreAnimationClock.getElapsedTime() > sf::seconds(0.5))
+					{
+						
+						currentScoreText.setFillColor(sf::Color::White);
+ 						currentScoreText.setOutlineColor(sf::Color::White);
+						
+					}
+					if (scoreAnimationClock.getElapsedTime() > sf::seconds(1))
+					{
+						scoreAnimationClock.restart();
+					}
+				}
+				else
+				{
+					playingScoreAnimation = false;
+				}
+
 			}
-			std::ostringstream scoreString;
-			scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
-			currentScoreText.setString(scoreString.str());
+			
+			
+
+			if (!playingScoreAnimation)
+			{
+				currentScoreText.setFillColor(Grey);
+				currentScoreText.setOutlineColor(sf::Color::Black);
+				std::ostringstream scoreString;
+				scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
+				currentScoreText.setString(scoreString.str());
+			}
+			
 
 			//Check Collisions
 			if (obstacles.checkCollision(dinosaur.getBoundingBox()))
@@ -684,12 +729,12 @@ void Obstacles::checkObstaclePositions()
 		}
 	}
 
-	if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 - xOffset && chanceOfSecondObject == true)
+	/*if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 - xOffset && chanceOfSecondObject == true)
 	{
 		m_obstacles[1].release();
 		chanceOfSecondObject = false;
 		m_clock.restart();
-	}
+	}*/
 	
 
 	
