@@ -224,16 +224,18 @@ int main()
 
 	sf::Clock scoreClock;
 	sf::Time scoreTime = sf::seconds(0.05);
-	float currentScore = 70;
+	float currentScore = 0;
 	int scoreIncreaseCap = 100;
 	float scoreIncrement = 0.45;
 	float currentScoreMultiplier = 1;
+	int highScore = 0;
 
 	sf::Clock speedClock;
 	sf::Time m_timeSinceLastSpeedIncrease = sf::seconds(1);
 
 	
 	bool gameOver = false;
+	bool replayedAtLeastOnce = false;
 
 	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
@@ -278,6 +280,7 @@ int main()
 
 						//reset variables
 						SPEED_INCREASE = -0.1;
+						highScore = currentScore;
 						currentScore = 0;
 						scoreIncrement = 0.5;
 						currentScoreMultiplier = 1;
@@ -287,6 +290,7 @@ int main()
 						scoreClock.restart();
 
 						gameOver = false;
+						replayedAtLeastOnce = true;
 					}
 				}
 				
@@ -343,7 +347,6 @@ int main()
 				speedClock.restart();
 				//SPEED_INCREASE -= 0.1;
 			}
-			std::cout << "animation clock: " << scoreAnimationClock.getElapsedTime().asSeconds() << "\n";
 			if (playingScoreAnimation)
 			{
 				if (scoreAnimationDurationClock.getElapsedTime() < sf::seconds(3))
@@ -376,11 +379,22 @@ int main()
 
 			if (!playingScoreAnimation)
 			{
+				
 				currentScoreText.setFillColor(Grey);
 				currentScoreText.setOutlineColor(sf::Color::Black);
 				std::ostringstream scoreString;
-				scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
-				currentScoreText.setString(scoreString.str());
+				if (replayedAtLeastOnce)
+				{
+					scoreString << "HI: " << std::setw(5) << std::setfill('0') << static_cast<int>(highScore) << " " <<  std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
+					currentScoreText.setString(scoreString.str());
+					currentScoreText.setPosition(SCREEN_WIDTH - currentScoreText.getGlobalBounds().width - 10, 0);
+				}
+				else
+				{
+					scoreString << std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
+					currentScoreText.setString(scoreString.str());
+				}
+				
 			}
 			
 
