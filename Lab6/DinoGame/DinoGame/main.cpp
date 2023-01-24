@@ -218,6 +218,14 @@ int main()
 	currentScoreText.setString("00000");
 	currentScoreText.setPosition(SCREEN_WIDTH - currentScoreText.getGlobalBounds().width - 10, 0);
 
+	sf::Text highScoreText;
+	highScoreText.setFont(font);
+	highScoreText.setFillColor(sf::Color{50,50,50,150});
+	highScoreText.setOutlineColor(sf::Color::Black);
+	highScoreText.setCharacterSize(12U);
+	highScoreText.setString("HI: ");
+	highScoreText.setPosition(SCREEN_WIDTH - highScoreText.getGlobalBounds().width - 10, 0);
+
 	sf::Clock scoreAnimationDurationClock;
 	sf::Clock scoreAnimationClock;
 	bool playingScoreAnimation = false;
@@ -383,11 +391,15 @@ int main()
 				currentScoreText.setFillColor(Grey);
 				currentScoreText.setOutlineColor(sf::Color::Black);
 				std::ostringstream scoreString;
+				std::ostringstream highScoreString;
 				if (replayedAtLeastOnce)
 				{
-					scoreString << "HI: " << std::setw(5) << std::setfill('0') << static_cast<int>(highScore) << " " <<  std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
+					highScoreString << "HI: " << std::setw(5) << std::setfill('0') << static_cast<int>(highScore) << " ";
+					scoreString  <<  std::setw(5) << std::setfill('0') << static_cast<int>(currentScore);
 					currentScoreText.setString(scoreString.str());
+					highScoreText.setString(highScoreString.str());
 					currentScoreText.setPosition(SCREEN_WIDTH - currentScoreText.getGlobalBounds().width - 10, 0);
+					highScoreText.setPosition(SCREEN_WIDTH - highScoreText.getGlobalBounds().width - currentScoreText.getGlobalBounds().width - 10, 0);
 				}
 				else
 				{
@@ -419,6 +431,11 @@ int main()
 			obstacles.render(window);
 			dinosaur.render(window);
 			window.draw(currentScoreText);
+			if (replayedAtLeastOnce)
+			{
+				window.draw(highScoreText);
+			}
+			
 			if (gameOver)
 			{
 				window.draw(gameOverTextSprite);
