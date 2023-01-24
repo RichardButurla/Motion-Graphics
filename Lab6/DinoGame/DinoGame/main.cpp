@@ -22,7 +22,7 @@
 
 static const int SCREEN_WIDTH = 602;
 static const int SCREEN_HEIGHT = 140;
-static double SPEED_INCREASE = -0.1;
+static double SPEED_INCREASE = -1;
 bool DEBUG_MODE = false;
 
 enum class ObstacleType
@@ -289,7 +289,7 @@ int main()
 						obstacles =Obstacles(spriteSheetTexture);
 
 						//reset variables
-						SPEED_INCREASE = -0.1;
+						SPEED_INCREASE = -1;
 						highScore = currentScore;
 						currentScore = 0;
 						scoreIncrement = 0.5;
@@ -355,7 +355,7 @@ int main()
 			if (speedClock.getElapsedTime() > m_timeSinceLastSpeedIncrease)
 			{
 				speedClock.restart();
-				//SPEED_INCREASE -= 0.1;
+				SPEED_INCREASE -= 1;
 			}
 			if (playingScoreAnimation)
 			{
@@ -670,7 +670,7 @@ void Obstacle::setCactusObstacle()
 	int randCactusType = std::rand() % 10 + 1; 
 	int randNumberOfCacti; //number of cacti together
 	int randStartCactusOffset; //from where in the png do we start the texture rect. max of 4 to ensure 3 cacti together is possible
-	
+
 	//60 percent chance
 	if (randCactusType >= 1 && randCactusType <= 6) //small Cactus
 	{
@@ -744,20 +744,13 @@ void Obstacles::update(double t_deltaTime)
 
 void Obstacles::checkObstaclePositions()
 {
-	int xOffset = 30;
+	int randOffset = std::rand() % 40 + 20;
 
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
 		if (m_obstacles[i].getXPosition() + m_obstacles[i].getBoundingBox().width < 0)
 		{		
-			if (i == 0)
-			{
-				m_obstacles[i].setPosition({ SCREEN_WIDTH + 7,90 });
-			}
-			if (i == 1)
-			{
-				m_obstacles[i].setPosition({ SCREEN_WIDTH + 7,90 });
-			}
+			m_obstacles[i].setPosition({ static_cast<float>(SCREEN_WIDTH + randOffset) ,90 });
 			m_obstacles[i].randomiseObstacle();
 		}
 	}
@@ -765,13 +758,18 @@ void Obstacles::checkObstaclePositions()
 
 bool Obstacles::checkCollision(const sf::FloatRect& t_other)
 {
-	sf::FloatRect newBox = t_other;
-	newBox.width -= 20;
-	newBox.height -= 5;
+	//changing hitboxes so its fair and looks normal
+	sf::FloatRect playerBox = t_other;
+	playerBox.width -= 20;
+	playerBox.height -= 5;
+
+	
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
-		if (newBox.intersects(m_obstacles[i].getBoundingBox())) {
-			return true;
+		sf::FloatRect obstacle = m_obstacles[i].getBoundingBox();
+		obstacle.width -= 12;
+		if (playerBox.intersects(obstacle)) {
+ 			return true;
 		}
 	}
 	return false;
