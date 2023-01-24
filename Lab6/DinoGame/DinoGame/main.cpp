@@ -49,8 +49,7 @@ public:
 
 	void stop() { m_velocity.x = 0; }
 	void release() { m_velocity.x = m_speed; }
-	void sendToBack() { m_position.x = SCREEN_WIDTH + 7 + extraDistance; }
-	void increaseObstacleDistance() { extraDistance -= SPEED_INCREASE; }
+	void setPosition(sf::Vector2f t_position) { m_position = t_position; }
 
 	float getXPosition() { return m_position.x; }
 	sf::FloatRect getBoundingBox() { return m_obstacleSprite.getGlobalBounds(); }
@@ -65,7 +64,6 @@ private:
 	sf::RectangleShape m_hitbox;
 
 	sf::Vector2f m_position{SCREEN_WIDTH,193 };
-	float extraDistance = 0; //when speed increases, distance between spawning obsatcles needs to increase also.
 	float m_speed = -355;
 	sf::Vector2f m_velocity{-355,0};
 
@@ -249,6 +247,10 @@ int main()
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	sf::Clock clockForFrameRate;
 	clockForFrameRate.restart();
+
+	/*sf::View view = window.getView();
+	view.zoom(2);
+	window.setView(view);*/
 
 	while (window.isOpen())
 	{
@@ -716,13 +718,15 @@ void Obstacle::setBirdObstacle()
 
 Obstacles::Obstacles(sf::Texture& t_texture)
 {
+	m_obstacles[0].setPosition({ SCREEN_WIDTH, 90 });
+	m_obstacles[1].setPosition({ SCREEN_WIDTH + SCREEN_WIDTH / 2 + 50, 90 });
+
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
 		m_obstacles[i].init(t_texture);
 		m_obstacles[i].randomiseObstacle();
 	}
-	m_obstacles[1].stop();
-	m_obstacles[1].sendToBack();
+	
 }
 
 Obstacles::~Obstacles()
@@ -742,33 +746,21 @@ void Obstacles::checkObstaclePositions()
 {
 	int xOffset = 30;
 
-	if (m_clock.getElapsedTime() > secondObstacleSpawnTime)
-	{
-		chanceOfSecondObject = true;
-	}
-	
 	for (int i = 0; i < MAX_OBSTACLES; i++)
 	{
-		if (m_obstacles[i].getXPosition() + xOffset < 0)
-		{
-			m_obstacles[i].randomiseObstacle();
-			m_obstacles[i].sendToBack();
+		if (m_obstacles[i].getXPosition() + m_obstacles[i].getBoundingBox().width < 0)
+		{		
+			if (i == 0)
+			{
+				m_obstacles[i].setPosition({ SCREEN_WIDTH + 7,90 });
+			}
 			if (i == 1)
 			{
-				m_obstacles[i].stop();
+				m_obstacles[i].setPosition({ SCREEN_WIDTH + 7,90 });
 			}
+			m_obstacles[i].randomiseObstacle();
 		}
 	}
-
-	/*if (m_obstacles[0].getXPosition() < SCREEN_WIDTH / 2 - xOffset && chanceOfSecondObject == true)
-	{
-		m_obstacles[1].release();
-		chanceOfSecondObject = false;
-		m_clock.restart();
-	}*/
-	
-
-	
 }
 
 bool Obstacles::checkCollision(const sf::FloatRect& t_other)
