@@ -145,6 +145,8 @@ public:
 	void update(sf::Time t_deltaTime);
 	void updateDinoAnimation();
 	void render(sf::RenderWindow& t_window);
+
+	void setDeadFrame(){ m_dinoSprite.setTextureRect(sf::IntRect(851, 0, 48, 50)); }
 	
 	void jump() { if (!inAir)m_velocity.y = -11; inAir = true; }
 	void duck() { isDucking = true; }
@@ -416,6 +418,7 @@ int main()
 			if (obstacles.checkCollision(dinosaur.getBoundingBox()))
 			{
 				gameOver = true;
+				dinosaur.setDeadFrame();
 			}
 			
 
