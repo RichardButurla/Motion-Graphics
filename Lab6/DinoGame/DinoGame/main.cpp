@@ -432,7 +432,7 @@ int main()
 			
 
 			//Draw here
-			scene.render(window);
+			
 			obstacles.render(window);
 			dinosaur.render(window);
 			window.draw(currentScoreText);
@@ -446,7 +446,7 @@ int main()
 				window.draw(gameOverTextSprite);
 				window.draw(replayButtonSprite);
 			}
-
+			scene.render(window);
 			window.display();
 			timeSinceLastUpdate = sf::Time::Zero;
 		}
@@ -548,6 +548,7 @@ Scene::Scene(sf::Texture& t_texture) : m_groundTexture(t_texture)
 	{
 		m_cloudSprites[i].setTexture(t_texture);
 		m_cloudSprites[i].setTextureRect(sf::IntRect(85, 0,48,50));
+		m_cloudSprites[i].setColor(sf::Color::Black);
 	}
 	
 }
