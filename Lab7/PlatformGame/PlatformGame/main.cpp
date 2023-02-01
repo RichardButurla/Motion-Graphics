@@ -21,14 +21,20 @@ public:
 	//create Window
 	sf::RenderWindow window;
 	sf::View view;
+	sf::View lhsView;
+	sf::View rhsView;
 	float randomNum;
 
+	sf::Text gameOverText;
+
+	bool gameWon = false;
 
 	sf::RectangleShape playerShape;
 
 
 	float velocityX = 0, velocityY = 0, gravity = 0.3;
 
+	int MAX_LEVEL_SPEED = -5;
 	float levelSpeed = -5;
 
 	static const int numRows = 55;
@@ -38,19 +44,19 @@ public:
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1 },
+	{ 0,0,0,0,0,5,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1 },
-	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,1,1,1,1,1 },
+	{ 0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1 },
 	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,2,1,0,0,0,0,0,0,1,1,1,1,1,1,1 },
 	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -93,11 +99,27 @@ public:
 	Game()
 	{
 		window.create(sf::VideoMode(800, 600), "Endless Runner Game");
+		lhsView = window.getDefaultView();
+		
 	}
 	void init()
 	{
+		sf::Font font;
+		if (!font.loadFromFile("ASSETS//FONTS//ariblk.ttf"))
+		{
+			std::cout << "error loading font";
+		}
+		gameOverText.setFont(font);
+		gameOverText.setString("You Win!");
+		gameOverText.setFillColor(sf::Color::White);
+		gameOverText.setCharacterSize(40U);
+		gameOverText.setPosition(400, 300);
 
-		view = window.getDefaultView();
+		view = lhsView;
+		window.setView(view);
+		
+		levelSpeed = MAX_LEVEL_SPEED;
+
 		playerShape.setSize(sf::Vector2f(20, 20));
 		playerShape.setPosition(160, 500);
 
@@ -142,6 +164,14 @@ public:
 					level[row][col].setPosition(row * 70, col * 30);
 
 					level[row][col].setFillColor(sf::Color::Magenta);
+
+				}
+				if (levelData[row][col] == 5)
+				{
+					level[row][col].setSize(sf::Vector2f(30, 30));
+					level[row][col].setPosition(row * 70, col * 30);
+
+					level[row][col].setFillColor(sf::Color::White);
 
 				}
 
@@ -195,6 +225,14 @@ public:
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && velocityY == 0)
 				{
 					velocityY = -10.5;
+				}
+				if (gameWon)
+				{
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+					{
+						gameWon = false;
+						init();
+					}
 				}
 
 				velocityY = velocityY + gravity;
@@ -262,10 +300,18 @@ public:
 							if (playerShape.getGlobalBounds().intersects(level[row][col].getGlobalBounds()))
 							{
 								levelSpeed = -levelSpeed;
-								//playerView.setCenter(ScreenSize::s_width / 2, ScreenSize::s_height / 2);
-								view.move(window.getPosition().x - 850, window.getPosition().y - 240);
-								window.setView(view);
+								rhsView = view;
+								rhsView.move(window.getPosition().x - 850, window.getPosition().y - 240);
+								window.setView(rhsView);
 							}
+						}
+						if (levelData[row][col] == 5)
+						{
+							if (playerShape.getGlobalBounds().intersects(level[row][col].getGlobalBounds()))
+							{
+								levelSpeed = 0;
+								gameWon = true;
+							}							
 						}
 					}
 				}
@@ -286,6 +332,10 @@ public:
 					}
 				}
 				window.draw(playerShape);
+
+				
+					//window.draw(gameOverText);
+				
 
 
 				window.display();
