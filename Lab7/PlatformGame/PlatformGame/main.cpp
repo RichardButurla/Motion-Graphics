@@ -25,6 +25,8 @@ public:
 	sf::View rhsView;
 	float randomNum;
 
+	sf::Font font;
+
 	sf::Text gameOverText;
 
 	bool gameWon = false;
@@ -104,7 +106,7 @@ public:
 	}
 	void init()
 	{
-		sf::Font font;
+		
 		if (!font.loadFromFile("ASSETS//FONTS//ariblk.ttf"))
 		{
 			std::cout << "error loading font";
@@ -113,7 +115,7 @@ public:
 		gameOverText.setString("You Win!");
 		gameOverText.setFillColor(sf::Color::White);
 		gameOverText.setCharacterSize(40U);
-		gameOverText.setPosition(400, 300);
+		gameOverText.setPosition(window.getSize().x / 2.0f - gameOverText.getGlobalBounds().width / 2, window.getSize().y / 2.0);
 
 		view = lhsView;
 		window.setView(view);
@@ -333,8 +335,15 @@ public:
 				}
 				window.draw(playerShape);
 
+				if (gameWon)
+				{
+					view = lhsView;
+					window.setView(view);
+					window.draw(gameOverText);
+				}
+					
 				
-					//window.draw(gameOverText);
+				
 				
 
 
