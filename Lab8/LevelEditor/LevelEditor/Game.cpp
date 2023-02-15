@@ -243,30 +243,73 @@ void Game::updatePlayer()
 }
 
 void Game::checkCollisions()
-{
-	if (playerYVelocity >= 0)
+{		
+	for (int i = 0; i < m_gameTiles.size(); i++)
 	{
-		
-		for (int i = 0; i < m_gameTiles.size(); i++)
+		if (playerYVelocity >= 0)
 		{
 			if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
 			{
-				if (m_playerShape.getPosition().y < m_gameTiles[i].getPosition().y)
+				switch (m_gameTiles[i].getTileType())
 				{
-					playerGravity = 0;
-					playerYVelocity = 0;
-					m_playerShape.setPosition(m_playerShape.getPosition().x, m_gameTiles[i].getPosition().y);
-					m_playerShape.move(0, -m_playerShape.getGlobalBounds().height);
+				case TileType::Base:
+					if (m_playerShape.getPosition().y < m_gameTiles[i].getPosition().y)
+					{
+						playerGravity = 0;
+						playerYVelocity = 0;
+						m_playerShape.setPosition(m_playerShape.getPosition().x, m_gameTiles[i].getPosition().y);
+						m_playerShape.move(0, -m_playerShape.getGlobalBounds().height);
+						break;
+					}
+					else {
+						m_editingLevel = !m_editingLevel;
+					}
+					break;
+				case TileType::Hazard:
+					m_editingLevel = !m_editingLevel;
+					break;
+				case TileType::Jump:
+					playerYVelocity = jumpTileForce;
+					break;
+				default:
 					break;
 				}
-				else {
-					m_editingLevel = true;
-				}
-
 			}
 		}
-		
+		if (playerYVelocity < 0)
+		{
+			switch (m_gameTiles[i].getTileType())
+			{
+			case TileType::Base:
+				if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
+				{
+					m_editingLevel = !m_editingLevel;
+				}
+				
+				break;
+			case TileType::Hazard:
+				if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
+				{
+					m_editingLevel = !m_editingLevel;
+
+				}
+				break;
+			case TileType::Jump:
+				if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
+				{
+					playerYVelocity = jumpTileForce;
+
+				}
+				break;
+			default:
+				break;
+			}
+		}
+			
+			
 	}
+
+	std::cout << "\nVel: " << playerYVelocity;
 }
 
 /// <summary>
@@ -399,12 +442,15 @@ void Tile::setTileType(TileType t_type)
 	{
 	case TileType::Base:
 		this->setFillColor(sf::Color::Red);
+		m_tileType = TileType::Base;
 		break;
 	case TileType::Hazard:
 		this->setFillColor(sf::Color::Blue);
+		m_tileType = TileType::Hazard;
 		break;
 	case TileType::Jump:
 		this->setFillColor(sf::Color::Green);
+		m_tileType = TileType::Jump;
 		break;
 	default:
 		break;

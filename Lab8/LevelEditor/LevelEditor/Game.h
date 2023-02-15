@@ -13,6 +13,7 @@ enum class TileType
 class Tile : public sf::RectangleShape
 {
 public:
+	TileType getTileType() { return m_tileType; }
 	void setTileType(TileType t_type);
 
 private:
@@ -91,6 +92,7 @@ private:
 	std::vector<Tile>m_gameTiles;
 	int tileCount = 0;
 	float tileSpeed = -3;
+	float jumpTileForce = -20;
 
 	bool m_editingLevel{ true };
 	bool m_exitGame; // control exiting game
