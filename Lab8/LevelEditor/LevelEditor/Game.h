@@ -16,7 +16,7 @@ public:
 	static const int SCREEN_WIDTH = 800;
 	static const int SCREEN_HEIGHT = 600;
 
-	static const int MAX_COLLUMS = 100;
+	static const int MAX_COLLUMS = 12;
 	static const int MAX_ROWS = 17;
 
 private:
@@ -35,6 +35,7 @@ private:
 	void setupGrid();
 
 	void checkHighlightingBlock();
+	void checkPlacingBlock();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -52,6 +53,8 @@ private:
 	float tileHeight = 30;
 	float m_hudYOffset = 90;
 	sf::Vector2f m_gridPositions[MAX_ROWS][MAX_COLLUMS];
+	std::vector<sf::RectangleShape>m_placedTiles;
+	int tileCount = 0;
 
 
 	bool m_exitGame; // control exiting game

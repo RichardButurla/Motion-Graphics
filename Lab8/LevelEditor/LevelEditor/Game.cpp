@@ -75,6 +75,14 @@ void Game::processEvents()
 		{
 			processMouseMove(newEvent);
 		}
+		if (sf::Event::MouseButtonPressed == newEvent.type)
+		{
+			processMousePress(newEvent);
+		}
+		if (sf::Event::MouseButtonReleased == newEvent.type)
+		{
+			processMouseRelease(newEvent);
+		}
 	}
 }
 
@@ -96,11 +104,13 @@ void Game::processMousePress(sf::Event t_event)
 {
 	m_mousePressPos.x = t_event.mouseButton.x;
 	m_mousePressPos.y = t_event.mouseButton.y;
+
+	
 }
 
 void Game::processMouseRelease(sf::Event t_event)
 {
-
+	checkPlacingBlock();
 }
 
 void Game::processMouseMove(sf::Event t_event)
@@ -120,6 +130,7 @@ void Game::update(sf::Time t_deltaTime)
 		m_window.close();
 	}
 	checkHighlightingBlock();
+	std::cout << "\nTile Count :" << tileCount;
 }
 
 /// <summary>
@@ -138,6 +149,10 @@ void Game::render()
 		}
 	}
 	m_window.draw(m_highlightTile);
+	for (int i = 0; i < m_placedTiles.size(); i++)
+	{
+		m_window.draw(m_placedTiles[i]);
+	}
 
 	m_window.display();
 }
@@ -194,7 +209,7 @@ void Game::setupGrid()
 			m_gridPositions[row][col] = sf::Vector2f{ col * 70.f, row * 30.f + m_hudYOffset };
 		}
 	}
-
+	m_placedTiles.reserve(MAX_COLLUMS * MAX_ROWS);
 }
 
 void Game::checkHighlightingBlock()
@@ -209,10 +224,52 @@ void Game::checkHighlightingBlock()
 			if (m_mouseMovePos.x > tilePos.x && m_mouseMovePos.x < tilePos.x + tileWidth &&
 				m_mouseMovePos.y > tilePos.y && m_mouseMovePos.y < tilePos.y + tileHeight)
 				{
-					std::cout << "\nX: " << m_mouseMovePos.x;
-					std::cout << "Y: "<< m_mouseMovePos.y;
  					m_highlightTile.setPosition(tilePos);
 				}
 		}
 	}
+}
+
+void Game::checkPlacingBlock()
+{
+	sf::Vector2f tilePos;
+	bool freeSpace = true;
+
+	for (int row = 0; row < MAX_ROWS; row++)
+	{
+		for (int col = 0; col < MAX_COLLUMS; col++)
+		{
+			tilePos = m_gridPositions[row][col];
+			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
+				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
+			{
+				sf::Vector2f placedTilePos;
+				if (m_placedTiles.size() == 0) //first block to be placed
+				{
+					sf::RectangleShape newTile = m_highlightTile;
+					newTile.setPosition(tilePos);
+					m_placedTiles.push_back(newTile);
+					tileCount++;
+				}
+				for (int i = 0; i < m_placedTiles.size(); i++)
+				{
+					placedTilePos = m_placedTiles[i].getPosition();
+					if (tilePos.x == placedTilePos.x &&
+						tilePos.y == placedTilePos.y)
+					{
+						freeSpace = false;
+						std::cout << "already placed a block here!";
+					}
+				}
+				if (freeSpace == true)
+				{
+					sf::RectangleShape newTile = m_highlightTile;
+					newTile.setPosition(tilePos);
+					m_placedTiles.push_back(newTile);
+					tileCount++;
+				}
+			}
+		}
+	}
+	
 }
