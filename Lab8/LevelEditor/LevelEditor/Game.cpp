@@ -1,5 +1,7 @@
 #include "Game.h"
 #include <iostream>
+#include <fstream>
+#include <string>
 
 
 
@@ -16,6 +18,8 @@ Game::Game() :
 	baseView = m_window.getView();
 	movingView = m_window.getView();
 	m_window.setView(movingView);
+
+	loadPreviousLevel();
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupGrid();
@@ -102,8 +106,16 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Enter == t_event.key.code)
 	{
+		saveLevel();
 		m_gameTiles = m_placedTiles;
+		for (int i = 0; i < m_gameTiles.size(); i++) {
+			m_gameTiles[i].setSize({ tileWidth, tileHeight });
+			m_gameTiles[i].setOutlineThickness(0.f);
+		}
+			
 		m_editingLevel = !m_editingLevel; //playing game
+		m_playerShape.setPosition(m_playerPos);
+		playerYVelocity = 0;
 		movingView = baseView;
 	}
 	if (m_editingLevel)
@@ -346,6 +358,40 @@ void Game::checkCollisions()
 		playerYVelocity = 0;
 	}
 	std::cout << "\nVel: " << playerYVelocity;
+}
+
+void Game::loadPreviousLevel()
+{
+	std::ifstream file("tileData.txt");
+	if (file.is_open())
+	{
+		Tile tile;
+		int x;
+		int y;
+		int tileType;
+
+		while (file >> x >> y >> tileType) {
+			tile.setPosition(sf::Vector2f{ static_cast<float>(x),static_cast<float>(y) });
+			tile.setTileType(static_cast<TileType>(tileType));
+			tile.setSize({ tileWidth - 3, tileHeight - 3 });
+			tile.setOutlineColor(sf::Color::White);
+			tile.setOutlineThickness(3.f);
+			m_placedTiles.push_back(tile);
+		}
+		file.close();
+	}
+}
+
+void Game::saveLevel()
+{
+	std::ofstream file("tileData.txt");
+
+	for (int i = 0; i < m_placedTiles.size(); i++) {
+		sf::Vector2f tilePos = m_placedTiles[i].getPosition();
+		int tileType = static_cast<int>(m_placedTiles[i].getTileType());
+		file << tilePos.x << " " << tilePos.y << " " << tileType << std::endl;
+	}
+	file.close();
 }
 
 /// <summary>

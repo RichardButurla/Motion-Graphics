@@ -58,6 +58,9 @@ private:
 	void updatePlayer();
 	void checkCollisions();
 
+	void loadPreviousLevel();
+	void saveLevel();
+
 	void setupFontAndText();
 	void setupSprite();
 	void setupGrid();

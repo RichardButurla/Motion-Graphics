@@ -1,9 +1,11 @@
 ﻿  Game.cpp
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.h(81,16): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(244,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(252,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(265,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(280,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(457,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(497,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.h(84,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(111,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(256,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(264,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(277,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(292,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(389,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(503,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(543,23): warning C4018: '<': signed/unsigned mismatch
   LevelEditor.vcxproj -> C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\Debug\LevelEditor.exe
