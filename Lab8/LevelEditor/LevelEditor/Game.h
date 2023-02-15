@@ -38,6 +38,8 @@ private:
 	void checkPlacingBlock();
 
 	sf::RenderWindow m_window; // main SFML window
+	sf::View baseView;
+	sf::View movingView;
 	sf::Font m_ArialBlackfont; // font used by message
 	sf::Text m_welcomeMessage; // text used for message on screen
 	sf::Texture m_logoTexture; // texture used for sfml logo

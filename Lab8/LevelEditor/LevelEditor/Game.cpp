@@ -13,6 +13,9 @@ Game::Game() :
 	m_window{ sf::VideoMode{ SCREEN_WIDTH, SCREEN_HEIGHT, 32U }, "Level Editor" },
 	m_exitGame{false} //when true game will exit
 {
+	baseView = m_window.getView();
+	movingView = m_window.getView();
+	m_window.setView(movingView);
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupGrid();
@@ -97,15 +100,24 @@ void Game::processKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
+	if (sf::Keyboard::Left == t_event.key.code)
+	{
+		movingView.move({ -10,0 });
+	}
+	if (sf::Keyboard::Right == t_event.key.code)
+	{
+		movingView.move({ 10,0 });
+	}
 }
 
 
 void Game::processMousePress(sf::Event t_event)
 {
-	m_mousePressPos.x = t_event.mouseButton.x;
-	m_mousePressPos.y = t_event.mouseButton.y;
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(m_window);
+	sf::Vector2f worldPos = m_window.mapPixelToCoords(pixelPos);
 
-	
+	m_mousePressPos.x = worldPos.x;
+	m_mousePressPos.y = worldPos.y;
 }
 
 void Game::processMouseRelease(sf::Event t_event)
@@ -115,8 +127,11 @@ void Game::processMouseRelease(sf::Event t_event)
 
 void Game::processMouseMove(sf::Event t_event)
 {
-	m_mouseMovePos.x = t_event.mouseMove.x;
-	m_mouseMovePos.y = t_event.mouseMove.y;
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(m_window);
+	sf::Vector2f worldPos = m_window.mapPixelToCoords(pixelPos);
+
+	m_mouseMovePos.x = worldPos.x;
+	m_mouseMovePos.y = worldPos.y;
 }
 
 /// <summary>
@@ -139,6 +154,7 @@ void Game::update(sf::Time t_deltaTime)
 void Game::render()
 {
 	m_window.clear(sf::Color::White);
+	m_window.setView(movingView);
 
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
