@@ -100,13 +100,28 @@ void Game::processKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
-	if (sf::Keyboard::Left == t_event.key.code)
+	if (sf::Keyboard::Enter == t_event.key.code)
 	{
-		movingView.move({ -10,0 });
+		m_editingLevel = false; //playing game
 	}
-	if (sf::Keyboard::Right == t_event.key.code)
+	if (m_editingLevel)
 	{
-		movingView.move({ 10,0 });
+		if (sf::Keyboard::Left == t_event.key.code)
+		{
+			movingView.move({ -10,0 });
+		}
+		if (sf::Keyboard::Right == t_event.key.code)
+		{
+			movingView.move({ 10,0 });
+		}
+	}
+	else
+	{
+		if (sf::Keyboard::Space == t_event.key.code && playerYVelocity == 0)
+		{
+			playerYVelocity = playerJumpVelocity;
+			std::cout << "jump called";
+		}
 	}
 }
 
@@ -122,7 +137,10 @@ void Game::processMousePress(sf::Event t_event)
 
 void Game::processMouseRelease(sf::Event t_event)
 {
-	checkPlacingBlock();
+	if (m_editingLevel)
+	{
+		checkPlacingBlock();
+	}	
 }
 
 void Game::processMouseMove(sf::Event t_event)
@@ -144,8 +162,17 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
-	checkHighlightingBlock();
-	std::cout << "\nTile Count :" << tileCount;
+	if (m_editingLevel)
+	{
+		checkHighlightingBlock();
+	}
+	else
+	{
+		moveTiles();
+		updatePlayer();
+		checkCollisions();
+	}
+
 }
 
 /// <summary>
@@ -156,21 +183,76 @@ void Game::render()
 	m_window.clear(sf::Color::White);
 	m_window.setView(movingView);
 
-	for (int row = 0; row < MAX_ROWS; row++)
+	
+	if (m_editingLevel)
 	{
-		for (int col = 0; col < MAX_COLLUMS; col++)
+		for (int row = 0; row < MAX_ROWS; row++)
 		{
-			m_tile.setPosition(m_gridPositions[row][col]);
-			m_window.draw(m_tile);
+			for (int col = 0; col < MAX_COLLUMS; col++)
+			{
+				m_tile.setPosition(m_gridPositions[row][col]);
+				m_window.draw(m_tile);
+			}
 		}
+		for (int i = 0; i < m_placedTiles.size(); i++)
+		{
+			m_window.draw(m_placedTiles[i]);
+		}
+		m_window.draw(m_highlightTile);
 	}
-	m_window.draw(m_highlightTile);
-	for (int i = 0; i < m_placedTiles.size(); i++)
+	else
 	{
-		m_window.draw(m_placedTiles[i]);
+		for (int i = 0; i < m_placedTiles.size(); i++)
+		{
+			m_window.draw(m_placedTiles[i]);
+		}
+		m_window.draw(m_playerShape);
 	}
+	
 
 	m_window.display();
+}
+
+void Game::moveTiles()
+{
+	for (int i = 0; i < m_placedTiles.size(); i++)
+	{
+		m_placedTiles[i].move(tileSpeed,0);
+	}
+}
+
+void Game::updatePlayer()
+{
+	playerYVelocity = playerYVelocity + playerGravity;
+	m_playerShape.move(0, playerYVelocity);
+	playerGravity = gravity;
+}
+
+void Game::checkCollisions()
+{
+	if (playerYVelocity >= 0)
+	{
+		
+		for (int i = 0; i < m_placedTiles.size(); i++)
+		{
+			if (m_playerShape.getGlobalBounds().intersects(m_placedTiles[i].getGlobalBounds()))
+			{
+				if (m_playerShape.getPosition().y < m_placedTiles[i].getPosition().y)
+				{
+					playerGravity = 0;
+					playerYVelocity = 0;
+					m_playerShape.setPosition(m_playerShape.getPosition().x, m_placedTiles[i].getPosition().y);
+					m_playerShape.move(0, -m_playerShape.getGlobalBounds().height);
+					break;
+				}
+				else {
+					m_editingLevel = true;
+				}
+
+			}
+		}
+		
+	}
 }
 
 /// <summary>
@@ -209,10 +291,13 @@ void Game::setupSprite()
 	m_tile.setOutlineThickness(3.f);
 	
 	m_highlightTile.setFillColor(sf::Color::Red);
-	m_highlightTile.setSize({ tileWidth - 3, tileHeight - 3});
 	m_highlightTile.setOutlineColor(sf::Color::Black);
 	m_highlightTile.setOutlineThickness(3.f);
+	m_highlightTile.setSize({ tileWidth - 3, tileHeight - 3});
 	
+	m_playerShape.setFillColor(sf::Color::Yellow);
+	m_playerShape.setSize(m_playerSize);
+	m_playerShape.setPosition(m_playerPos);
 	
 }
 
@@ -267,23 +352,27 @@ void Game::checkPlacingBlock()
 					m_placedTiles.push_back(newTile);
 					tileCount++;
 				}
-				for (int i = 0; i < m_placedTiles.size(); i++)
+				else
 				{
-					placedTilePos = m_placedTiles[i].getPosition();
-					if (tilePos.x == placedTilePos.x &&
-						tilePos.y == placedTilePos.y)
+					for (int i = 0; i < m_placedTiles.size(); i++)
 					{
-						freeSpace = false;
-						std::cout << "already placed a block here!";
+						placedTilePos = m_placedTiles[i].getPosition();
+						if (tilePos.x == placedTilePos.x &&
+							tilePos.y == placedTilePos.y)
+						{
+							freeSpace = false;
+							std::cout << "already placed a block here!";
+						}
+					}
+					if (freeSpace == true)
+					{
+						sf::RectangleShape newTile = m_highlightTile;
+						newTile.setPosition(tilePos);
+						m_placedTiles.push_back(newTile);
+						tileCount++;
 					}
 				}
-				if (freeSpace == true)
-				{
-					sf::RectangleShape newTile = m_highlightTile;
-					newTile.setPosition(tilePos);
-					m_placedTiles.push_back(newTile);
-					tileCount++;
-				}
+				
 			}
 		}
 	}

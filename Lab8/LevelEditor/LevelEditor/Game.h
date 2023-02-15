@@ -30,6 +30,10 @@ private:
 	void update(sf::Time t_deltaTime);
 	void render();
 	
+	void moveTiles();
+	void updatePlayer();
+	void checkCollisions();
+
 	void setupFontAndText();
 	void setupSprite();
 	void setupGrid();
@@ -45,10 +49,21 @@ private:
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 
+	float gravity = 0.6;
+
+	//Player
+	sf::RectangleShape m_playerShape;
+	sf::Vector2f m_playerSize{ 30.f,30.f };
+	sf::Vector2f m_playerPos{ 0.f,SCREEN_HEIGHT / 2.f  };
+	float playerYVelocity = 0;
+	float playerJumpVelocity = -13.f;
+	float playerGravity = gravity;
+
 	//Mouse
 	sf::Vector2f m_mousePressPos;
 	sf::Vector2f m_mouseMovePos;
 
+	//Tiles
 	sf::RectangleShape m_tile;
 	sf::RectangleShape m_highlightTile;
 	float tileWidth = 70;
@@ -57,8 +72,9 @@ private:
 	sf::Vector2f m_gridPositions[MAX_ROWS][MAX_COLLUMS];
 	std::vector<sf::RectangleShape>m_placedTiles;
 	int tileCount = 0;
+	float tileSpeed = -3;
 
-
+	bool m_editingLevel{ true };
 	bool m_exitGame; // control exiting game
 
 };
