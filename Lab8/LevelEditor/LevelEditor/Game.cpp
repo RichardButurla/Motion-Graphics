@@ -102,7 +102,9 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (sf::Keyboard::Enter == t_event.key.code)
 	{
-		m_editingLevel = false; //playing game
+		m_gameTiles = m_placedTiles;
+		m_editingLevel = !m_editingLevel; //playing game
+		movingView = baseView;
 	}
 	if (m_editingLevel)
 	{
@@ -202,9 +204,9 @@ void Game::render()
 	}
 	else
 	{
-		for (int i = 0; i < m_placedTiles.size(); i++)
+		for (int i = 0; i < m_gameTiles.size(); i++)
 		{
-			m_window.draw(m_placedTiles[i]);
+			m_window.draw(m_gameTiles[i]);
 		}
 		m_window.draw(m_playerShape);
 	}
@@ -215,9 +217,9 @@ void Game::render()
 
 void Game::moveTiles()
 {
-	for (int i = 0; i < m_placedTiles.size(); i++)
+	for (int i = 0; i < m_gameTiles.size(); i++)
 	{
-		m_placedTiles[i].move(tileSpeed,0);
+		m_gameTiles[i].move(tileSpeed,0);
 	}
 }
 
@@ -307,7 +309,7 @@ void Game::setupGrid()
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			m_gridPositions[row][col] = sf::Vector2f{ col * 70.f, row * 30.f + m_hudYOffset };
+			m_gridPositions[row][col] = sf::Vector2f{ col * 70.f + m_hudXOffset, row * 30.f + m_hudYOffset };
 		}
 	}
 	m_placedTiles.reserve(MAX_COLLUMS * MAX_ROWS);

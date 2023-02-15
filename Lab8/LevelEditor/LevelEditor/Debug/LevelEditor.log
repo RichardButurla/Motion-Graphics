@@ -1,11 +1,11 @@
 ﻿  Game.cpp
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.h(52,16): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(197,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(205,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(218,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(236,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(357,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.h(54,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(199,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(207,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(220,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(238,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(359,24): warning C4018: '<': signed/unsigned mismatch
   main.cpp
-C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.h(52,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.h(54,16): warning C4305: 'initializing': truncation from 'double' to 'float'
   Generating Code...
   LevelEditor.vcxproj -> C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\Debug\LevelEditor.exe

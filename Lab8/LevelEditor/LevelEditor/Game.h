@@ -16,7 +16,7 @@ public:
 	static const int SCREEN_WIDTH = 800;
 	static const int SCREEN_HEIGHT = 600;
 
-	static const int MAX_COLLUMS = 12;
+	static const int MAX_COLLUMS = 25;
 	static const int MAX_ROWS = 17;
 
 private:
@@ -49,12 +49,14 @@ private:
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 
+	float m_hudYOffset = 90;
+	float m_hudXOffset = 70;
 	float gravity = 0.6;
 
 	//Player
 	sf::RectangleShape m_playerShape;
 	sf::Vector2f m_playerSize{ 30.f,30.f };
-	sf::Vector2f m_playerPos{ 0.f,SCREEN_HEIGHT / 2.f  };
+	sf::Vector2f m_playerPos{ m_hudYOffset,SCREEN_HEIGHT / 2.f  };
 	float playerYVelocity = 0;
 	float playerJumpVelocity = -13.f;
 	float playerGravity = gravity;
@@ -68,9 +70,9 @@ private:
 	sf::RectangleShape m_highlightTile;
 	float tileWidth = 70;
 	float tileHeight = 30;
-	float m_hudYOffset = 90;
 	sf::Vector2f m_gridPositions[MAX_ROWS][MAX_COLLUMS];
 	std::vector<sf::RectangleShape>m_placedTiles;
+	std::vector<sf::RectangleShape>m_gameTiles;
 	int tileCount = 0;
 	float tileSpeed = -3;
 
