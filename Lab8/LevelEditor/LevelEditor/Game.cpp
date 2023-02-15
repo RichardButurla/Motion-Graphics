@@ -116,6 +116,18 @@ void Game::processKeys(sf::Event t_event)
 		{
 			movingView.move({ 10,0 });
 		}
+		if (sf::Keyboard::Q == t_event.key.code)
+		{
+			m_highlightTile.setTileType(TileType::Base);
+		}
+		if (sf::Keyboard::W == t_event.key.code)
+		{
+			m_highlightTile.setTileType(TileType::Hazard);
+		}
+		if (sf::Keyboard::E == t_event.key.code)
+		{
+			m_highlightTile.setTileType(TileType::Jump);
+		}
 	}
 	else
 	{
@@ -235,15 +247,15 @@ void Game::checkCollisions()
 	if (playerYVelocity >= 0)
 	{
 		
-		for (int i = 0; i < m_placedTiles.size(); i++)
+		for (int i = 0; i < m_gameTiles.size(); i++)
 		{
-			if (m_playerShape.getGlobalBounds().intersects(m_placedTiles[i].getGlobalBounds()))
+			if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
 			{
-				if (m_playerShape.getPosition().y < m_placedTiles[i].getPosition().y)
+				if (m_playerShape.getPosition().y < m_gameTiles[i].getPosition().y)
 				{
 					playerGravity = 0;
 					playerYVelocity = 0;
-					m_playerShape.setPosition(m_playerShape.getPosition().x, m_placedTiles[i].getPosition().y);
+					m_playerShape.setPosition(m_playerShape.getPosition().x, m_gameTiles[i].getPosition().y);
 					m_playerShape.move(0, -m_playerShape.getGlobalBounds().height);
 					break;
 				}
@@ -349,7 +361,7 @@ void Game::checkPlacingBlock()
 				sf::Vector2f placedTilePos;
 				if (m_placedTiles.size() == 0) //first block to be placed
 				{
-					sf::RectangleShape newTile = m_highlightTile;
+					Tile newTile = m_highlightTile;
 					newTile.setPosition(tilePos);
 					m_placedTiles.push_back(newTile);
 					tileCount++;
@@ -368,7 +380,7 @@ void Game::checkPlacingBlock()
 					}
 					if (freeSpace == true)
 					{
-						sf::RectangleShape newTile = m_highlightTile;
+						Tile newTile = m_highlightTile;
 						newTile.setPosition(tilePos);
 						m_placedTiles.push_back(newTile);
 						tileCount++;
@@ -379,4 +391,22 @@ void Game::checkPlacingBlock()
 		}
 	}
 	
+}
+
+void Tile::setTileType(TileType t_type)
+{
+	switch (t_type)
+	{
+	case TileType::Base:
+		this->setFillColor(sf::Color::Red);
+		break;
+	case TileType::Hazard:
+		this->setFillColor(sf::Color::Blue);
+		break;
+	case TileType::Jump:
+		this->setFillColor(sf::Color::Green);
+		break;
+	default:
+		break;
+	}
 }

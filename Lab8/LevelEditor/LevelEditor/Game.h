@@ -3,6 +3,22 @@
 
 #include <SFML/Graphics.hpp>
 
+enum class TileType
+{
+	Base,
+	Hazard,
+	Jump
+};
+
+class Tile : public sf::RectangleShape
+{
+public:
+	void setTileType(TileType t_type);
+
+private:
+	TileType m_tileType = TileType::Base;
+};
+
 class Game
 {
 public:
@@ -66,13 +82,13 @@ private:
 	sf::Vector2f m_mouseMovePos;
 
 	//Tiles
-	sf::RectangleShape m_tile;
-	sf::RectangleShape m_highlightTile;
+	Tile m_tile;
+	Tile m_highlightTile;
 	float tileWidth = 70;
 	float tileHeight = 30;
 	sf::Vector2f m_gridPositions[MAX_ROWS][MAX_COLLUMS];
-	std::vector<sf::RectangleShape>m_placedTiles;
-	std::vector<sf::RectangleShape>m_gameTiles;
+	std::vector<Tile>m_placedTiles;
+	std::vector<Tile>m_gameTiles;
 	int tileCount = 0;
 	float tileSpeed = -3;
 
