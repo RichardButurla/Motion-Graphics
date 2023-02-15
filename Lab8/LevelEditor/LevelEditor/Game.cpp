@@ -119,14 +119,20 @@ void Game::processKeys(sf::Event t_event)
 		if (sf::Keyboard::Q == t_event.key.code)
 		{
 			m_highlightTile.setTileType(TileType::Base);
+			m_hudText.setString("Base Block:");
+			m_hudTile.setFillColor(sf::Color::Red);
 		}
 		if (sf::Keyboard::W == t_event.key.code)
 		{
 			m_highlightTile.setTileType(TileType::Hazard);
+			m_hudText.setString("Hazard Block:");
+			m_hudTile.setFillColor(sf::Color::Blue);
 		}
 		if (sf::Keyboard::E == t_event.key.code)
 		{
 			m_highlightTile.setTileType(TileType::Jump);
+			m_hudText.setString("Jump Block:");
+			m_hudTile.setFillColor(sf::Color::Green);
 		}
 	}
 	else
@@ -218,6 +224,9 @@ void Game::render()
 	
 	if (m_editingLevel)
 	{
+		m_window.draw(m_hudText);
+		m_window.draw(m_hudTile);
+
 		for (int row = 0; row < MAX_ROWS; row++)
 		{
 			for (int col = 0; col < MAX_COLLUMS; col++)
@@ -344,15 +353,16 @@ void Game::setupFontAndText()
 	{
 		std::cout << "problem loading arial black font" << std::endl;
 	}
-	m_welcomeMessage.setFont(m_ArialBlackfont);
-	m_welcomeMessage.setString("SFML Game");
-	m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
-	m_welcomeMessage.setPosition(40.0f, 40.0f);
-	m_welcomeMessage.setCharacterSize(80U);
-	m_welcomeMessage.setOutlineColor(sf::Color::Red);
-	m_welcomeMessage.setFillColor(sf::Color::Black);
-	m_welcomeMessage.setOutlineThickness(3.0f);
+	m_hudText.setFont(m_ArialBlackfont);
+	m_hudText.setString("Base Block: ");
+	m_hudText.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_hudText.setPosition(70.0f, 20.0f);
+	m_hudText.setCharacterSize(30U);
+	m_hudText.setOutlineColor(sf::Color::Black);
+	m_hudText.setFillColor(sf::Color::White);
+	m_hudText.setOutlineThickness(3.0f);
 
+	
 }
 
 /// <summary>
@@ -378,6 +388,12 @@ void Game::setupSprite()
 	m_playerShape.setFillColor(sf::Color::Yellow);
 	m_playerShape.setSize(m_playerSize);
 	m_playerShape.setPosition(m_playerPos);
+
+	m_hudTile.setFillColor(sf::Color::Red);
+	m_hudTile.setSize({ tileWidth, tileHeight });
+	m_hudTile.setOutlineColor(sf::Color::Black);
+	m_hudTile.setOutlineThickness(3.f);
+	m_hudTile.setPosition((SCREEN_WIDTH / 2) - 60, 25);
 	
 }
 
