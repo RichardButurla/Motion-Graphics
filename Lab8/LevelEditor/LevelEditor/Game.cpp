@@ -134,6 +134,12 @@ void Game::processKeys(sf::Event t_event)
 			m_hudText.setString("Jump Block:");
 			m_hudTile.setFillColor(sf::Color::Green);
 		}
+		if (sf::Keyboard::R == t_event.key.code)
+		{
+			m_highlightTile.setTileType(TileType::Finish);
+			m_hudText.setString("Finish Block:");
+			m_hudTile.setFillColor(sf::Color::White);
+		}
 	}
 	else
 	{
@@ -218,7 +224,7 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	m_window.clear(sf::Color::White);
+	m_window.clear(sf::Color::Black);
 	m_window.setView(movingView);
 
 	
@@ -298,6 +304,9 @@ void Game::checkCollisions()
 				case TileType::Jump:
 					playerYVelocity = jumpTileForce;
 					break;
+				case TileType::Finish:
+					m_editingLevel = !m_editingLevel;
+					break;
 				default:
 					break;
 				}
@@ -305,32 +314,27 @@ void Game::checkCollisions()
 		}
 		if (playerYVelocity < 0)
 		{
-			switch (m_gameTiles[i].getTileType())
+			if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
 			{
-			case TileType::Base:
-				if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
+				switch (m_gameTiles[i].getTileType())
 				{
+				case TileType::Base:
+						m_editingLevel = !m_editingLevel;				
+					break;
+				case TileType::Hazard:
+						m_editingLevel = !m_editingLevel;					
+					break;
+				case TileType::Jump:			
+						playerYVelocity = jumpTileForce;					
+					break;
+				case TileType::Finish:
 					m_editingLevel = !m_editingLevel;
+					break;
+				default:
+					break;
 				}
-				
-				break;
-			case TileType::Hazard:
-				if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
-				{
-					m_editingLevel = !m_editingLevel;
-
-				}
-				break;
-			case TileType::Jump:
-				if (m_playerShape.getGlobalBounds().intersects(m_gameTiles[i].getGlobalBounds()))
-				{
-					playerYVelocity = jumpTileForce;
-
-				}
-				break;
-			default:
-				break;
 			}
+			
 		}
 			
 			
@@ -375,13 +379,13 @@ void Game::setupSprite()
 		// simple error message if previous call fails
 		std::cout << "problem loading logo" << std::endl;
 	}
-	m_tile.setFillColor(sf::Color::White);
+	m_tile.setFillColor(sf::Color::Black);
 	m_tile.setSize({tileWidth, tileHeight});
-	m_tile.setOutlineColor(sf::Color::Black);
+	m_tile.setOutlineColor(sf::Color::White);
 	m_tile.setOutlineThickness(3.f);
 	
 	m_highlightTile.setFillColor(sf::Color::Red);
-	m_highlightTile.setOutlineColor(sf::Color::Black);
+	m_highlightTile.setOutlineColor(sf::Color::White);
 	m_highlightTile.setOutlineThickness(3.f);
 	m_highlightTile.setSize({ tileWidth - 3, tileHeight - 3});
 	
@@ -391,7 +395,7 @@ void Game::setupSprite()
 
 	m_hudTile.setFillColor(sf::Color::Red);
 	m_hudTile.setSize({ tileWidth, tileHeight });
-	m_hudTile.setOutlineColor(sf::Color::Black);
+	m_hudTile.setOutlineColor(sf::Color::White);
 	m_hudTile.setOutlineThickness(3.f);
 	m_hudTile.setPosition((SCREEN_WIDTH / 2) - 60, 25);
 	
@@ -528,6 +532,10 @@ void Tile::setTileType(TileType t_type)
 	case TileType::Jump:
 		this->setFillColor(sf::Color::Green);
 		m_tileType = TileType::Jump;
+		break;
+	case TileType::Finish:
+		this->setFillColor(sf::Color::White);
+		m_tileType = TileType::Finish;
 		break;
 	default:
 		break;
