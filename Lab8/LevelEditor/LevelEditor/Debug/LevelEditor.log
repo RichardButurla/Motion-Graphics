@@ -1,0 +1,22 @@
+﻿  Game.cpp
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(97,41): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(98,41): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(108,38): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\LevelEditor\Game.cpp(109,38): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  LevelEditor.vcxproj -> C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab8\LevelEditor\Debug\LevelEditor.exe

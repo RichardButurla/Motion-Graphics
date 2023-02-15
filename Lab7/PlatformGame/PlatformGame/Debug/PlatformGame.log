@@ -1,20 +1,20 @@
 ﻿  main.cpp
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(37,46): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(118,117): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(123,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(137,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(137,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(144,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(144,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(150,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(150,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(158,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(158,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(166,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(166,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(174,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(174,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(244,1): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(306,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(306,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  PlatformGame.vcxproj -> C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab7\PlatformGame\Debug\PlatformGame.exe
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(37,46): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(118,117): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(123,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(137,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(137,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(144,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(144,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(150,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(150,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(158,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(158,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(166,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(166,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(174,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(174,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(244,1): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(306,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\PlatformGame\main.cpp(306,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  PlatformGame.vcxproj -> C:\Users\Richie\Desktop\Motion Graphics\Motion-Graphics\Lab7\PlatformGame\Debug\PlatformGame.exe
