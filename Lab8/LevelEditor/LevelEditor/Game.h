@@ -3,6 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
+enum class EditAction
+{
+	Placing,
+	Removing
+};
+
 enum class TileType
 {
 	Base,
@@ -57,6 +63,7 @@ private:
 
 	void checkHighlightingBlock();
 	void checkPlacingBlock();
+	void checkRemovingBlock();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::View baseView;
@@ -81,6 +88,7 @@ private:
 	//Mouse
 	sf::Vector2f m_mousePressPos;
 	sf::Vector2f m_mouseMovePos;
+	EditAction m_currentEditingAction = EditAction::Placing;
 
 	//Tiles
 	Tile m_tile;

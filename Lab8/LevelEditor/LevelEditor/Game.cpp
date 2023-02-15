@@ -147,14 +147,32 @@ void Game::processMousePress(sf::Event t_event)
 
 	m_mousePressPos.x = worldPos.x;
 	m_mousePressPos.y = worldPos.y;
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		m_currentEditingAction = EditAction::Placing;
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		m_currentEditingAction = EditAction::Removing;
+	}
 }
 
 void Game::processMouseRelease(sf::Event t_event)
 {
 	if (m_editingLevel)
 	{
-		checkPlacingBlock();
-	}	
+		if (m_currentEditingAction == EditAction::Placing)
+		{
+			checkPlacingBlock();
+		}
+		if (m_currentEditingAction == EditAction::Removing)
+		{
+			checkRemovingBlock();
+		}
+	}
+	
+		
 }
 
 void Game::processMouseMove(sf::Event t_event)
@@ -308,7 +326,12 @@ void Game::checkCollisions()
 			
 			
 	}
-
+	if (m_playerShape.getPosition().y > SCREEN_HEIGHT)
+	{
+		m_editingLevel = !m_editingLevel;
+		m_playerShape.setPosition(m_playerPos);
+		playerYVelocity = 0;
+	}
 	std::cout << "\nVel: " << playerYVelocity;
 }
 
@@ -434,6 +457,44 @@ void Game::checkPlacingBlock()
 		}
 	}
 	
+}
+
+void Game::checkRemovingBlock()
+{
+	sf::Vector2f tilePos;
+	bool occupied = false;
+	int tileIndex = -1;
+
+	for (int row = 0; row < MAX_ROWS; row++)
+	{
+		for (int col = 0; col < MAX_COLLUMS; col++)
+		{
+			tilePos = m_gridPositions[row][col];
+			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
+				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
+			{
+				sf::Vector2f placedTilePos;			
+				for (int i = 0; i < m_placedTiles.size(); i++)
+				{
+					placedTilePos = m_placedTiles[i].getPosition();
+					if (tilePos.x == placedTilePos.x &&
+						tilePos.y == placedTilePos.y)
+					{
+						occupied = true;
+						tileIndex = i;
+						std::cout << "already placed a block here!";
+					}
+				}
+				if (occupied == true)
+				{
+					m_placedTiles.erase(m_placedTiles.begin() + tileIndex);
+					tileCount--;
+				}
+				
+
+			}
+		}
+	}
 }
 
 void Tile::setTileType(TileType t_type)
