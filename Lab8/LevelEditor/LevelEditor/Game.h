@@ -75,7 +75,7 @@ private:
 	sf::Font m_ArialBlackfont; // font used by message
 
 	sf::Text m_hudText; // text used for message on screen
-	Tile m_hudTile;
+	Tile m_hudTile[4];
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 

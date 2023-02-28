@@ -1,0 +1,22 @@
+﻿  main.cpp
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\main.cpp(49,65): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\main.cpp(49,41): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\main.cpp(53,65): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\main.cpp(53,41): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+  SplitScreen.vcxproj -> C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe

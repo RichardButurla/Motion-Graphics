@@ -120,15 +120,26 @@ void Game::processKeys(sf::Event t_event)
 	}
 	if (m_editingLevel)
 	{
+		sf::Vector2f moveVector{ 10,0 };
 		if (sf::Keyboard::Left == t_event.key.code)
 		{
-			movingView.move({ -10,0 });
+			movingView.move({ -moveVector.x, moveVector.y });
+			m_hudText.move({ -moveVector.x, moveVector.y });
+			for (int i = 0; i < 4; i++)
+			{
+				m_hudTile[i].move({ -moveVector.x, moveVector.y });			
+			}
 		}
 		if (sf::Keyboard::Right == t_event.key.code)
 		{
-			movingView.move({ 10,0 });
+			movingView.move({ moveVector.x, moveVector.y });
+			m_hudText.move({ moveVector.x, moveVector.y });
+			for (int i = 0; i < 4; i++)
+			{
+				m_hudTile[i].move({ moveVector.x, moveVector.y });
+			}
 		}
-		if (sf::Keyboard::Q == t_event.key.code)
+		/*if (sf::Keyboard::Q == t_event.key.code)
 		{
 			m_highlightTile.setTileType(TileType::Base);
 			m_hudText.setString("Base Block:");
@@ -151,7 +162,7 @@ void Game::processKeys(sf::Event t_event)
 			m_highlightTile.setTileType(TileType::Finish);
 			m_hudText.setString("Finish Block:");
 			m_hudTile.setFillColor(sf::Color::White);
-		}
+		}*/
 	}
 	else
 	{
@@ -180,6 +191,36 @@ void Game::processMousePress(sf::Event t_event)
 	{
 		m_currentEditingAction = EditAction::Removing;
 	}
+
+	sf::Color hudTileColors[4]
+	{
+		sf::Color::Red,
+		sf::Color::Blue,
+		sf::Color::Green,
+		sf::Color::White
+	};
+
+	std::string hudTexts[4]
+	{
+		"Base Block: ",
+		"Hazard Block: ",
+		"Jump Block: ",
+		"Finish Block: "
+	};
+	for (int i = 0; i < 4; i++)
+	{
+		sf::Vector2f tilePos = m_hudTile[i].getPosition();
+		if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
+			m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
+		{
+			std::cout << "tile selected";
+			m_highlightTile.setTileType(static_cast<TileType>(i));
+			m_hudText.setString(hudTexts[i]);
+			m_hudText.setFillColor(hudTileColors[i]);
+		}
+		
+	}
+	
 }
 
 void Game::processMouseRelease(sf::Event t_event)
@@ -243,7 +284,11 @@ void Game::render()
 	if (m_editingLevel)
 	{
 		m_window.draw(m_hudText);
-		m_window.draw(m_hudTile);
+		for (int i = 0; i < 4; i++)
+		{
+			m_window.draw(m_hudTile[i]);
+			
+		}
 
 		for (int row = 0; row < MAX_ROWS; row++)
 		{
@@ -403,14 +448,35 @@ void Game::setupFontAndText()
 	{
 		std::cout << "problem loading arial black font" << std::endl;
 	}
-	m_hudText.setFont(m_ArialBlackfont);
-	m_hudText.setString("Base Block: ");
-	m_hudText.setStyle(sf::Text::Italic | sf::Text::Bold);
-	m_hudText.setPosition(70.0f, 20.0f);
-	m_hudText.setCharacterSize(30U);
-	m_hudText.setOutlineColor(sf::Color::Black);
-	m_hudText.setFillColor(sf::Color::White);
-	m_hudText.setOutlineThickness(3.0f);
+
+	sf::Color hudTileColors[4]
+	{
+		sf::Color::Red,
+		sf::Color::Blue,
+		sf::Color::Green,
+		sf::Color::White
+	};
+
+	std::string hudTexts[4]
+	{
+		"Base Block: ",
+		"Hazard Block: ",
+		"Jump Block: ",
+		"Finish Block: "
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_hudText.setFont(m_ArialBlackfont);
+		m_hudText.setString(hudTexts[i]);
+		m_hudText.setStyle(sf::Text::Italic | sf::Text::Bold);
+		m_hudText.setPosition(70.0f, 20.0f);
+		m_hudText.setCharacterSize(30U);
+		m_hudText.setOutlineColor(sf::Color::Black);
+		m_hudText.setFillColor(hudTileColors[i]);
+		m_hudText.setOutlineThickness(3.0f);
+	}
+	
 
 	
 }
@@ -439,11 +505,30 @@ void Game::setupSprite()
 	m_playerShape.setSize(m_playerSize);
 	m_playerShape.setPosition(m_playerPos);
 
-	m_hudTile.setFillColor(sf::Color::Red);
-	m_hudTile.setSize({ tileWidth, tileHeight });
-	m_hudTile.setOutlineColor(sf::Color::White);
-	m_hudTile.setOutlineThickness(3.f);
-	m_hudTile.setPosition((SCREEN_WIDTH / 2) - 60, 25);
+	sf::Color hudTileColors[4]
+	{
+		sf::Color::Red,
+		sf::Color::Blue,
+		sf::Color::Green,
+		sf::Color::White
+	};
+	sf::Vector2f hidTilePositions[4]
+	{
+		{(SCREEN_WIDTH / 2) - tileWidth, 25 },
+		{(SCREEN_WIDTH / 2) , 25 },
+		{(SCREEN_WIDTH / 2) + tileWidth, 25 },
+		{(SCREEN_WIDTH / 2) + tileWidth * 2, 25 }
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_hudTile[i].setFillColor(hudTileColors[i]);
+		m_hudTile[i].setSize({tileWidth, tileHeight});
+		m_hudTile[i].setOutlineColor(sf::Color::White);
+		m_hudTile[i].setOutlineThickness(3.f);
+		m_hudTile[i].setPosition(hidTilePositions[i]);
+	}
+	
 	
 }
 
