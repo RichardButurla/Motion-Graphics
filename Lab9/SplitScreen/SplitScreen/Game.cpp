@@ -103,10 +103,6 @@ void Game::processKeys(sf::Event t_event)
 	{
 		m_exitGame = true;
 	}
-	if (sf::Keyboard::Enter == t_event.key.code)
-	{
-
-	}
 	
 }
 
@@ -157,7 +153,59 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
-	
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		players[i].update();
+	}
+
+
+	//Player One
+	sf::Vector2f moveVector[MAX_PLAYERS]
+	{
+		{0,0},
+		{0,0}
+	};
+	float speed = 3;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		moveVector[0].y = -speed;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		moveVector[0].x = -speed;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		moveVector[0].y = speed;
+
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		moveVector[0].x = speed;
+	}
+
+	//Player Two
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		moveVector[1].y = -speed;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		moveVector[1].x = -speed;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		moveVector[1].y = speed;
+
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		moveVector[1].x = speed;
+	}
+
+	players[0].movePlayer(moveVector[0]);
+	players[1].movePlayer(moveVector[1]);
 
 }
 
@@ -166,8 +214,8 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	right.setCenter({ 300,300 });
-	left.setCenter({ 600,500 });
+	right.setCenter(players[0].getPosition());
+	left.setCenter(players[1].getPosition());
 	m_window.clear(sf::Color::Black);
 
 
@@ -178,12 +226,18 @@ void Game::render()
 
 	m_window.setView(left);
 	m_window.draw(map);
+	for (int i = 0; i < MAX_PLAYERS; i++)
+		players[i].render(m_window);
 	//m_window.draw(player1);
 	//m_window.draw(bulletPlayer1);
 	//m_window.draw(bulletPlayer2);
 	//m_window.draw(player2);
+
 	m_window.setView(right);
 	m_window.draw(map);
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+		players[i].render(m_window);
 	/*m_window.draw(bulletPlayer1);
 
 	m_window.draw(bulletPlayer2);
@@ -232,9 +286,14 @@ void Game::setupSprite()
 	{
 		std::cout << "problem loading WORLD PNG" << std::endl;
 	}
-	if (!texLink.loadFromFile("ASSETS\\IMAGES\\link.png"))
+	if (!playerTexture.loadFromFile("ASSETS\\IMAGES\\mario.png"))
 	{
-		std::cout << "problem loading link png" << std::endl;
+		std::cout << "problem loading player png" << std::endl;
+	}
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		players[i].init(playerTexture);
 	}
 
 	map.setTexture(texMap);
