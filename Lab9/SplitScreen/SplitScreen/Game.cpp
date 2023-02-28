@@ -154,12 +154,21 @@ void Game::update(sf::Time t_deltaTime)
 		m_window.close();
 	}
 
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		playerPositions[i] = players[i].getPosition();
+	}
+
 	checkPlayerInput();
 	checkPickupCollision();
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		players[i].update();
+	}
+	for (int i = 0; i < m_pickupItems.size(); i++)
+	{
+		m_pickupItems[i].update();
 	}
 }
 
@@ -289,7 +298,8 @@ void Game::checkPickupCollision()
 				case ItemTypes::Coin:
 					m_pickupItems.erase(m_pickupItems.begin() + j);
 					break;
-				case ItemTypes::Gun:
+				case ItemTypes::BlueShell:
+					m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
 					break;
 				case ItemTypes::SpeedBoost:
 					break;
@@ -347,7 +357,7 @@ void Game::setupSprite()
 	{
 		std::cout << "problem loading Coin png" << std::endl;
 	}
-	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Gun)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::BlueShell)].loadFromFile("ASSETS\\IMAGES\\blueShell.png"))
 	{
 		std::cout << "problem loading Gun png" << std::endl;
 	}
@@ -367,17 +377,27 @@ void Game::setupSprite()
 	{
 		std::cout << "problem loading CoinDoubler png" << std::endl;
 	}
-	m_pickupItems.reserve(150);
-
-	for (int i = 0; i < MAX_COINS; i++)
-	{
-		m_pickupItems.push_back(Pickups(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin));
-	}
-
+	
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		players[i].init(playerTexture);
 	}
+
+	m_pickupItems.reserve(150);
+
+	for (int i = 0; i < MAX_COINS; i++)
+	{
+		Pickups pickup(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
+		m_pickupItems.push_back(pickup);
+	}
+
+	for (int i = 0; i < MAX_BLUE_SHELLS; i++)
+	{
+		Pickups pickup(m_pickupsTextures[static_cast<int>(ItemTypes::BlueShell)], ItemTypes::BlueShell, playerPositions);
+		m_pickupItems.push_back(pickup);
+	}
+
+	
 
 	map.setTexture(texMap);
 }

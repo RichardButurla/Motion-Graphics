@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEnums.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="Pickups.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>

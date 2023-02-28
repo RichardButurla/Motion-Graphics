@@ -16,16 +16,6 @@ public:
 	/// </summary>
 	void run();
 
-	static const int SCREEN_WIDTH = 800;
-	static const int SCREEN_HEIGHT = 600;
-
-	static const int MAX_COLLUMS = 25;
-	static const int MAX_ROWS = 17;
-
-	static const int MAX_PLAYERS = 2;
-	static const int MAX_ITEM_TYPES = 6;
-	static const int MAX_COINS = 10;
-
 private:
 
 	void processEvents();
@@ -69,6 +59,7 @@ private:
 	//Players
 	sf::Texture playerTexture;
 	Player players[MAX_PLAYERS];
+	sf::Vector2f playerPositions[MAX_PLAYERS];
 	int playerOne = static_cast<int>(PlayerID::PlayerOne);
 	int playerTwo = static_cast<int>(PlayerID::PlayerTwo);
 
