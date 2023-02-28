@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "GameEnums.h"
+#include "Pickups.h"
 
 class Game
 {
@@ -22,6 +23,8 @@ public:
 	static const int MAX_ROWS = 17;
 
 	static const int MAX_PLAYERS = 2;
+	static const int MAX_ITEM_TYPES = 6;
+	static const int MAX_COINS = 10;
 
 private:
 
@@ -33,6 +36,12 @@ private:
 
 	void update(sf::Time t_deltaTime);
 	void render();
+
+	void renderPlayerOneScreen();
+	void renderPlayerTwoScreen();
+
+	void checkPlayerInput();
+	void checkPickupCollision();
 
 	void setupFontAndText();
 	void setupSprite();
@@ -60,7 +69,12 @@ private:
 	//Players
 	sf::Texture playerTexture;
 	Player players[MAX_PLAYERS];
-	PlayerID m_playerID = PlayerID::PlayerOne;
+	int playerOne = static_cast<int>(PlayerID::PlayerOne);
+	int playerTwo = static_cast<int>(PlayerID::PlayerTwo);
+
+	//Pickups
+	std::vector<Pickups> m_pickupItems;
+	sf::Texture m_pickupsTextures[MAX_ITEM_TYPES];
 
 	//Mouse
 	sf::Vector2f m_mousePressPos;

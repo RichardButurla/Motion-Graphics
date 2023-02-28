@@ -10,6 +10,7 @@ public:
 	void update();
 
 	sf::Vector2f getPosition() const { return m_position; }
+	sf::FloatRect getGlobalBounds() const { return m_playerSprite.getGlobalBounds(); }
 
 	void movePlayer(sf::Vector2f moveVector) { m_position += moveVector; }
 

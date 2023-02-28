@@ -153,12 +153,78 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
+
+	checkPlayerInput();
+	checkPickupCollision();
+
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		players[i].update();
 	}
+}
 
+/// <summary>
+/// draw the frame and then switch buffers
+/// </summary>
+void Game::render()
+{
+	left.setCenter(players[playerOne].getPosition());
+	right.setCenter(players[playerTwo].getPosition());
+	
+	m_window.clear(sf::Color::Black);
+	//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
+	
+	renderPlayerOneScreen();
 
+	renderPlayerTwoScreen();
+
+	m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
+
+	//m_window.draw(miniback);
+	//m_window.setView(minimap); // Draw minimap
+	//m_window.draw(map);
+
+	m_window.display();
+}
+
+void Game::renderPlayerOneScreen()
+{
+	m_window.setView(left);
+	m_window.draw(map);
+	for (int i = 0; i < MAX_PLAYERS; i++)
+		players[i].render(m_window);
+
+	for (int i = 0; i < m_pickupItems.size(); i++)
+	{
+		m_window.draw(m_pickupItems[i]);
+	}
+	//m_window.draw(player1);
+	//m_window.draw(bulletPlayer1);
+	//m_window.draw(bulletPlayer2);
+	//m_window.draw(player2);
+}
+
+void Game::renderPlayerTwoScreen()
+{
+	m_window.setView(right);
+	m_window.draw(map);
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+		players[i].render(m_window);
+
+	for (int i = 0; i < m_pickupItems.size(); i++)
+	{
+		m_window.draw(m_pickupItems[i]);
+	}
+	/*m_window.draw(bulletPlayer1);
+
+	m_window.draw(bulletPlayer2);
+	m_window.draw(player1);
+	m_window.draw(player2);*/
+}
+
+void Game::checkPlayerInput()
+{
 	//Player One
 	sf::Vector2f moveVector[MAX_PLAYERS]
 	{
@@ -204,56 +270,41 @@ void Game::update(sf::Time t_deltaTime)
 		moveVector[1].x = speed;
 	}
 
-	players[0].movePlayer(moveVector[0]);
-	players[1].movePlayer(moveVector[1]);
-
+	players[playerOne].movePlayer(moveVector[0]);
+	players[playerTwo].movePlayer(moveVector[1]);
 }
 
-/// <summary>
-/// draw the frame and then switch buffers
-/// </summary>
-void Game::render()
+void Game::checkPickupCollision()
 {
-	right.setCenter(players[0].getPosition());
-	left.setCenter(players[1].getPosition());
-	m_window.clear(sf::Color::Black);
-
-
-	//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
-
-
-
-
-	m_window.setView(left);
-	m_window.draw(map);
+	
 	for (int i = 0; i < MAX_PLAYERS; i++)
-		players[i].render(m_window);
-	//m_window.draw(player1);
-	//m_window.draw(bulletPlayer1);
-	//m_window.draw(bulletPlayer2);
-	//m_window.draw(player2);
-
-	m_window.setView(right);
-	m_window.draw(map);
-
-	for (int i = 0; i < MAX_PLAYERS; i++)
-		players[i].render(m_window);
-	/*m_window.draw(bulletPlayer1);
-
-	m_window.draw(bulletPlayer2);
-	m_window.draw(player1);
-	m_window.draw(player2);*/
-
-
-
-	m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
-
-	//m_window.draw(miniback);
-
-	//m_window.setView(minimap); // Draw minimap
-	//m_window.draw(map);
-
-	m_window.display();
+	{
+		for (int j = 0; j < m_pickupItems.size(); j++)
+		{
+			if (m_pickupItems[j].getGlobalBounds().intersects(players[i].getGlobalBounds()))
+			{
+				ItemTypes itemType = m_pickupItems[j].getItemType();
+				switch (itemType)
+				{
+				case ItemTypes::Coin:
+					m_pickupItems.erase(m_pickupItems.begin() + j);
+					break;
+				case ItemTypes::Gun:
+					break;
+				case ItemTypes::SpeedBoost:
+					break;
+				case ItemTypes::Armour:
+					break;
+				case ItemTypes::Magnet:
+					break;
+				case ItemTypes::CoinDoubler:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 }
 
 
@@ -289,6 +340,38 @@ void Game::setupSprite()
 	if (!playerTexture.loadFromFile("ASSETS\\IMAGES\\mario.png"))
 	{
 		std::cout << "problem loading player png" << std::endl;
+	}
+
+	//Item Textures
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Coin)].loadFromFile("ASSETS\\IMAGES\\coin.png"))
+	{
+		std::cout << "problem loading Coin png" << std::endl;
+	}
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Gun)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	{
+		std::cout << "problem loading Gun png" << std::endl;
+	}
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::SpeedBoost)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	{
+		std::cout << "problem loading SpeedBoost png" << std::endl;
+	}
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Armour)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	{
+		std::cout << "problem loading Armour png" << std::endl;
+	}
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Magnet)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	{
+		std::cout << "problem loading Magnet png" << std::endl;
+	}
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	{
+		std::cout << "problem loading CoinDoubler png" << std::endl;
+	}
+	m_pickupItems.reserve(150);
+
+	for (int i = 0; i < MAX_COINS; i++)
+	{
+		m_pickupItems.push_back(Pickups(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin));
 	}
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
