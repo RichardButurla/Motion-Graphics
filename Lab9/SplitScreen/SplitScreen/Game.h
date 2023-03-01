@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "GameEnums.h"
 #include "Pickups.h"
+#include <functional>
 
 class Game
 {
@@ -68,6 +69,8 @@ private:
 	std::map<ItemID,Pickups> m_pickupItems;
 	sf::Texture m_pickupsTextures[MAX_ITEM_TYPES];
 	sf::Vector2f m_coinPositions[MAX_COINS];
+	std::function<void(sf::Vector2f)> m_magnetiseCoins;
+	std::vector <std::function<void(sf::Vector2f)> > m_magnetFunctions;
 
 	//Mouse
 	sf::Vector2f m_mousePressPos;

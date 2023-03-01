@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "Globals.h"
 #include "GameEnums.h"
-
+#include <memory>
+#include <iostream>
 
 
 typedef int ItemID;
@@ -32,6 +33,8 @@ public:
 	void dropPickup() { pickedUp = false; m_position.y += 100; this->setPosition(m_position); }
 
 	void blueShellTrack();
+	void coinMagnetTrack(sf::Vector2f t_target);
+	void setTrackingVelocity(sf::Vector2f target);
 
 	
 private:
@@ -40,7 +43,7 @@ private:
 	bool pickupUsed = false;
 	sf::Vector2f m_position{400,400};
 	sf::Vector2f m_velocity;
-	sf::Vector2f * pickUpPositions;
+	std::shared_ptr<sf::Vector2f> pickUpPositions;
 	PlayerID playerID;
 	ItemID itemId;
 };

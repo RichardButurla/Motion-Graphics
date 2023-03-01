@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GameEnums.h"
+#include <functional>
 
 class Player
 {
@@ -9,7 +10,7 @@ public:
 
 	void init(sf::Texture const& t_texture);
 	void render(sf::RenderWindow& t_window);
-	void update();
+	void update(std::vector <std::function<void(sf::Vector2f)> >& t_magnetiseCoinFunctions);
 
 	void checkPowerup();
 
@@ -26,13 +27,14 @@ public:
 	int getItemHeldID() { return m_itemHeldId; }
 	bool isHoldingItem() { return holdingItem; }
 	int getNumberOfCoinsCollected() { return m_coinsCollected; }
+	bool isMagnetising() { return magnetActivated; }
 
 private:
 	sf::Sprite m_playerSprite;
 	sf::Texture m_playerTexture;
 
 	sf::Vector2f m_position{ 200,400 };
-	float m_currentSpeed{3};
+	float m_currentSpeed{10};
 	float boostedSpeed{ 6 };
 	float normalSpeed{ 3 };
 

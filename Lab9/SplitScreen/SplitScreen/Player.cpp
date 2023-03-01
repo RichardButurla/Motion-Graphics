@@ -19,9 +19,17 @@ void Player::render(sf::RenderWindow& t_window)
 	t_window.draw(m_playerSprite);
 }
 
-void Player::update()
+void Player::update(std::vector <std::function<void(sf::Vector2f)> >& t_magnetiseCoinFunctions)
 {	
 	checkPowerup();
+	if (magnetActivated)
+	{
+		for (int i = 0; i < t_magnetiseCoinFunctions.size(); i++)
+		{
+			t_magnetiseCoinFunctions[i](m_position);
+		}
+		
+	}
 
 	m_playerSprite.setPosition(m_position);
 }
@@ -41,6 +49,7 @@ void Player::checkPowerup()
 	{
 		m_currentSpeed = boostedSpeed;
 	}
+	
 }
 
 void Player::usePowerUp(ItemTypes t_type)

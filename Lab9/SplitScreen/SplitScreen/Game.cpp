@@ -22,6 +22,16 @@ Game::Game() :
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupViews();
+
+	using std::placeholders::_1;
+
+	for (int i = 0; i < MAX_COINS; i++)
+	{
+		if (m_pickupItems[i].getItemType() == ItemTypes::Coin) {
+			m_magnetiseCoins = std::bind(&Pickups::coinMagnetTrack, &m_pickupItems[i], _1);
+			m_magnetFunctions.push_back(m_magnetiseCoins);
+		}
+	}
 }
 
 /// <summary>
@@ -158,14 +168,14 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		playerPositions[i] = players[i].getPosition();
 	}
-
 	checkPlayerInput();
-	checkPickupCollision();
+	
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
-		players[i].update();
+		players[i].update(m_magnetFunctions);	
 	}
+	checkPickupCollision();
 	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
 		m_pickupItems[i].update();

@@ -100,7 +100,32 @@ void Pickups::blueShellTrack()
 		enemyPlayerId = 0;
 
 	sf::Vector2f enemyPos = pickUpPositions[enemyPlayerId];
-	sf::Vector2f directionVector = enemyPos - m_position;
+	setTrackingVelocity(enemyPos);
+}
+
+/// <summary>
+/// used for when player is magnetising
+/// </summary>
+void Pickups::coinMagnetTrack(sf::Vector2f t_target)
+{
+	if (itemId == 0)
+	{
+		std::cout << "0";
+		sf::Vector2f playerPos = pickUpPositions[static_cast<int>(playerID)];
+	}
+	if (itemId >= 1 && itemId <= MAX_COINS)
+	{
+		sf::Vector2f playerPos = pickUpPositions[static_cast<int>(playerID)];
+		sf::Vector2f directionVector = t_target - m_position;
+		sf::Vector2f unitDir = vectorUnitVector(directionVector);
+		m_position.x += unitDir.x * 5;
+		m_position.y += unitDir.y * 5;
+	}
+}
+
+void Pickups::setTrackingVelocity(sf::Vector2f target)
+{
+	sf::Vector2f directionVector = target - m_position;
 	sf::Vector2f unitDir = vectorUnitVector(directionVector);
 	m_velocity = unitDir;
 }
