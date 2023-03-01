@@ -58,6 +58,7 @@ private:
 
 	//Players
 	sf::Texture playerTexture;
+	sf::Text playerCoinTexts[MAX_PLAYERS];
 	Player players[MAX_PLAYERS];
 	sf::Vector2f playerPositions[MAX_PLAYERS];
 	int playerOne = static_cast<int>(PlayerID::PlayerOne);
@@ -66,6 +67,7 @@ private:
 	//Pickups
 	std::map<ItemID,Pickups> m_pickupItems;
 	sf::Texture m_pickupsTextures[MAX_ITEM_TYPES];
+	sf::Vector2f m_coinPositions[MAX_COINS];
 
 	//Mouse
 	sf::Vector2f m_mousePressPos;

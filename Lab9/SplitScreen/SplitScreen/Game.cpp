@@ -181,6 +181,12 @@ void Game::render()
 	right.setCenter(players[playerTwo].getPosition());
 	
 	m_window.clear(sf::Color::Black);
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y - left.getSize().y / 2);
+		playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
+	}
 	//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
 	
 	renderPlayerOneScreen();
@@ -199,7 +205,7 @@ void Game::render()
 void Game::renderPlayerOneScreen()
 {
 	m_window.setView(left);
-	m_window.draw(map);
+	//m_window.draw(map);
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
 
@@ -207,6 +213,8 @@ void Game::renderPlayerOneScreen()
 	{
 		m_window.draw(m_pickupItems[i]);
 	}
+
+	m_window.draw(playerCoinTexts[playerOne]);
 	//m_window.draw(player1);
 	//m_window.draw(bulletPlayer1);
 	//m_window.draw(bulletPlayer2);
@@ -216,15 +224,20 @@ void Game::renderPlayerOneScreen()
 void Game::renderPlayerTwoScreen()
 {
 	m_window.setView(right);
-	m_window.draw(map);
+	//m_window.draw(map);
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
+
+	
+
+	m_window.draw(playerCoinTexts[playerTwo]);
 
 	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
 		m_window.draw(m_pickupItems[i]);
 	}
+
 	/*m_window.draw(bulletPlayer1);
 
 	m_window.draw(bulletPlayer2);
@@ -259,7 +272,8 @@ void Game::checkPlayerInput()
 	{
 		moveVector[0].x = speed;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+	//Pick Up/Drop Item
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
 	{
 		if (players[playerOne].isHoldingItem())
 		{
@@ -267,6 +281,37 @@ void Game::checkPlayerInput()
 			players[playerOne].setHoldingItem(false);
 			m_pickupItems[itemId].dropPickup();
 		}		
+	}
+	//Use Item
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+	{
+		if (players[playerOne].isHoldingItem())
+		{
+			int itemId = players[playerOne].getItemHeldID();
+			players[playerOne].setHoldingItem(false);
+			m_pickupItems[itemId].useItem();
+			ItemTypes itemType = m_pickupItems[itemId].getItemType();
+			switch (itemType)
+			{
+			 // coin is not used since it is added to count
+			
+			 //BlueShell does not get erased
+			case ItemTypes::SpeedBoost:
+				m_pickupItems.erase(itemId);
+				break;
+			case ItemTypes::Armour:
+				m_pickupItems.erase(itemId);
+				break;
+			case ItemTypes::Magnet:
+				m_pickupItems.erase(itemId);
+				break;
+			case ItemTypes::CoinDoubler:
+				m_pickupItems.erase(itemId);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	//Player Two
@@ -287,6 +332,7 @@ void Game::checkPlayerInput()
 	{
 		moveVector[1].x = speed;
 	}
+	//Pick Up/Drop Item
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		if (players[playerTwo].isHoldingItem())
@@ -294,8 +340,42 @@ void Game::checkPlayerInput()
 			int itemId = players[playerTwo].getItemHeldID();
 			players[playerTwo].setHoldingItem(false);
 			m_pickupItems[itemId].dropPickup();
-		}	
+		}
 	}
+	//Use Item
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		if (players[playerTwo].isHoldingItem())
+		{
+			int itemId = players[playerTwo].getItemHeldID();
+			players[playerTwo].setHoldingItem(false);
+			m_pickupItems[itemId].useItem();
+
+			ItemTypes itemType = m_pickupItems[itemId].getItemType();
+			switch (itemType)
+			{
+				// coin is not used since it is added to count
+
+				//BlueShell does not get erased
+			case ItemTypes::SpeedBoost:
+				m_pickupItems.erase(itemId);
+				break;
+			case ItemTypes::Armour:
+				m_pickupItems.erase(itemId);
+				break;
+			case ItemTypes::Magnet:
+				m_pickupItems.erase(itemId);
+				break;
+			case ItemTypes::CoinDoubler:
+				m_pickupItems.erase(itemId);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	
 
 	players[playerOne].movePlayer(moveVector[0]);
 	players[playerTwo].movePlayer(moveVector[1]);
@@ -303,11 +383,6 @@ void Game::checkPlayerInput()
 
 void Game::checkPickupCollision()
 {
-	for (int i = 0; i < m_pickupItems.size(); i++)
-	{
-		std::cout << "\n Item Id: " << m_pickupItems[i].getItemId();
-	}
-	std::cout << "\n";
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		for (int j = 0; j < m_pickupItems.size(); j++)
@@ -315,30 +390,55 @@ void Game::checkPickupCollision()
 			if (m_pickupItems[j].getGlobalBounds().intersects(players[i].getGlobalBounds()))
 			{
 				ItemTypes itemType = m_pickupItems[j].getItemType();
-				switch (itemType)
+				if (itemType == ItemTypes::Coin)
 				{
-				case ItemTypes::Coin:
 					m_pickupItems.erase(j);
-					break;
-				case ItemTypes::BlueShell:
-					std::cout << i;
-					if (!m_pickupItems[j].isPickedUp())
-					{
-						m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
-						players[i].setItemHeldID(m_pickupItems[j].getItemId());
-					}				
-					break;
-				case ItemTypes::SpeedBoost:
-					break;
-				case ItemTypes::Armour:
-					break;
-				case ItemTypes::Magnet:
-					break;
-				case ItemTypes::CoinDoubler:
-					break;
-				default:
+					players[i].collectCoin();
 					break;
 				}
+				if (!players[i].isHoldingItem())
+				{
+					switch (itemType)
+					{
+					case ItemTypes::BlueShell:
+						if (!m_pickupItems[j].isPickedUp())
+						{
+							m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+							players[i].setItemHeldID(m_pickupItems[j].getItemId());
+						}
+						break;
+					case ItemTypes::SpeedBoost:
+						if (!m_pickupItems[j].isPickedUp())
+						{
+							m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+							players[i].setItemHeldID(m_pickupItems[j].getItemId());
+						}
+						break;
+					case ItemTypes::Armour:
+						if (!m_pickupItems[j].isPickedUp())
+						{
+							m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+							players[i].setItemHeldID(m_pickupItems[j].getItemId());
+						}
+						break;
+					case ItemTypes::Magnet:
+						if (!m_pickupItems[j].isPickedUp())
+						{
+							m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+							players[i].setItemHeldID(m_pickupItems[j].getItemId());
+						}
+						break;
+					case ItemTypes::CoinDoubler:
+						if (!m_pickupItems[j].isPickedUp())
+						{
+							m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+							players[i].setItemHeldID(m_pickupItems[j].getItemId());
+						}
+						break;
+					default:
+						break;
+					}
+				}				
 			}
 		}
 	}
@@ -355,14 +455,24 @@ void Game::setupFontAndText()
 		std::cout << "problem loading arial black font" << std::endl;
 	}
 
-	/*m_hudText.setFont(m_ArialBlackfont);
-	m_hudText.setString(hudTexts[i]);
-	m_hudText.setStyle(sf::Text::Italic | sf::Text::Bold);
-	m_hudText.setPosition(70.0f, 20.0f);
-	m_hudText.setCharacterSize(30U);
-	m_hudText.setOutlineColor(sf::Color::Black);
-	m_hudText.setFillColor(hudTileColors[i]);
-	m_hudText.setOutlineThickness(3.0f);*/
+	sf::Vector2f playerCoinTextPositions[MAX_PLAYERS];
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		playerCoinTextPositions[i] = players[i].getPosition();
+	}
+
+	for (size_t i = 0; i < MAX_PLAYERS; i++)
+	{
+		playerCoinTexts[i].setFont(m_ArialBlackfont);
+		playerCoinTexts[i].setString("Coins Collected: ");
+		playerCoinTexts[i].setStyle(sf::Text::Italic | sf::Text::Bold);
+		playerCoinTexts[i].setPosition(playerCoinTextPositions[i]);
+		playerCoinTexts[i].setCharacterSize(30U);
+		playerCoinTexts[i].setOutlineColor(sf::Color::Black);
+		playerCoinTexts[i].setFillColor(sf::Color::Yellow);
+		playerCoinTexts[i].setOutlineThickness(3.0f);
+	}
 }
 
 /// <summary>
@@ -388,19 +498,19 @@ void Game::setupSprite()
 	{
 		std::cout << "problem loading Gun png" << std::endl;
 	}
-	if (!m_pickupsTextures[static_cast<int>(ItemTypes::SpeedBoost)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::SpeedBoost)].loadFromFile("ASSETS\\IMAGES\\speedBoost.png"))
 	{
 		std::cout << "problem loading SpeedBoost png" << std::endl;
 	}
-	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Armour)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Armour)].loadFromFile("ASSETS\\IMAGES\\armourIcon.png"))
 	{
 		std::cout << "problem loading Armour png" << std::endl;
 	}
-	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Magnet)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::Magnet)].loadFromFile("ASSETS\\IMAGES\\magnetIcon.png"))
 	{
 		std::cout << "problem loading Magnet png" << std::endl;
 	}
-	if (!m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)].loadFromFile("ASSETS\\IMAGES\\mario.png"))
+	if (!m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)].loadFromFile("ASSETS\\IMAGES\\2xCoin.png"))
 	{
 		std::cout << "problem loading CoinDoubler png" << std::endl;
 	}
@@ -410,17 +520,46 @@ void Game::setupSprite()
 		players[i].init(playerTexture);
 	}
 
+
 	Pickups pickup;
+	
 	for (int i = 0; i < MAX_COINS; i++)
 	{
-		
+		sf::Vector2f pos;
+		pos.x = rand() % 300 + 600;
+		pos.y = rand() % 500 + 100;
 		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
+		pickup.setPositionVector(pos);
 		m_pickupItems[pickup.getItemId()] = pickup;
 	}
 
 	for (int i = 0; i < MAX_BLUE_SHELLS; i++)
 	{
 		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::BlueShell)], ItemTypes::BlueShell, playerPositions);
+		m_pickupItems[pickup.getItemId()] = pickup;
+	}
+
+	for (int i = 0; i < MAX_2X_COINS; i++)
+	{
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)], ItemTypes::CoinDoubler, playerPositions);
+		m_pickupItems[pickup.getItemId()] = pickup;
+	}
+
+	for (int i = 0; i < MAX_ARMOURS; i++)
+	{
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Armour)], ItemTypes::Armour, playerPositions);
+		m_pickupItems[pickup.getItemId()] = pickup;
+	}
+
+	for (int i = 0; i < MAX_SPEED_BOOSTS; i++)
+	{
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::SpeedBoost)], ItemTypes::SpeedBoost, playerPositions);
+		m_pickupItems[pickup.getItemId()] = pickup;
+	}
+
+	for (int i = 0; i < MAX_MAGNETS; i++)
+	{
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Magnet)], ItemTypes::Magnet, playerPositions);
 		m_pickupItems[pickup.getItemId()] = pickup;
 	}
 
@@ -450,12 +589,6 @@ void Game::setupViews()
 	miniback.setPosition(minimap.getViewport().left * m_window.getSize().x - 5, minimap.getViewport().top * m_window.getSize().y - 5);
 	miniback.setSize(sf::Vector2f(minimap.getViewport().width * m_window.getSize().x + 10, minimap.getViewport().height * m_window.getSize().y + 10));
 	miniback.setFillColor(sf::Color(160, 8, 8));
-
-
-
-
-
-
 
 	/*left.setCenter(player1.getPosition());
 	right.setCenter(player2.getPosition());*/

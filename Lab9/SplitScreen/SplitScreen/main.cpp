@@ -22,6 +22,7 @@
 /// <returns>success or failure</returns>
 int main()
 {
+	std::srand(static_cast<unsigned int>(time(nullptr)));
 	Game game;
 	game.run();
 

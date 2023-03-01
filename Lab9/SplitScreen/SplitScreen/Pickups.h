@@ -23,7 +23,7 @@ inline ItemID newItemID() {
 class Pickups : public sf::Sprite
 {
 public:
-	Pickups();
+	Pickups() = default;
 
 	void update();
 	void init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f* playerPositions);
@@ -33,14 +33,21 @@ public:
 	bool isPickedUp() { return pickedUp; }
 
 	void setItemType(ItemTypes t_type) { m_itemType = t_type; }
+	void setPositionVector(sf::Vector2f t_pos) { m_position = t_pos; }
 
 	void pickUp(PlayerID t_playerID) {  pickedUp = true; playerID = t_playerID; }
-	void dropPickup() { pickedUp = false; }
+	void useItem() { pickupUsed = true; if (m_itemType == ItemTypes::BlueShell) { blueShellTrack(); } }
+	void dropPickup() { pickedUp = false; m_position.y += 100; this->setPosition(m_position); }
+
+	void blueShellTrack();
 
 	
 private:
 	ItemTypes m_itemType = ItemTypes::Coin;
 	bool pickedUp = false;
+	bool pickupUsed = false;
+	sf::Vector2f m_position{400,400};
+	sf::Vector2f m_velocity;
 	sf::Vector2f * pickUpPositions;
 	PlayerID playerID;
 	ItemID itemId;
