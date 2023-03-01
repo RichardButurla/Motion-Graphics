@@ -322,8 +322,11 @@ void Game::checkPickupCollision()
 					break;
 				case ItemTypes::BlueShell:
 					std::cout << i;
-					m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
-					players[i].setItemHeldID(m_pickupItems[j].getItemId());
+					if (!m_pickupItems[j].isPickedUp())
+					{
+						m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+						players[i].setItemHeldID(m_pickupItems[j].getItemId());
+					}				
 					break;
 				case ItemTypes::SpeedBoost:
 					break;

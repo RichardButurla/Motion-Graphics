@@ -30,10 +30,11 @@ public:
 
 	ItemTypes getItemType() const { return m_itemType; }
 	ItemID getItemId() const { return itemId; }
+	bool isPickedUp() { return pickedUp; }
 
 	void setItemType(ItemTypes t_type) { m_itemType = t_type; }
 
-	void pickUp(PlayerID t_playerID) { if (!pickedUp) { pickedUp = true; playerID = t_playerID; } }
+	void pickUp(PlayerID t_playerID) {  pickedUp = true; playerID = t_playerID; }
 	void dropPickup() { pickedUp = false; }
 
 	
