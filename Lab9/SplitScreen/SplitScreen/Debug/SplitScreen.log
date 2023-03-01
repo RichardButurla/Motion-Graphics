@@ -1,10 +1,2 @@
-﻿  Game.cpp
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(169,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(206,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(224,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(293,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(301,21): warning C4018: '<': signed/unsigned mismatch
-  Pickups.cpp
-  main.cpp
-  Generating Code...
-  SplitScreen.vcxproj -> C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe
+﻿  Pickups.cpp
+  SplitScreen.vcxproj -> C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe

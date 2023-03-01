@@ -14,8 +14,12 @@ public:
 	sf::FloatRect getGlobalBounds() const { return m_playerSprite.getGlobalBounds(); }
 
 	void movePlayer(sf::Vector2f moveVector) { m_position += moveVector; }
-	void setItemHeldID(int t_itemId) { m_itemHeldId = t_itemId; }
+	
+	void setHoldingItem(bool t_bool) { holdingItem = t_bool; }
+	void setItemHeldID(int t_itemId) { m_itemHeldId = t_itemId; holdingItem = true; }
+
 	int getItemHeldID() { return m_itemHeldId; }
+	bool isHoldingItem() { return holdingItem; }
 
 
 private:
@@ -25,6 +29,7 @@ private:
 	sf::Vector2f m_position{400,400};
 	float speed = 1.5;
 	int m_itemHeldId = - 1;
+	bool holdingItem = false;
 
 };
 

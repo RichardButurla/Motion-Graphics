@@ -64,7 +64,7 @@ private:
 	int playerTwo = static_cast<int>(PlayerID::PlayerTwo);
 
 	//Pickups
-	std::vector<Pickups> m_pickupItems;
+	std::map<ItemID,Pickups> m_pickupItems;
 	sf::Texture m_pickupsTextures[MAX_ITEM_TYPES];
 
 	//Mouse

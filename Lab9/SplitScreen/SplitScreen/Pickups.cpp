@@ -1,9 +1,24 @@
 #include "Pickups.h"
 
-Pickups::Pickups(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f * playerPositions) : pickUpPositions(playerPositions)
+Pickups::Pickups()
 {
+
+}
+
+void Pickups::update()
+{
+	if (pickedUp)
+	{
+		this->setPosition(pickUpPositions[static_cast<int>(playerID)]);
+	}
+}
+
+void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f* playerPositions)
+{
+	itemId = newItemID();
 	sf::Vector2u textureSize = t_texture.getSize();
-	type = itemType;
+	m_itemType = itemType;
+	pickUpPositions = playerPositions;
 
 	switch (itemType)
 	{
@@ -35,13 +50,5 @@ Pickups::Pickups(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f 
 		break;
 	default:
 		break;
-	}
-}
-
-void Pickups::update()
-{
-	if (pickedUp)
-	{
-		this->setPosition(pickUpPositions[static_cast<int>(playerID)]);
 	}
 }

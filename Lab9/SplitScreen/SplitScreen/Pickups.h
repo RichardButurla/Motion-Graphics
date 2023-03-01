@@ -23,17 +23,22 @@ inline ItemID newItemID() {
 class Pickups : public sf::Sprite
 {
 public:
-	Pickups(sf::Texture const& t_texture,ItemTypes itemType,sf::Vector2f * playerPositions);
+	Pickups();
 
-	ItemTypes getItemType() const { return type; }
+	void update();
+	void init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f* playerPositions);
+
+	ItemTypes getItemType() const { return m_itemType; }
 	ItemID getItemId() const { return itemId; }
+
+	void setItemType(ItemTypes t_type) { m_itemType = t_type; }
 
 	void pickUp(PlayerID t_playerID) { if (!pickedUp) { pickedUp = true; playerID = t_playerID; } }
 	void dropPickup() { pickedUp = false; }
 
-	void update();
+	
 private:
-	ItemTypes type = ItemTypes::Coin;
+	ItemTypes m_itemType = ItemTypes::Coin;
 	bool pickedUp = false;
 	sf::Vector2f * pickUpPositions;
 	PlayerID playerID;

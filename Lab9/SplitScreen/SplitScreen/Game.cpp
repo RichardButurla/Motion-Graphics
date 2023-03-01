@@ -261,8 +261,12 @@ void Game::checkPlayerInput()
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
 	{
-		int itemId = players[0].getItemHeldID();
-		m_pickupItems[itemId].dropPickup();	
+		if (players[playerOne].isHoldingItem())
+		{
+			int itemId = players[playerOne].getItemHeldID();
+			players[playerOne].setHoldingItem(false);
+			m_pickupItems[itemId].dropPickup();
+		}		
 	}
 
 	//Player Two
@@ -283,6 +287,15 @@ void Game::checkPlayerInput()
 	{
 		moveVector[1].x = speed;
 	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		if (players[playerTwo].isHoldingItem())
+		{
+			int itemId = players[playerTwo].getItemHeldID();
+			players[playerTwo].setHoldingItem(false);
+			m_pickupItems[itemId].dropPickup();
+		}	
+	}
 
 	players[playerOne].movePlayer(moveVector[0]);
 	players[playerTwo].movePlayer(moveVector[1]);
@@ -292,10 +305,9 @@ void Game::checkPickupCollision()
 {
 	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
-		//std::cout << "\nIndex: " << i;
+		std::cout << "\n Item Id: " << m_pickupItems[i].getItemId();
 	}
-	std::cout << m_pickupItems.size();
-
+	std::cout << "\n";
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		for (int j = 0; j < m_pickupItems.size(); j++)
@@ -306,9 +318,10 @@ void Game::checkPickupCollision()
 				switch (itemType)
 				{
 				case ItemTypes::Coin:
-					m_pickupItems.erase(m_pickupItems.begin() + j);
+					m_pickupItems.erase(j);
 					break;
 				case ItemTypes::BlueShell:
+					std::cout << i;
 					m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
 					players[i].setItemHeldID(m_pickupItems[j].getItemId());
 					break;
@@ -394,18 +407,18 @@ void Game::setupSprite()
 		players[i].init(playerTexture);
 	}
 
-	m_pickupItems.reserve(150);
-
+	Pickups pickup;
 	for (int i = 0; i < MAX_COINS; i++)
 	{
-		Pickups pickup(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
-		m_pickupItems.push_back(pickup);
+		
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
+		m_pickupItems[pickup.getItemId()] = pickup;
 	}
 
 	for (int i = 0; i < MAX_BLUE_SHELLS; i++)
 	{
-		Pickups pickup(m_pickupsTextures[static_cast<int>(ItemTypes::BlueShell)], ItemTypes::BlueShell, playerPositions);
-		m_pickupItems.push_back(pickup);
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::BlueShell)], ItemTypes::BlueShell, playerPositions);
+		m_pickupItems[pickup.getItemId()] = pickup;
 	}
 
 	
