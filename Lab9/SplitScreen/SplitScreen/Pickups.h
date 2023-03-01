@@ -3,15 +3,7 @@
 #include "Globals.h"
 #include "GameEnums.h"
 
-enum class ItemTypes
-{
-	Coin,
-	BlueShell,
-	SpeedBoost,
-	Armour,
-	Magnet,
-	CoinDoubler
-};
+
 
 typedef int ItemID;
 

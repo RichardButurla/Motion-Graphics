@@ -253,24 +253,24 @@ void Game::checkPlayerInput()
 		{0,0},
 		{0,0}
 	};
-	float speed = 3;
+	float direction = 1;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		moveVector[0].y = -speed;
+		moveVector[0].y = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		moveVector[0].x = -speed;
+		moveVector[0].x = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		moveVector[0].y = speed;
+		moveVector[0].y = direction;
 
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		moveVector[0].x = speed;
+		moveVector[0].x = direction;
 	}
 	//Pick Up/Drop Item
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
@@ -297,16 +297,20 @@ void Game::checkPlayerInput()
 			
 			 //BlueShell does not get erased
 			case ItemTypes::SpeedBoost:
+				players[playerOne].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
 				break;
 			case ItemTypes::Armour:
 				m_pickupItems.erase(itemId);
+				players[playerOne].usePowerUp(itemType);
 				break;
 			case ItemTypes::Magnet:
 				m_pickupItems.erase(itemId);
+				players[playerOne].usePowerUp(itemType);
 				break;
 			case ItemTypes::CoinDoubler:
 				m_pickupItems.erase(itemId);
+				players[playerOne].usePowerUp(itemType);
 				break;
 			default:
 				break;
@@ -317,20 +321,20 @@ void Game::checkPlayerInput()
 	//Player Two
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		moveVector[1].y = -speed;
+		moveVector[1].y = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		moveVector[1].x = -speed;
+		moveVector[1].x = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		moveVector[1].y = speed;
+		moveVector[1].y = direction;
 
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		moveVector[1].x = speed;
+		moveVector[1].x = direction;
 	}
 	//Pick Up/Drop Item
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -358,15 +362,19 @@ void Game::checkPlayerInput()
 
 				//BlueShell does not get erased
 			case ItemTypes::SpeedBoost:
+				players[playerTwo].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
 				break;
 			case ItemTypes::Armour:
+				players[playerTwo].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
 				break;
 			case ItemTypes::Magnet:
+				players[playerTwo].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
 				break;
 			case ItemTypes::CoinDoubler:
+				players[playerTwo].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
 				break;
 			default:
@@ -526,8 +534,8 @@ void Game::setupSprite()
 	for (int i = 0; i < MAX_COINS; i++)
 	{
 		sf::Vector2f pos;
-		pos.x = rand() % 300 + 600;
-		pos.y = rand() % 500 + 100;
+		pos.x = rand() % 1000 + 600;
+		pos.y = rand() % 1000 + 100;
 		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
 		pickup.setPositionVector(pos);
 		m_pickupItems[pickup.getItemId()] = pickup;

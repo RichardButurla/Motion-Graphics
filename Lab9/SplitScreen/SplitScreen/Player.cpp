@@ -21,5 +21,50 @@ void Player::render(sf::RenderWindow& t_window)
 
 void Player::update()
 {	
+	checkPowerup();
+
 	m_playerSprite.setPosition(m_position);
+}
+
+void Player::checkPowerup()
+{
+	if (timeSincePowerUpUsed.getElapsedTime() > powerUpTime)
+	{
+		speedBoostActivated = false;
+		m_currentSpeed = normalSpeed;
+		coinDoublerActivated = false;
+		armourActivated = false;
+		magnetActivated = false;
+	}
+
+	if (speedBoostActivated)
+	{
+		m_currentSpeed = boostedSpeed;
+	}
+}
+
+void Player::usePowerUp(ItemTypes t_type)
+{
+	switch (t_type)
+	{
+		//Coin and Blue Shell are not PoweUps
+	case ItemTypes::SpeedBoost:
+		speedBoostActivated = true;
+		timeSincePowerUpUsed.restart();
+		break;
+	case ItemTypes::Armour:
+		armourActivated = true;
+		timeSincePowerUpUsed.restart();
+		break;
+	case ItemTypes::Magnet:
+		magnetActivated = true;
+		timeSincePowerUpUsed.restart();
+		break;
+	case ItemTypes::CoinDoubler:
+		coinDoublerActivated = true;
+		timeSincePowerUpUsed.restart();
+		break;
+	default:
+		break;
+	}
 }

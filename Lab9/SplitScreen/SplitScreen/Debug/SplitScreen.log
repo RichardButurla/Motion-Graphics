@@ -2,18 +2,18 @@
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(169,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(212,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(236,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(388,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(529,24): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(396,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(537,25): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(530,24): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(538,25): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-  Pickups.cpp
+  Player.cpp
   main.cpp
   Generating Code...
   SplitScreen.vcxproj -> C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe
