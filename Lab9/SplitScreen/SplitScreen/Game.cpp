@@ -259,6 +259,11 @@ void Game::checkPlayerInput()
 	{
 		moveVector[0].x = speed;
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+	{
+		int itemId = players[0].getItemHeldID();
+		m_pickupItems[itemId].dropPickup();	
+	}
 
 	//Player Two
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -285,7 +290,12 @@ void Game::checkPlayerInput()
 
 void Game::checkPickupCollision()
 {
-	
+	for (int i = 0; i < m_pickupItems.size(); i++)
+	{
+		//std::cout << "\nIndex: " << i;
+	}
+	std::cout << m_pickupItems.size();
+
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		for (int j = 0; j < m_pickupItems.size(); j++)
@@ -300,6 +310,7 @@ void Game::checkPickupCollision()
 					break;
 				case ItemTypes::BlueShell:
 					m_pickupItems[j].pickUp(static_cast<PlayerID>(i));
+					players[i].setItemHeldID(m_pickupItems[j].getItemId());
 					break;
 				case ItemTypes::SpeedBoost:
 					break;
