@@ -21,6 +21,8 @@ public:
 
 	void setHoldingItem(bool t_bool) { holdingItem = t_bool; }
 	void setItemHeldID(int t_itemId) { m_itemHeldId = t_itemId; holdingItem = true; }
+
+	void removeCoins(int t_coinNumber) { m_coinsCollected -= t_coinNumber; }
 	void usePowerUp(ItemTypes t_type);
 	void collectCoin() { if (coinDoublerActivated) { m_coinsCollected += 2; } else { m_coinsCollected += 1; } }
 

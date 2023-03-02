@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "Vector2.h"
 
 
 
@@ -484,6 +485,7 @@ void Game::checkBlueShellCollision()
 					{
 						std::cout << "Collision with Player Two";
 						m_pickupItems.erase(blueShell.getItemId());
+						takeAwayCoins(playerTwo);
 					}
 					break;
 				case PlayerID::PlayerTwo:
@@ -491,6 +493,7 @@ void Game::checkBlueShellCollision()
 					{
 						std::cout << "Collision with Player One";
 						m_pickupItems.erase(blueShell.getItemId());
+						takeAwayCoins(playerOne);
 					}
 					break;
 				default:
@@ -500,6 +503,59 @@ void Game::checkBlueShellCollision()
 
 		}
 	}
+}
+
+void Game::takeAwayCoins(int t_playerNumber)
+{
+	int numberOfCoinsLost = 4;
+	int numberOfCoinsCollected = players[t_playerNumber].getNumberOfCoinsCollected();
+	if (numberOfCoinsCollected > 0)
+	{
+		//if player has more than the coin penalty just take away that amount, otherwise take all his coins away
+		if (numberOfCoinsCollected > numberOfCoinsLost)
+		{
+			players[t_playerNumber].removeCoins(numberOfCoinsLost);
+			dropCoins(playerPositions[t_playerNumber], numberOfCoinsLost);
+		}
+		else
+		{
+			players[t_playerNumber].removeCoins(numberOfCoinsCollected);
+			dropCoins(playerPositions[t_playerNumber], numberOfCoinsCollected);
+		}
+	}
+}
+
+void Game::dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost)
+{
+	//put coins around player and add onto map.
+	float dropAngle = 20;
+	float dropDistance = 150;
+	float dropAngleRadians = dropAngle * (PI / 180);
+	dropAngleRadians = dropAngleRadians;
+	float dropAngleRadianDecrement = (dropAngleRadians * 2) / t_numberOfCoinsLost;
+
+	sf::Vector2f initialDropPos = t_playerPos;
+	initialDropPos.y += dropDistance;
+	sf::Vector2f unitVector = vectorUnitVector(initialDropPos);
+	unitVector *= dropDistance;
+
+	sf::Vector2f rotatedPoint;
+
+
+	Pickups pickup;
+	for (int i = 0; i  < t_numberOfCoinsLost; i++)
+	{
+		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
+
+		rotatedPoint = vectorRotateBy(unitVector, dropAngleRadians);
+		rotatedPoint += t_playerPos;
+
+		pickup.setPositionVector(rotatedPoint);
+		m_pickupItems[pickup.getItemId()] = pickup;
+
+		dropAngleRadians -= dropAngleRadianDecrement;
+	}
+	
 }
 
 

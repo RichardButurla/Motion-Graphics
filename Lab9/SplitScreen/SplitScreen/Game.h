@@ -38,6 +38,9 @@ private:
 	void checkPickupCollision();
 	void checkBlueShellCollision();
 
+	void takeAwayCoins(int t_playerNumber);
+	void dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost);
+
 	void setupFontAndText();
 	void setupSprite();
 	void setupViews();

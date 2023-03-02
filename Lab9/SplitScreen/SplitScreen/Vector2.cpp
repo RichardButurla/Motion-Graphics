@@ -1,7 +1,7 @@
 #include "Vector2.h"
 
 //Name: Richard Buturla
-constexpr double PI = 3.1415926535;
+
 
 
 /// <summary>
