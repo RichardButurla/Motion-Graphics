@@ -14,7 +14,8 @@
 /// </summary>
 Game::Game() :
 	m_window{ sf::VideoMode{ SCREEN_WIDTH, SCREEN_HEIGHT, 32U }, "Level Editor" },
-	m_exitGame{ false } //when true game will exit
+	m_exitGame{ false }, //when true game will exit
+	m_levelEditor(m_window)
 {
 	baseView = m_window.getView();
 	movingView = m_window.getView();
@@ -100,6 +101,14 @@ void Game::processEvents()
 		{
 			processMouseRelease(newEvent);
 		}
+		if (m_editingLevel)
+		{
+			if (sf::Event::MouseWheelMoved == newEvent.type)
+			{
+				m_levelEditor.processMouseScroll(newEvent);
+			}
+		}
+		
 	}
 }
 
@@ -164,24 +173,30 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
+	if (m_editingLevel)
+	{
+		m_levelEditor.update();
+	}
+	else
+	{
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			playerPositions[i] = players[i].getPosition();
+		}
+		checkPlayerInput();
+		checkPickupCollision();
+		checkBlueShellCollision();
 
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		playerPositions[i] = players[i].getPosition();
-	}
-	checkPlayerInput();
-	checkPickupCollision();
-	checkBlueShellCollision();
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			players[i].update(m_magnetFunctions);
+		}
 
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		players[i].update(m_magnetFunctions);	
-	}
-	
-	for (int i = 0; i < m_pickupItems.size(); i++)
-	{
-		m_pickupItems[i].update();
-	}
+		for (int i = 0; i < m_pickupItems.size(); i++)
+		{
+			m_pickupItems[i].update();
+		}
+	}	
 }
 
 /// <summary>
@@ -189,35 +204,45 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	left.setCenter(players[playerOne].getPosition());
-	right.setCenter(players[playerTwo].getPosition());
-	
 	m_window.clear(sf::Color::Black);
 
-	for (int i = 0; i < MAX_PLAYERS; i++)
+	if (m_editingLevel)
 	{
-		playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y - left.getSize().y / 2);
-		playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
+		m_levelEditor.render(m_window);
 	}
-	//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
+	else
+	{
+		left.setCenter(players[playerOne].getPosition());
+		right.setCenter(players[playerTwo].getPosition());
+
+		
+
+		for (int i = 0; i < MAX_PLAYERS; i++)
+		{
+			playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y - left.getSize().y / 2);
+			playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
+		}
+		//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
+
+		renderPlayerOneScreen();
+
+		renderPlayerTwoScreen();
+
+		m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
+
+		//m_window.draw(miniback);
+		//m_window.setView(minimap); // Draw minimap
+		//m_window.draw(map);
+
+	}
 	
-	renderPlayerOneScreen();
-
-	renderPlayerTwoScreen();
-
-	m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
-
-	//m_window.draw(miniback);
-	//m_window.setView(minimap); // Draw minimap
-	//m_window.draw(map);
-
 	m_window.display();
 }
 
 void Game::renderPlayerOneScreen()
 {
 	m_window.setView(left);
-	//m_window.draw(map);
+	m_window.draw(map);
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
 
@@ -236,7 +261,7 @@ void Game::renderPlayerOneScreen()
 void Game::renderPlayerTwoScreen()
 {
 	m_window.setView(right);
-	//m_window.draw(map);
+	m_window.draw(map);
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
@@ -630,6 +655,13 @@ void Game::setupSprite()
 		std::cout << "problem loading CoinDoubler png" << std::endl;
 	}
 	
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	{
+		m_tileTextures.push_back(m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)]);
+	}
+
+	m_levelEditor.init(m_placedTiles,m_tileTextures);
+
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		players[i].init(playerTexture);

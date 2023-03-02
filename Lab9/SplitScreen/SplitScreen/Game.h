@@ -2,6 +2,7 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
+#include "LevelEditor.h"
 #include "Player.h"
 #include "GameEnums.h"
 #include "Pickups.h"
@@ -49,6 +50,12 @@ private:
 	sf::View baseView;
 	sf::View movingView;
 	sf::Font m_ArialBlackfont; // font used by message
+
+	//Level
+	LevelEditor m_levelEditor;
+	std::vector<Tile>m_placedTiles;
+	std::vector<sf::Texture> m_tileTextures;
+	bool m_editingLevel = true;
 
 	sf::Texture texMap; // Create the world texture and sprite
 
