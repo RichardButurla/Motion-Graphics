@@ -21,12 +21,9 @@ class Tile : public sf::Sprite
 public:
 	TileType getTileType() { return m_tileType; }
 	void setTileType(TileType t_type);
-	void setTileSize(float t_width, float t_height) { m_tileWidth = t_width; m_tileHeight = t_height; }
 
 private:
-	TileType m_tileType = TileType::PlayerSpawn;
-	float m_tileWidth;
-	float m_tileHeight;
+	TileType m_tileType = TileType::Wall;
 };
 
 class LevelEditor

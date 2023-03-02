@@ -215,7 +215,6 @@ void LevelEditor::setupSprite()
 		default:
 			break;
 		}
-		m_hudTile[i].setTileSize(tileWidth, tileHeight);
 	}
 
 	m_highlightTile = m_hudTile[static_cast<int>(TileType::Wall)];
@@ -361,25 +360,32 @@ void LevelEditor::checkRemovingBlock()
 
 void Tile::setTileType(TileType t_type)
 {
+	sf::Vector2u textureSize = this->getTexture()->getSize();
+	textureSize.x = textureSize.x / 7;
+	textureSize.y = textureSize.y / 3;
+
 	switch (t_type)
 	{
 	case TileType::PlayerSpawn:
 		m_tileType = TileType::PlayerSpawn;
-		this->setTextureRect(sf::IntRect(m_tileWidth * 4, m_tileHeight * 2, m_tileWidth, m_tileHeight));
+		this->setTextureRect(sf::IntRect(textureSize.x * 4, textureSize.y * 2, textureSize.x, textureSize.y));
 		break;
 	case TileType::Wall:
 		m_tileType = TileType::Wall;
-		this->setTextureRect(sf::IntRect(m_tileWidth * 5, m_tileHeight * 2, m_tileWidth, m_tileHeight));
+		this->setTextureRect(sf::IntRect(textureSize.x * 5, textureSize.y * 2, textureSize.x, textureSize.y));
 		break;
 	case TileType::Floor:
 		m_tileType = TileType::Floor;
-		this->setTextureRect(sf::IntRect(0, 0, m_tileWidth, m_tileHeight));
+
+		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
 		break;
 	case TileType::PowerUpSpawn:
 		m_tileType = TileType::PowerUpSpawn;
-		this->setTextureRect(sf::IntRect(m_tileWidth * 5, m_tileHeight * 1, m_tileWidth, m_tileHeight));
+		this->setTextureRect(sf::IntRect(textureSize.x * 5, textureSize.y * 1, textureSize.x, textureSize.y));
 		break;
 	default:
 		break;
 	}
+
+	m_tileType = t_type;
 }

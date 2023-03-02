@@ -25,6 +25,8 @@ Game::Game() :
 	setupSprite(); // load texture
 	setupViews();
 
+	loadPreviousLevel();
+
 	using std::placeholders::_1;
 
 	for (int i = 0; i < m_pickupItems.size(); i++)
@@ -122,6 +124,7 @@ void Game::processKeys(sf::Event t_event)
 	if (sf::Keyboard::Escape == t_event.key.code)
 	{
 		m_editingLevel = !m_editingLevel;
+		saveLevel();
 	}
 	
 }
@@ -315,20 +318,55 @@ void Game::checkPlayerOneInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		moveVector.y = -direction;
+		if (!checkWallTileCollision(players[playerOne]))
+		{
+			moveVector = { 0,-1 };
+			players[playerOne].movePlayer(moveVector);
+		}
+		else
+		{
+			moveVector = { 0,2 };
+			players[playerOne].movePlayer(moveVector);
+		}
+	}
+	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		if (!checkWallTileCollision(players[playerOne]))
+		{
+			moveVector = { 0,1 };
+			players[playerOne].movePlayer(moveVector);
+		}
+		else
+		{
+			moveVector = { 0,-2 };
+			players[playerOne].movePlayer(moveVector);
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		moveVector.x = -direction;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		moveVector.y = direction;
-
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		moveVector.x = direction;
+	{	
+		if (!checkWallTileCollision(players[playerOne]))
+		{
+			moveVector = { -1,0 };
+			players[playerOne].movePlayer(moveVector);
+		}
+		else
+		{
+			moveVector = { 2,0 };
+			players[playerOne].movePlayer(moveVector);
+		}
+	}	
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{		
+		if (!checkWallTileCollision(players[playerOne]))
+		{
+			moveVector = { 1,0 };
+			players[playerOne].movePlayer(moveVector);
+		}
+		else
+		{
+			moveVector = { -2,0 };
+			players[playerOne].movePlayer(moveVector);
+		}
 	}
 	//Pick Up/Drop Item
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
@@ -375,7 +413,6 @@ void Game::checkPlayerOneInput()
 			}
 		}
 	}
-	players[playerOne].movePlayer(moveVector);
 }
 
 void Game::checkPlayerTwoInput()
@@ -556,10 +593,25 @@ void Game::checkBlueShellCollision()
 	}
 }
 
+bool Game::checkWallTileCollision(Player t_player)
+{
+	for (int j = 0; j < m_levelTiles.size(); j++)
+	{
+		if (m_levelTiles[j].getTileType() == TileType::Wall)
+		{
+			if (t_player.getGlobalBounds().intersects(m_levelTiles[j].getGlobalBounds()))
+			{
+				return true;
+			}
+		}
+			
+	}
+	return false;
+}
+
 void Game::checkGameTime()
 {
 	int timeLeft = gameDuration.asSeconds() - timeSinceGameStart.getElapsedTime().asSeconds();
-	std::cout << static_cast<int>(timeLeft);
 	m_gameTimeText.setString("Time Left: " + std::to_string(timeLeft));
 	/*if (timeSinceGameStart.getElapsedTime() > gameDuration)
 	{
@@ -816,4 +868,36 @@ void Game::setupViews()
 
 	/*left.setCenter(player1.getPosition());
 	right.setCenter(player2.getPosition());*/
+}
+
+void Game::loadPreviousLevel()
+{
+	std::ifstream file("tileData.txt");
+	if (file.is_open())
+	{
+		Tile tile;
+		int x;
+		int y;
+		int tileType;
+
+		while (file >> x >> y >> tileType) {
+			tile.setPosition(sf::Vector2f{ static_cast<float>(x),static_cast<float>(y) });
+			tile.setTexture(m_tileTexture);
+			tile.setTileType(static_cast<TileType>(tileType));
+			m_levelTiles.push_back(tile);
+		}
+		file.close();
+	}
+}
+
+void Game::saveLevel()
+{
+	std::ofstream file("tileData.txt");
+
+	for (int i = 0; i < m_levelTiles.size(); i++) {
+		sf::Vector2f tilePos = m_levelTiles[i].getPosition();
+		int tileType = static_cast<int>(m_levelTiles[i].getTileType());
+		file << tilePos.x << " " << tilePos.y << " " << tileType << std::endl;
+	}
+	file.close();
 }

@@ -38,6 +38,7 @@ private:
 
 	void checkPickupCollision();
 	void checkBlueShellCollision();
+	bool checkWallTileCollision(Player t_player);
 	void checkGameTime();
 
 	void takeAwayCoins(int t_playerNumber);
@@ -46,6 +47,9 @@ private:
 	void setupFontAndText();
 	void setupSprite();
 	void setupViews();
+
+	void loadPreviousLevel();
+	void saveLevel();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::View baseView;
