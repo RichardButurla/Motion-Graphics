@@ -24,8 +24,6 @@ void LevelEditor::update()
 	processMouse();
 
 	checkHighlightingBlock();
-	checkPlacingBlock();
-	checkRemovingBlock();
 }
 
 void LevelEditor::render(sf::RenderWindow& t_window)
@@ -121,8 +119,16 @@ void LevelEditor::processMouseScroll(sf::Event t_event)
 void LevelEditor::processMouse()
 {
 	processMouseMove();
-	processMousePress();
-	processMouseRelease();
+	processMousePress();	
+	if (sf::Event::MouseButtonReleased)
+	{
+		//processMouseRelease();
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) ||
+		sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		processMouseRelease();
+	}
 }
 
 void LevelEditor::setupSprite()
