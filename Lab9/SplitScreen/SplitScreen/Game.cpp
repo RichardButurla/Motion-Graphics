@@ -212,37 +212,40 @@ void Game::render()
 	}
 	else
 	{
-		left.setCenter(players[playerOne].getPosition());
-		right.setCenter(players[playerTwo].getPosition());
-
-		
-
-		for (int i = 0; i < MAX_PLAYERS; i++)
+		if (!m_gameOver)
 		{
-			playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y - left.getSize().y / 2);
-			playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
+
+			left.setCenter(players[playerOne].getPosition());
+			right.setCenter(players[playerTwo].getPosition());
+
+
+
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y - left.getSize().y / 2);
+				playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
+			}
+			//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
+
+			renderPlayerOneScreen();
+
+			renderPlayerTwoScreen();
+
+			m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
+
+			m_window.draw(m_gameTimeText);
 		}
-		//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
-
-		renderPlayerOneScreen();
-
-		renderPlayerTwoScreen();
-
-		m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
-
-		m_window.draw(m_gameTimeText);
+		else
+		{
+			m_window.draw(m_gameWinText);
+			m_window.draw(m_gameLoseText);
+		}
 	}
-	else
-	{
-		m_window.draw(m_gameWinText);
-		m_window.draw(m_gameLoseText);
-	}
+	
 	//m_window.draw(miniback);
 	//m_window.setView(minimap); // Draw minimap
 	//m_window.draw(map);
 
-	}
-	
 	m_window.display();
 }
 
