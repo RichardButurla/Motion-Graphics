@@ -22,7 +22,9 @@ public:
 
 	ItemTypes getItemType() const { return m_itemType; }
 	ItemID getItemId() const { return itemId; }
+	PlayerID getPlayerID() { return playerID; }
 	bool isPickedUp() { return pickedUp; }
+	bool isUsed() { return pickupUsed; }
 
 	void setItemType(ItemTypes t_type) { m_itemType = t_type; }
 	void setPositionVector(sf::Vector2f t_pos) { m_position = t_pos; }

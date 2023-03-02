@@ -32,7 +32,11 @@ private:
 	void renderPlayerTwoScreen();
 
 	void checkPlayerInput();
+	void checkPlayerOneInput();
+	void checkPlayerTwoInput();
+
 	void checkPickupCollision();
+	void checkBlueShellCollision();
 
 	void setupFontAndText();
 	void setupSprite();

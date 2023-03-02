@@ -37,7 +37,6 @@ private:
 	float m_currentSpeed{3};
 	float boostedSpeed{ 6 };
 	float normalSpeed{ 3 };
-
 	int m_itemHeldId{ -1 };
 	bool holdingItem = false;
 

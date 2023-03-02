@@ -169,13 +169,14 @@ void Game::update(sf::Time t_deltaTime)
 		playerPositions[i] = players[i].getPosition();
 	}
 	checkPlayerInput();
-	
+	checkPickupCollision();
+	checkBlueShellCollision();
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		players[i].update(m_magnetFunctions);	
 	}
-	checkPickupCollision();
+	
 	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
 		m_pickupItems[i].update();
@@ -257,30 +258,31 @@ void Game::renderPlayerTwoScreen()
 
 void Game::checkPlayerInput()
 {
-	//Player One
-	sf::Vector2f moveVector[MAX_PLAYERS]
-	{
-		{0,0},
-		{0,0}
-	};
+	checkPlayerOneInput();
+	checkPlayerTwoInput();
+}
+
+void Game::checkPlayerOneInput()
+{
+	sf::Vector2f moveVector;
 	float direction = 1;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		moveVector[0].y = -direction;
+		moveVector.y = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		moveVector[0].x = -direction;
+		moveVector.x = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		moveVector[0].y = direction;
+		moveVector.y = direction;
 
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		moveVector[0].x = direction;
+		moveVector.x = direction;
 	}
 	//Pick Up/Drop Item
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
@@ -290,7 +292,7 @@ void Game::checkPlayerInput()
 			int itemId = players[playerOne].getItemHeldID();
 			players[playerOne].setHoldingItem(false);
 			m_pickupItems[itemId].dropPickup();
-		}		
+		}
 	}
 	//Use Item
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
@@ -303,9 +305,9 @@ void Game::checkPlayerInput()
 			ItemTypes itemType = m_pickupItems[itemId].getItemType();
 			switch (itemType)
 			{
-			 // coin is not used since it is added to count
-			
-			 //BlueShell does not get erased
+				// coin is not used since it is added to count
+
+				//BlueShell does not get erased
 			case ItemTypes::SpeedBoost:
 				players[playerOne].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
@@ -327,24 +329,30 @@ void Game::checkPlayerInput()
 			}
 		}
 	}
+	players[playerOne].movePlayer(moveVector);
+}
 
-	//Player Two
+void Game::checkPlayerTwoInput()
+{
+	sf::Vector2f moveVector;
+	float direction = 1;
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		moveVector[1].y = -direction;
+		moveVector.y = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		moveVector[1].x = -direction;
+		moveVector.x = -direction;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		moveVector[1].y = direction;
+		moveVector.y = direction;
 
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		moveVector[1].x = direction;
+		moveVector.x = direction;
 	}
 	//Pick Up/Drop Item
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -392,11 +400,7 @@ void Game::checkPlayerInput()
 			}
 		}
 	}
-	
-	
-
-	players[playerOne].movePlayer(moveVector[0]);
-	players[playerTwo].movePlayer(moveVector[1]);
+	players[playerTwo].movePlayer(moveVector);
 }
 
 void Game::checkPickupCollision()
@@ -458,6 +462,42 @@ void Game::checkPickupCollision()
 					}
 				}				
 			}
+		}
+	}
+}
+
+void Game::checkBlueShellCollision()
+{
+	for (int i = 0; i < m_pickupItems.size(); i++)
+	{
+		if (m_pickupItems[i].getItemType() == ItemTypes::BlueShell)
+		{
+			Pickups blueShell = m_pickupItems[i];
+			if (blueShell.isUsed())
+			{
+				PlayerID playerID = blueShell.getPlayerID();
+
+				switch (playerID)
+				{
+				case PlayerID::PlayerOne:
+					if (blueShell.getGlobalBounds().intersects(players[playerTwo].getGlobalBounds()))
+					{
+						std::cout << "Collision with Player Two";
+						m_pickupItems.erase(blueShell.getItemId());
+					}
+					break;
+				case PlayerID::PlayerTwo:
+					if (blueShell.getGlobalBounds().intersects(players[playerOne].getGlobalBounds()))
+					{
+						std::cout << "Collision with Player One";
+						m_pickupItems.erase(blueShell.getItemId());
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
 		}
 	}
 }
