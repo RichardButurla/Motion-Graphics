@@ -54,8 +54,8 @@ private:
 
 	//Level
 	LevelEditor m_levelEditor;
-	std::vector<Tile>m_placedTiles;
-	std::vector<sf::Texture> m_tileTextures;
+	std::vector<Tile>m_levelTiles;
+	sf::Texture m_tileTexture;
 	bool m_editingLevel = true;
 
 	sf::Texture texMap; // Create the world texture and sprite
@@ -69,7 +69,7 @@ private:
 
 	//Time
 	sf::Clock timeSinceGameStart;
-	sf::Time gameDuration = sf::seconds(5);
+	sf::Time gameDuration = sf::seconds(100);
 	sf::Text m_gameTimeText;
 	sf::Text m_gameLoseText;
 	sf::Text m_gameWinText;

@@ -11,7 +11,7 @@ void Player::init(sf::Texture const& t_texture)
 	sf::Vector2u textureSize = m_playerTexture.getSize();
 	m_playerSprite.setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
 	m_playerSprite.setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-	m_playerSprite.setScale(0.2f, 0.2f);
+	m_playerSprite.setScale(0.05f, 0.05f);
 }
 
 void Player::render(sf::RenderWindow& t_window)

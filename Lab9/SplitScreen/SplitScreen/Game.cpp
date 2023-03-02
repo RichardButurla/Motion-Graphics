@@ -15,7 +15,7 @@
 Game::Game() :
 	m_window{ sf::VideoMode{ SCREEN_WIDTH, SCREEN_HEIGHT, 32U }, "Level Editor" },
 	m_exitGame{ false }, //when true game will exit
-	m_levelEditor(m_window)
+	m_levelEditor(m_window,m_levelTiles)
 {
 	baseView = m_window.getView();
 	movingView = m_window.getView();
@@ -121,7 +121,7 @@ void Game::processKeys(sf::Event t_event)
 {
 	if (sf::Keyboard::Escape == t_event.key.code)
 	{
-		m_exitGame = true;
+		m_editingLevel = !m_editingLevel;
 	}
 	
 }
@@ -253,7 +253,12 @@ void Game::render()
 void Game::renderPlayerOneScreen()
 {
 	m_window.setView(left);
-	m_window.draw(map);
+	
+	for (int i = 0; i < m_levelTiles.size(); i++)
+	{
+		m_window.draw(m_levelTiles[i]);
+	}
+
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
 
@@ -272,7 +277,11 @@ void Game::renderPlayerOneScreen()
 void Game::renderPlayerTwoScreen()
 {
 	m_window.setView(right);
-	m_window.draw(map);
+
+	for (int i = 0; i < m_levelTiles.size(); i++)
+	{
+		m_window.draw(m_levelTiles[i]);
+	}
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
@@ -552,7 +561,7 @@ void Game::checkGameTime()
 	int timeLeft = gameDuration.asSeconds() - timeSinceGameStart.getElapsedTime().asSeconds();
 	std::cout << static_cast<int>(timeLeft);
 	m_gameTimeText.setString("Time Left: " + std::to_string(timeLeft));
-	if (timeSinceGameStart.getElapsedTime() > gameDuration)
+	/*if (timeSinceGameStart.getElapsedTime() > gameDuration)
 	{
 		m_gameOver = true;
 		sf::Vector2f playerOneTextPos{ m_window.getSize().x / 3.5f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f };
@@ -567,7 +576,7 @@ void Game::checkGameTime()
 			m_gameWinText.setPosition(playerTwoTextPos);
 			m_gameLoseText.setPosition(playerOneTextPos);
 		}
-	}
+	}*/
 }
 
 void Game::takeAwayCoins(int t_playerNumber)
@@ -721,13 +730,12 @@ void Game::setupSprite()
 	{
 		std::cout << "problem loading CoinDoubler png" << std::endl;
 	}
-	
-	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	if (!m_tileTexture.loadFromFile("ASSETS\\IMAGES\\tileSheet.png"))
 	{
-		m_tileTextures.push_back(m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)]);
+		std::cout << "problem loading CoinDoubler png" << std::endl;
 	}
 
-	m_levelEditor.init(m_placedTiles,m_tileTextures);
+	m_levelEditor.init(m_tileTexture,m_ArialBlackfont);
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -796,8 +804,10 @@ void Game::setupViews()
 	// The 'left' and the 'right' view will be used for splitscreen displays
 	left = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(m_window.getSize().x / 2), static_cast<float>(m_window.getSize().y)));
 	left.setViewport(sf::FloatRect(0.f, 0.f, 0.5, 1.f));
+	left.zoom(0.2);
 	right = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(m_window.getSize().x / 2), static_cast<float>(m_window.getSize().y)));
 	right.setViewport(sf::FloatRect(0.5, 0.f, 0.5, 1.f));
+	right.zoom(0.2);
 
 	// We want to draw a rectangle behind the minimap
 	miniback.setPosition(minimap.getViewport().left * m_window.getSize().x - 5, minimap.getViewport().top * m_window.getSize().y - 5);

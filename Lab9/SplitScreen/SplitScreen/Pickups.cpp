@@ -40,7 +40,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		textureSize.x /= 6;
 		textureSize.y /= 2;
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setScale(0.2f, 0.2f);
+		this->setScale(0.05f, 0.05f);
 		m_position = sf::Vector2f{ 600,200 };
 		this->setPosition(m_position);
 		break;
@@ -49,7 +49,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x / 5, textureSize.y));
 		textureSize.x /= 5;
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setScale(2.f, 2.f);
+		this->setScale(0.05f, 0.05f);
 		m_position = { 600,400 };
 		this->setPosition(m_position);
 		break;
@@ -57,7 +57,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTexture(t_texture);
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.18f, 0.18f);
+		this->setScale(0.04f, 0.04f);
 		m_position = { 800,400 };
 		this->setPosition(m_position);
 		break;
@@ -65,7 +65,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTexture(t_texture);
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.16f, 0.16f);
+		this->setScale(0.03f, 0.03f);
 		m_position = { 1000,400 };
 		this->setPosition(m_position);
 		break;
@@ -73,7 +73,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTexture(t_texture);
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.14f, 0.14f);
+		this->setScale(0.02f, 0.02f);
 		m_position = { 1200,400 };
 		this->setPosition(m_position);
 		break;
@@ -81,7 +81,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTexture(t_texture);
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.4f, 0.4f);
+		this->setScale(0.005f, 0.005f);
 		m_position = { 1400,400 };
 		this->setPosition(m_position);
 		break;

@@ -1,18 +1,17 @@
 #include "LevelEditor.h"
+#include <iostream>
 
-LevelEditor::LevelEditor(sf::RenderWindow & t_window) : m_levelWindow(t_window)
+LevelEditor::LevelEditor(sf::RenderWindow & t_window, std::vector<Tile>& m_gameTiles) :
+	m_levelWindow(t_window),
+	m_placedTiles(m_gameTiles)
 {
 
 	m_currentView = m_levelWindow.getView();
 }
 
-void LevelEditor::init(std::vector<Tile>& t_gameLevel, std::vector<sf::Texture> t_tileTextures)
+void LevelEditor::init(sf::Texture & t_tileTexture, sf::Font& t_font)
 {
-	m_placedTiles = t_gameLevel;
-	m_tileTextures = t_tileTextures;
-	sf::Vector2u textureSize = t_tileTextures[0].getSize(); //tiles will be square so we can just grab the first texture
-	tileWidth = textureSize.x;
-	tileHeight = textureSize.y;
+	m_tileTexture = t_tileTexture;
 
 	setupSprite();
 	setupGrid();
@@ -23,6 +22,14 @@ void LevelEditor::update()
 	processKeys();
 	processMouse();
 
+	sf::Vector2f hudTilePosition = m_currentView.getCenter();
+	//hudTilePosition.y += m_levelWindow.getViewport(m_currentView).height;
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	{
+		hudTilePosition.x += m_hudTile[i].getGlobalBounds().width;
+		m_hudTile[i].setPosition(hudTilePosition);
+	}
+
 	checkHighlightingBlock();
 }
 
@@ -31,6 +38,11 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 	m_levelWindow.setView(m_currentView);
 
 	//Draw Grid for placement
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	{
+		t_window.draw(m_hudTile[i]);
+	}
+
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
@@ -113,6 +125,23 @@ void LevelEditor::processMouseScroll(sf::Event t_event)
 	if(t_event.type == sf::Event::MouseWheelMoved) // Zomm in or out if the mouse wheel moves
 	{
 		m_currentView.zoom(1.f - t_event.mouseWheel.delta * 0.1f);
+		switch (t_event.mouseWheel.delta)
+		{
+		case -1:
+			currentZoom += (1.f + t_event.mouseWheel.delta * 0.1f) * 0.1f;
+			break;
+
+		case 1:
+			currentZoom += (1.f + t_event.mouseWheel.delta * 0.1f) * 0.1f;
+			break;
+		default:
+			break;
+		}
+		std::cout << "current Zoom: " << currentZoom;
+		for (int i = 0; i < MAX_TILE_TYPES; i++)
+		{
+			m_hudTile[i].setScale(currentZoom, currentZoom);
+		}
 	}
 }
 
@@ -120,32 +149,76 @@ void LevelEditor::processMouse()
 {
 	processMouseMove();
 	processMousePress();	
-	if (sf::Event::MouseButtonReleased)
-	{
-		//processMouseRelease();
-	}
+
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) ||
 		sf::Mouse::isButtonPressed(sf::Mouse::Right))
 	{
+		bool hudTileSelected = false;
+
+		for (int i = 0; i < 4; i++)
+		{
+			sf::Vector2f tilePos = m_hudTile[i].getPosition();
+			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
+				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
+			{
+				std::cout << "tile selected";
+				m_highlightTile.setTileType(static_cast<TileType>(i));
+				hudTileSelected = true;
+			}
+
+		}
+		if(!hudTileSelected)
 		processMouseRelease();
 	}
 }
 
 void LevelEditor::setupSprite()
 {
+	sf::Vector2u textureSize;
+	textureSize.x = m_tileTexture.getSize().x / 7;
+	textureSize.y = m_tileTexture.getSize().y / 3;
+	tileWidth = textureSize.x;
+	tileHeight = textureSize.y;
 
 	m_gridTile.setFillColor(sf::Color::Black);
 	m_gridTile.setSize({ tileWidth, tileHeight });
 	m_gridTile.setOutlineColor(sf::Color::White);
-	m_gridTile.setOutlineThickness(10.f);
+	m_gridTile.setOutlineThickness(1.f);
 
 	m_tile.setColor(sf::Color::Red);
-	m_tile.setTexture(m_tileTextures[static_cast<int>(TileType::Wall)]);
+	m_tile.setTexture(m_tileTexture);
 	m_tile.setTextureRect(sf::IntRect(0, 0, tileWidth, tileHeight));
 
-	m_highlightTile.setTexture(m_tileTextures[static_cast<int>(TileType::Wall)]);
+	m_highlightTile.setTexture(m_tileTexture);
 	m_highlightTile.setTextureRect(sf::IntRect(0, 0, tileWidth, tileHeight));
 
+	TileType tileType;
+
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	{
+		tileType = static_cast<TileType>(i);
+		m_hudTile[i].setTexture(m_tileTexture);
+		switch (tileType)
+		{
+		case TileType::PlayerSpawn:
+			m_hudTile[i].setTextureRect(sf::IntRect(tileWidth * 4, tileHeight * 2, tileWidth, tileHeight));
+			break;
+		case TileType::Wall:
+			m_hudTile[i].setTextureRect(sf::IntRect(tileWidth * 5, tileHeight * 2, tileWidth, tileHeight));
+			break;
+		case TileType::Floor:
+			m_hudTile[i].setTextureRect(sf::IntRect(0, 0, tileWidth, tileHeight));
+			break;
+		case TileType::PowerUpSpawn:
+			m_hudTile[i].setTextureRect(sf::IntRect(tileWidth * 5, tileHeight * 1, tileWidth, tileHeight));
+			break;
+		default:
+			break;
+		}
+		m_hudTile[i].setTileSize(tileWidth, tileHeight);
+	}
+
+	m_highlightTile = m_hudTile[static_cast<int>(TileType::Wall)];
 	//Set Positiuons?
 
 }
@@ -160,6 +233,29 @@ void LevelEditor::setupGrid()
 		}
 	}
 	m_placedTiles.reserve(MAX_COLLUMS * MAX_ROWS);
+}
+
+void LevelEditor::setupFontAndText()
+{
+	std::string hudTexts[4]
+	{
+		"Wall Block: ",
+		"Floor Block: ",
+		"Player Spawn Block: ",
+		"Power Up Spawn Block: "
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_hudText.setFont(m_font);
+		m_hudText.setString(hudTexts[i]);
+		m_hudText.setStyle(sf::Text::Italic | sf::Text::Bold);
+		m_hudText.setPosition(70.0f, 20.0f);
+		m_hudText.setCharacterSize(30U);
+		m_hudText.setOutlineColor(sf::Color::Black);
+		m_hudText.setFillColor(sf::Color::White);
+		m_hudText.setOutlineThickness(3.0f);
+	}
 }
 
 void LevelEditor::checkHighlightingBlock()
@@ -269,19 +365,19 @@ void Tile::setTileType(TileType t_type)
 	{
 	case TileType::PlayerSpawn:
 		m_tileType = TileType::PlayerSpawn;
-
+		this->setTextureRect(sf::IntRect(m_tileWidth * 4, m_tileHeight * 2, m_tileWidth, m_tileHeight));
 		break;
 	case TileType::Wall:
 		m_tileType = TileType::Wall;
-
+		this->setTextureRect(sf::IntRect(m_tileWidth * 5, m_tileHeight * 2, m_tileWidth, m_tileHeight));
 		break;
 	case TileType::Floor:
 		m_tileType = TileType::Floor;
-
+		this->setTextureRect(sf::IntRect(0, 0, m_tileWidth, m_tileHeight));
 		break;
 	case TileType::PowerUpSpawn:
 		m_tileType = TileType::PowerUpSpawn;
-
+		this->setTextureRect(sf::IntRect(m_tileWidth * 5, m_tileHeight * 1, m_tileWidth, m_tileHeight));
 		break;
 	default:
 		break;
