@@ -37,6 +37,7 @@ private:
 
 	void checkPickupCollision();
 	void checkBlueShellCollision();
+	void checkGameTime();
 
 	void takeAwayCoins(int t_playerNumber);
 	void dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost);
@@ -58,6 +59,14 @@ private:
 	sf::View standard;
 	sf::View minimap;
 	unsigned int size = 200; // The 'minimap' view will show a smaller picture of the map
+
+	//Time
+	sf::Clock timeSinceGameStart;
+	sf::Time gameDuration = sf::seconds(5);
+	sf::Text m_gameTimeText;
+	sf::Text m_gameLoseText;
+	sf::Text m_gameWinText;
+	bool m_gameOver;
 
 	// The 'left' and the 'right' view will be used for splitscreen displays
 	sf::View left;

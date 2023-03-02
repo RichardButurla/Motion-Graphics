@@ -1,24 +1,25 @@
 ﻿  Game.cpp
 C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(29,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(181,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(224,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(248,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(411,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(472,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(540,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(651,25): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(182,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(234,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(258,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(421,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(482,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(526,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(572,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(710,25): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(652,25): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(711,25): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
   Generating code
-  2 of 443 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+  3 of 444 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    10 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SplitScreen.vcxproj -> C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\Release\SplitScreen.exe
