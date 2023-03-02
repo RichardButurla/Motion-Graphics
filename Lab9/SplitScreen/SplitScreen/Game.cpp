@@ -217,7 +217,7 @@ void Game::render()
 void Game::renderPlayerOneScreen()
 {
 	m_window.setView(left);
-	//m_window.draw(map);
+	m_window.draw(map);
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
 
@@ -236,7 +236,7 @@ void Game::renderPlayerOneScreen()
 void Game::renderPlayerTwoScreen()
 {
 	m_window.setView(right);
-	//m_window.draw(map);
+	m_window.draw(map);
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		players[i].render(m_window);
@@ -483,17 +483,24 @@ void Game::checkBlueShellCollision()
 				case PlayerID::PlayerOne:
 					if (blueShell.getGlobalBounds().intersects(players[playerTwo].getGlobalBounds()))
 					{
-						std::cout << "Collision with Player Two";
+						if (!players[playerTwo].hasArmour())
+						{
+							std::cout << "Collision with Player Two";
+							takeAwayCoins(playerTwo);
+						}
 						m_pickupItems.erase(blueShell.getItemId());
-						takeAwayCoins(playerTwo);
 					}
 					break;
 				case PlayerID::PlayerTwo:
 					if (blueShell.getGlobalBounds().intersects(players[playerOne].getGlobalBounds()))
 					{
-						std::cout << "Collision with Player One";
+						if (!players[playerOne].hasArmour())
+						{
+							std::cout << "Collision with Player One";
+							
+							takeAwayCoins(playerOne);
+						}	
 						m_pickupItems.erase(blueShell.getItemId());
-						takeAwayCoins(playerOne);
 					}
 					break;
 				default:

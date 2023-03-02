@@ -30,6 +30,7 @@ public:
 	bool isHoldingItem() { return holdingItem; }
 	int getNumberOfCoinsCollected() { return m_coinsCollected; }
 	bool isMagnetising() { return magnetActivated; }
+	bool hasArmour() { return armourActivated; }
 
 private:
 	sf::Sprite m_playerSprite;
