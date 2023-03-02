@@ -38,6 +38,7 @@ private:
 
 	void checkPickupCollision();
 	void checkBlueShellCollision();
+	void checkGameTime();
 
 	void takeAwayCoins(int t_playerNumber);
 	void dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost);
@@ -55,7 +56,7 @@ private:
 	LevelEditor m_levelEditor;
 	std::vector<Tile>m_placedTiles;
 	std::vector<sf::Texture> m_tileTextures;
-	bool m_editingLevel = true;
+	bool m_editingLevel = false;
 
 	sf::Texture texMap; // Create the world texture and sprite
 
@@ -65,6 +66,14 @@ private:
 	sf::View standard;
 	sf::View minimap;
 	unsigned int size = 200; // The 'minimap' view will show a smaller picture of the map
+
+	//Time
+	sf::Clock timeSinceGameStart;
+	sf::Time gameDuration = sf::seconds(5);
+	sf::Text m_gameTimeText;
+	sf::Text m_gameLoseText;
+	sf::Text m_gameWinText;
+	bool m_gameOver;
 
 	// The 'left' and the 'right' view will be used for splitscreen displays
 	sf::View left;

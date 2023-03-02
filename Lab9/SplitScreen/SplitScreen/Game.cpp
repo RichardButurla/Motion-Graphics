@@ -230,9 +230,16 @@ void Game::render()
 
 		m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
 
-		//m_window.draw(miniback);
-		//m_window.setView(minimap); // Draw minimap
-		//m_window.draw(map);
+		m_window.draw(m_gameTimeText);
+	}
+	else
+	{
+		m_window.draw(m_gameWinText);
+		m_window.draw(m_gameLoseText);
+	}
+	//m_window.draw(miniback);
+	//m_window.setView(minimap); // Draw minimap
+	//m_window.draw(map);
 
 	}
 	
@@ -508,17 +515,23 @@ void Game::checkBlueShellCollision()
 				case PlayerID::PlayerOne:
 					if (blueShell.getGlobalBounds().intersects(players[playerTwo].getGlobalBounds()))
 					{
-						std::cout << "Collision with Player Two";
+						if (!players[playerTwo].hasArmour())
+						{
+							std::cout << "Collision with Player Two";
+							takeAwayCoins(playerTwo);
+						}
 						m_pickupItems.erase(blueShell.getItemId());
-						takeAwayCoins(playerTwo);
 					}
 					break;
 				case PlayerID::PlayerTwo:
 					if (blueShell.getGlobalBounds().intersects(players[playerOne].getGlobalBounds()))
 					{
-						std::cout << "Collision with Player One";
+						if (!players[playerOne].hasArmour())
+						{
+							std::cout << "Collision with Player One";
+							takeAwayCoins(playerOne);
+						}	
 						m_pickupItems.erase(blueShell.getItemId());
-						takeAwayCoins(playerOne);
 					}
 					break;
 				default:
@@ -526,6 +539,29 @@ void Game::checkBlueShellCollision()
 				}
 			}
 
+		}
+	}
+}
+
+void Game::checkGameTime()
+{
+	int timeLeft = gameDuration.asSeconds() - timeSinceGameStart.getElapsedTime().asSeconds();
+	std::cout << static_cast<int>(timeLeft);
+	m_gameTimeText.setString("Time Left: " + std::to_string(timeLeft));
+	if (timeSinceGameStart.getElapsedTime() > gameDuration)
+	{
+		m_gameOver = true;
+		sf::Vector2f playerOneTextPos{ m_window.getSize().x / 3.5f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f };
+		sf::Vector2f playerTwoTextPos{ m_window.getSize().x / 1.5f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f };
+		if (players[playerOne].getNumberOfCoinsCollected() > players[playerTwo].getNumberOfCoinsCollected())
+		{
+			m_gameWinText.setPosition(playerOneTextPos);
+			m_gameLoseText.setPosition(playerTwoTextPos);
+		}
+		else
+		{
+			m_gameWinText.setPosition(playerTwoTextPos);
+			m_gameLoseText.setPosition(playerOneTextPos);
 		}
 	}
 }
@@ -613,6 +649,33 @@ void Game::setupFontAndText()
 		playerCoinTexts[i].setFillColor(sf::Color::Yellow);
 		playerCoinTexts[i].setOutlineThickness(3.0f);
 	}
+	m_gameTimeText.setFont(m_ArialBlackfont);
+	m_gameTimeText.setString("Time Remaining: ");
+	m_gameTimeText.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_gameTimeText.setPosition({ m_window.getSize().x / 2.f - m_gameTimeText.getGlobalBounds().width / 2,0 + 0});
+	m_gameTimeText.setCharacterSize(30U);
+	m_gameTimeText.setOutlineColor(sf::Color::Black);
+	m_gameTimeText.setFillColor(sf::Color::White);
+	m_gameTimeText.setOutlineThickness(3.0f);
+
+	m_gameLoseText.setFont(m_ArialBlackfont);
+	m_gameLoseText.setString("You Lose!");
+	m_gameLoseText.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_gameLoseText.setPosition({ m_window.getSize().x / 2.f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f });
+	m_gameLoseText.setCharacterSize(30U);
+	m_gameLoseText.setOutlineColor(sf::Color::Black);
+	m_gameLoseText.setFillColor(sf::Color::White);
+	m_gameLoseText.setOutlineThickness(3.0f);
+
+	m_gameWinText.setFont(m_ArialBlackfont);
+	m_gameWinText.setString("You Win!");
+	m_gameWinText.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_gameWinText.setPosition({ m_window.getSize().x / 4.f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f });
+	m_gameWinText.setCharacterSize(30U);
+	m_gameWinText.setOutlineColor(sf::Color::Black);
+	m_gameWinText.setFillColor(sf::Color::White);
+	m_gameWinText.setOutlineThickness(3.0f);
+
 }
 
 /// <summary>
