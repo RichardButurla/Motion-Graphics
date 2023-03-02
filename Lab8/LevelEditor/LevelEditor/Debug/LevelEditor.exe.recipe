@@ -2,15 +2,15 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab8\LevelEditor\Debug\LevelEditor.exe</FullPath>
+      <FullPath>C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab8\LevelEditor\Debug\LevelEditor.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab8\LevelEditor\LevelEditor\ASSETS\FONTS\ariblk.ttf</FullPath>
+      <FullPath>C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab8\LevelEditor\LevelEditor\ASSETS\FONTS\ariblk.ttf</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\C00272345\Desktop\MG\Motion-Graphics\Lab8\LevelEditor\LevelEditor\ASSETS\IMAGES\SFML-LOGO.png</FullPath>
+      <FullPath>C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab8\LevelEditor\LevelEditor\ASSETS\IMAGES\SFML-LOGO.png</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

@@ -20,7 +20,12 @@ void LevelEditor::init(std::vector<Tile>& t_gameLevel, std::vector<sf::Texture> 
 
 void LevelEditor::update()
 {
+	processKeys();
+	processMouse();
+
 	checkHighlightingBlock();
+	checkPlacingBlock();
+	checkRemovingBlock();
 }
 
 void LevelEditor::render(sf::RenderWindow& t_window)
@@ -32,8 +37,8 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			m_tile.setPosition(m_gridPositions[row][col]);
-			t_window.draw(m_tile);
+			m_gridTile.setPosition(m_gridPositions[row][col]);
+			t_window.draw(m_gridTile);
 		}
 	}
 
@@ -47,18 +52,62 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 
 void LevelEditor::processKeys()
 {
+	float offset = 10;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		m_currentView.move({ 0,-offset });
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		m_currentView.move({ -offset,0 });
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		m_currentView.move({ 0,offset });
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		m_currentView.move({ offset,0 });
+	}
 }
 
 void LevelEditor::processMousePress()
 {
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(m_levelWindow);
+	sf::Vector2f worldPos = m_levelWindow.mapPixelToCoords(pixelPos);
+
+	m_mousePressPos.x = worldPos.x;
+	m_mousePressPos.y = worldPos.y;
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		m_currentEditingAction = EditAction::Placing;
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		m_currentEditingAction = EditAction::Removing;
+	}
 }
 
 void LevelEditor::processMouseRelease()
-{
+{	
+	if (m_currentEditingAction == EditAction::Placing)
+	{
+		checkPlacingBlock();
+	}
+	if (m_currentEditingAction == EditAction::Removing)
+	{
+		checkRemovingBlock();
+	}
 }
 
 void LevelEditor::processMouseMove()
 {
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(m_levelWindow);
+	sf::Vector2f worldPos = m_levelWindow.mapPixelToCoords(pixelPos);
+
+	m_mouseMovePos.x = worldPos.x;
+	m_mouseMovePos.y = worldPos.y;
 }
 
 void LevelEditor::processMouseScroll(sf::Event t_event)
@@ -71,10 +120,19 @@ void LevelEditor::processMouseScroll(sf::Event t_event)
 
 void LevelEditor::processMouse()
 {
+	processMouseMove();
+	processMousePress();
+	processMouseRelease();
 }
 
 void LevelEditor::setupSprite()
 {
+
+	m_gridTile.setFillColor(sf::Color::Black);
+	m_gridTile.setSize({ tileWidth, tileHeight });
+	m_gridTile.setOutlineColor(sf::Color::White);
+	m_gridTile.setOutlineThickness(10.f);
+
 	m_tile.setColor(sf::Color::Red);
 	m_tile.setTexture(m_tileTextures[static_cast<int>(TileType::Wall)]);
 	m_tile.setTextureRect(sf::IntRect(0, 0, tileWidth, tileHeight));

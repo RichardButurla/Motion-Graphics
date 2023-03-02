@@ -4,8 +4,8 @@ constexpr double PI = 3.1415926535;
 static const int SCREEN_WIDTH = 800;
 static const int SCREEN_HEIGHT = 600;
 
-static const int MAX_COLLUMS = 60;
-static const int MAX_ROWS = 60;
+static const int MAX_COLLUMS = 20;
+static const int MAX_ROWS = 20;
 static const int MAX_TILE_TYPES = 4;
 
 static const int MAX_PLAYERS = 2;

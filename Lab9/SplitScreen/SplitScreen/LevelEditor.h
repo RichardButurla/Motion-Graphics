@@ -50,6 +50,7 @@ public:
 
 private:
 	Tile m_tile;
+	sf::RectangleShape m_gridTile;
 	Tile m_highlightTile;
 	float tileWidth;
 	float tileHeight;
