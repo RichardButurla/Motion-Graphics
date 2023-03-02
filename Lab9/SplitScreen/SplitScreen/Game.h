@@ -56,7 +56,7 @@ private:
 	LevelEditor m_levelEditor;
 	std::vector<Tile>m_placedTiles;
 	std::vector<sf::Texture> m_tileTextures;
-	bool m_editingLevel = false;
+	bool m_editingLevel = true;
 
 	sf::Texture texMap; // Create the world texture and sprite
 

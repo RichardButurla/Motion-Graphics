@@ -186,6 +186,7 @@ void Game::update(sf::Time t_deltaTime)
 		checkPlayerInput();
 		checkPickupCollision();
 		checkBlueShellCollision();
+		checkGameTime();
 
 		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
@@ -222,7 +223,7 @@ void Game::render()
 
 			for (int i = 0; i < MAX_PLAYERS; i++)
 			{
-				playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y - left.getSize().y / 2);
+				playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y + left.getSize().y / 2.5);
 				playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
 			}
 			//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
