@@ -1,4 +1,5 @@
 ﻿  Game.cpp
+C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(28,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(179,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(222,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(246,20): warning C4018: '<': signed/unsigned mismatch

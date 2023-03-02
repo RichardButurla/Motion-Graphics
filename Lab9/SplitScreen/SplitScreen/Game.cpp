@@ -25,7 +25,7 @@ Game::Game() :
 
 	using std::placeholders::_1;
 
-	for (int i = 0; i < MAX_COINS; i++)
+	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
 		if (m_pickupItems[i].getItemType() == ItemTypes::Coin) {
 			m_magnetiseCoins = std::bind(&Pickups::coinMagnetTrack, &m_pickupItems[i], _1);

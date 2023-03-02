@@ -107,16 +107,11 @@ void Pickups::blueShellTrack()
 /// used for when player is magnetising
 /// </summary>
 void Pickups::coinMagnetTrack(sf::Vector2f t_target)
-{
-	if (itemId == 0)
+{	
+	sf::Vector2f directionVector = t_target - m_position;
+	float magnetRadius = 300;
+	if (vectorLength(directionVector) < magnetRadius)
 	{
-		std::cout << "0";
-		sf::Vector2f playerPos = pickUpPositions[static_cast<int>(playerID)];
-	}
-	if (itemId >= 1 && itemId <= MAX_COINS)
-	{
-		sf::Vector2f playerPos = pickUpPositions[static_cast<int>(playerID)];
-		sf::Vector2f directionVector = t_target - m_position;
 		sf::Vector2f unitDir = vectorUnitVector(directionVector);
 		m_position.x += unitDir.x * 5;
 		m_position.y += unitDir.y * 5;

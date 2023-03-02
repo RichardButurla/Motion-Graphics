@@ -34,7 +34,7 @@ private:
 	sf::Texture m_playerTexture;
 
 	sf::Vector2f m_position{ 200,400 };
-	float m_currentSpeed{10};
+	float m_currentSpeed{3};
 	float boostedSpeed{ 6 };
 	float normalSpeed{ 3 };
 

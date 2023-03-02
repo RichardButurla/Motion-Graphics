@@ -2,14 +2,13 @@
 #include <SFML/Graphics.hpp>
 #include "Globals.h"
 #include "GameEnums.h"
-#include <memory>
-#include <iostream>
+
 
 
 typedef int ItemID;
 
 inline ItemID newItemID() {
-	static ItemID id = 0;
+	static ItemID id = 1;
 	return id++;
 }
 
@@ -43,7 +42,7 @@ private:
 	bool pickupUsed = false;
 	sf::Vector2f m_position{400,400};
 	sf::Vector2f m_velocity;
-	std::shared_ptr<sf::Vector2f> pickUpPositions;
+	sf::Vector2f * pickUpPositions;
 	PlayerID playerID;
 	ItemID itemId;
 };
