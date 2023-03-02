@@ -507,7 +507,7 @@ void Game::checkBlueShellCollision()
 
 void Game::takeAwayCoins(int t_playerNumber)
 {
-	int numberOfCoinsLost = 4;
+	int numberOfCoinsLost = 6;
 	int numberOfCoinsCollected = players[t_playerNumber].getNumberOfCoinsCollected();
 	if (numberOfCoinsCollected > 0)
 	{
@@ -532,7 +532,7 @@ void Game::dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost)
 	float dropDistance = 150;
 	float dropAngleRadians = dropAngle * (PI / 180);
 	dropAngleRadians = dropAngleRadians;
-	float dropAngleRadianDecrement = (dropAngleRadians * 2) / t_numberOfCoinsLost;
+	float dropAngleRadianDecrement = (dropAngleRadians * 10) / t_numberOfCoinsLost;
 
 	sf::Vector2f initialDropPos = t_playerPos;
 	initialDropPos.y += dropDistance;
@@ -554,6 +554,7 @@ void Game::dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost)
 		m_pickupItems[pickup.getItemId()] = pickup;
 
 		dropAngleRadians -= dropAngleRadianDecrement;
+		std::cout << "Angle in Radians" << dropAngleRadians;
 	}
 	
 }
