@@ -690,6 +690,7 @@ void Game::setupFontAndText()
 		playerCoinTexts[i].setOutlineColor(sf::Color::Black);
 		playerCoinTexts[i].setFillColor(sf::Color::Yellow);
 		playerCoinTexts[i].setOutlineThickness(3.0f);
+		playerCoinTexts[i].setScale(0.1, 0.1);
 	}
 	m_gameTimeText.setFont(m_ArialBlackfont);
 	m_gameTimeText.setString("Time Remaining: ");
@@ -780,7 +781,7 @@ void Game::setupSprite()
 		pos.x = rand() % 1000 + 600;
 		pos.y = rand() % 1000 + 100;
 		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
-		pickup.setPositionVector(pos);
+
 		m_pickupItems[pickup.getItemId()] = pickup;
 	}
 
@@ -856,23 +857,49 @@ void Game::loadPreviousLevel()
 		int x;
 		int y;
 		int tileType;
+		bool firstCoinFound = false;
+		int coinIndex = 0;
+		int powerUpIndex = -1;
 
 		while (file >> x >> y >> tileType) {
 			tile.setPosition(sf::Vector2f{ static_cast<float>(x),static_cast<float>(y) });
 			tile.setTexture(m_tileTexture);
 			tile.setTileType(static_cast<TileType>(tileType));
-			if (tileType == static_cast<int>(TileType::PlayerSpawn))
-				playerSpawnTile = tile;
 
+			if (tileType == static_cast<int>(TileType::PlayerSpawn))
+			{
+				for (int i = 0; i < MAX_PLAYERS; i++)
+				{
+					players[i].setPosition(tile.getPosition());
+				}				
+			}
+			if (tileType == static_cast<int>(TileType::CoinSpawn))
+			{
+				if (!firstCoinFound)
+				{
+					for (int i = 0; i < m_pickupItems.size(); i++)
+					{
+						if (m_pickupItems[i].getItemType() == ItemTypes::Coin) {
+							coinIndex = i;
+							firstCoinFound = true;
+							break;
+						}
+					}
+				}
+				
+				if (m_pickupItems[coinIndex].getItemType() == ItemTypes::Coin)
+				{
+					m_pickupItems[coinIndex].setPositionVector(tile.getPosition());
+					coinIndex++;
+				}
+
+			}
 			m_levelTiles.push_back(tile);
 		}
 		file.close();
 	}
 
-	for (int i = 0; i < MAX_PLAYERS; i++)
-	{
-		players[i].setPosition(playerSpawnTile.getPosition());
-	}
+	
 }
 
 void Game::saveLevel()
