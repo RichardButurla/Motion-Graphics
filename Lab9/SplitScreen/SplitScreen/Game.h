@@ -61,6 +61,7 @@ private:
 	std::vector<Tile>m_levelTiles;
 	sf::Texture m_tileTexture;
 	bool m_editingLevel = true;
+	Tile playerSpawnTile;
 
 	sf::Texture texMap; // Create the world texture and sprite
 

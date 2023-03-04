@@ -861,9 +861,17 @@ void Game::loadPreviousLevel()
 			tile.setPosition(sf::Vector2f{ static_cast<float>(x),static_cast<float>(y) });
 			tile.setTexture(m_tileTexture);
 			tile.setTileType(static_cast<TileType>(tileType));
+			if (tileType == static_cast<int>(TileType::PlayerSpawn))
+				playerSpawnTile = tile;
+
 			m_levelTiles.push_back(tile);
 		}
 		file.close();
+	}
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		players[i].setPosition(playerSpawnTile.getPosition());
 	}
 }
 
