@@ -759,9 +759,9 @@ void Game::setupSprite()
 	{
 		std::cout << "problem loading CoinDoubler png" << std::endl;
 	}
-	if (!m_tileTexture.loadFromFile("ASSETS\\IMAGES\\tileSheet.png"))
+	if (!m_tileTexture.loadFromFile("ASSETS\\IMAGES\\tileSheet2.png"))
 	{
-		std::cout << "problem loading CoinDoubler png" << std::endl;
+		std::cout << "problem loading TileSheet png" << std::endl;
 	}
 
 	m_levelEditor.init(m_tileTexture,m_ArialBlackfont);

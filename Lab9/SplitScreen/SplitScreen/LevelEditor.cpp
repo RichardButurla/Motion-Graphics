@@ -22,11 +22,32 @@ void LevelEditor::update()
 	processKeys();
 	processMouse();
 
-	sf::Vector2f hudTilePosition = m_currentView.getCenter();
+	
 	//hudTilePosition.y += m_levelWindow.getViewport(m_currentView).height;
 	for (int i = 0; i < MAX_TILE_TYPES; i++)
 	{
-		hudTilePosition.x += m_hudTile[i].getGlobalBounds().width;
+		TileType tileType = m_hudTile[i].getTileType();
+		sf::Vector2f hudTilePosition = m_currentView.getCenter();
+		switch (tileType)
+		{
+		case TileType::PlayerSpawn:
+			hudTilePosition.x += m_hudTile[i].getGlobalBounds().width * 3;
+			break;
+		case TileType::Wall:
+			hudTilePosition.x += m_hudTile[i].getGlobalBounds().width;
+			break;
+		case TileType::Floor:
+			hudTilePosition.x += m_hudTile[i].getGlobalBounds().width * 2;
+			break;
+		case TileType::PowerUpSpawn:
+			hudTilePosition.x += m_hudTile[i].getGlobalBounds().width * 4;
+			break;
+		case TileType::CoinSpawn:
+			hudTilePosition.x += m_hudTile[i].getGlobalBounds().width * 5;
+			break;
+		default:
+			break;
+		}
 		m_hudTile[i].setPosition(hudTilePosition);
 	}
 
@@ -155,7 +176,7 @@ void LevelEditor::processMouse()
 	{
 		bool hudTileSelected = false;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < MAX_TILE_TYPES; i++)
 		{
 			sf::Vector2f tilePos = m_hudTile[i].getPosition();
 			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
@@ -198,23 +219,7 @@ void LevelEditor::setupSprite()
 	{
 		tileType = static_cast<TileType>(i);
 		m_hudTile[i].setTexture(m_tileTexture);
-		switch (tileType)
-		{
-		case TileType::PlayerSpawn:
-			m_hudTile[i].setTextureRect(sf::IntRect(tileWidth * 4, tileHeight * 2, tileWidth, tileHeight));
-			break;
-		case TileType::Wall:
-			m_hudTile[i].setTextureRect(sf::IntRect(tileWidth * 5, tileHeight * 2, tileWidth, tileHeight));
-			break;
-		case TileType::Floor:
-			m_hudTile[i].setTextureRect(sf::IntRect(0, 0, tileWidth, tileHeight));
-			break;
-		case TileType::PowerUpSpawn:
-			m_hudTile[i].setTextureRect(sf::IntRect(tileWidth * 5, tileHeight * 1, tileWidth, tileHeight));
-			break;
-		default:
-			break;
-		}
+		m_hudTile[i].setTileType(tileType);
 	}
 
 	m_highlightTile = m_hudTile[static_cast<int>(TileType::Wall)];
@@ -368,7 +373,7 @@ void Tile::setTileType(TileType t_type)
 	{
 	case TileType::PlayerSpawn:
 		m_tileType = TileType::PlayerSpawn;
-		this->setTextureRect(sf::IntRect(textureSize.x * 4, textureSize.y * 2, textureSize.x, textureSize.y));
+		this->setTextureRect(sf::IntRect(textureSize.x * 1, 0, textureSize.x, textureSize.y));
 		break;
 	case TileType::Wall:
 		m_tileType = TileType::Wall;
@@ -381,7 +386,11 @@ void Tile::setTileType(TileType t_type)
 		break;
 	case TileType::PowerUpSpawn:
 		m_tileType = TileType::PowerUpSpawn;
-		this->setTextureRect(sf::IntRect(textureSize.x * 5, textureSize.y * 1, textureSize.x, textureSize.y));
+		this->setTextureRect(sf::IntRect(textureSize.x * 2,0, textureSize.x, textureSize.y));
+		break;
+	case TileType::CoinSpawn:
+		m_tileType = TileType::CoinSpawn;
+		this->setTextureRect(sf::IntRect(textureSize.x * 3, 0, textureSize.x, textureSize.y));
 		break;
 	default:
 		break;

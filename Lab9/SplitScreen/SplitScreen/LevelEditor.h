@@ -13,7 +13,8 @@ enum class TileType
 	PlayerSpawn,
 	Wall,
 	Floor,
-	PowerUpSpawn
+	PowerUpSpawn,
+	CoinSpawn
 };
 
 class Tile : public sf::Sprite
@@ -56,7 +57,7 @@ private:
 	Tile m_tile;
 	sf::RectangleShape m_gridTile;
 	Tile m_highlightTile;
-	Tile m_hudTile[4];
+	Tile m_hudTile[MAX_TILE_TYPES];
 	float tileWidth;
 	float tileHeight;
 	float m_hudYOffset = 90;
