@@ -38,7 +38,7 @@ private:
 
 	void checkPickupCollision();
 	void checkBlueShellCollision();
-	bool checkWallTileCollision(Player t_player);
+	bool checkWallTileCollision(Player & t_player);
 	void checkGameTime();
 
 	void takeAwayCoins(int t_playerNumber);

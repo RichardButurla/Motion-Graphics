@@ -185,6 +185,7 @@ void Game::update(sf::Time t_deltaTime)
 		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			playerPositions[i] = players[i].getPosition();
+			checkWallTileCollision(players[i]);
 		}
 		checkPlayerInput();
 		checkPickupCollision();
@@ -318,55 +319,23 @@ void Game::checkPlayerOneInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		if (!checkWallTileCollision(players[playerOne]))
-		{
 			moveVector = { 0,-1 };
 			players[playerOne].movePlayer(moveVector);
-		}
-		else
-		{
-			moveVector = { 0,2 };
-			players[playerOne].movePlayer(moveVector);
-		}
 	}
 	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		if (!checkWallTileCollision(players[playerOne]))
-		{
 			moveVector = { 0,1 };
-			players[playerOne].movePlayer(moveVector);
-		}
-		else
-		{
-			moveVector = { 0,-2 };
-			players[playerOne].movePlayer(moveVector);
-		}
+			players[playerOne].movePlayer(moveVector);		
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{	
-		if (!checkWallTileCollision(players[playerOne]))
-		{
 			moveVector = { -1,0 };
 			players[playerOne].movePlayer(moveVector);
-		}
-		else
-		{
-			moveVector = { 2,0 };
-			players[playerOne].movePlayer(moveVector);
-		}
 	}	
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{		
-		if (!checkWallTileCollision(players[playerOne]))
-		{
 			moveVector = { 1,0 };
 			players[playerOne].movePlayer(moveVector);
-		}
-		else
-		{
-			moveVector = { -2,0 };
-			players[playerOne].movePlayer(moveVector);
-		}
 	}
 	//Pick Up/Drop Item
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
@@ -593,7 +562,7 @@ void Game::checkBlueShellCollision()
 	}
 }
 
-bool Game::checkWallTileCollision(Player t_player)
+bool Game::checkWallTileCollision(Player & t_player)
 {
 	for (int j = 0; j < m_levelTiles.size(); j++)
 	{
@@ -601,7 +570,15 @@ bool Game::checkWallTileCollision(Player t_player)
 		{
 			if (t_player.getGlobalBounds().intersects(m_levelTiles[j].getGlobalBounds()))
 			{
-				return true;
+				sf::Vector2f pushBackVector = t_player.getPosition() - m_levelTiles[j].getPosition();
+				if (abs(pushBackVector.x) > abs(pushBackVector.y))
+				{
+					t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x / 4), t_player.getPosition().y });
+				}
+				else
+				{
+					t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y / 4)});
+				}
 			}
 		}
 			

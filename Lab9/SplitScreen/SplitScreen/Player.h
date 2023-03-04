@@ -21,6 +21,7 @@ public:
 
 	void setHoldingItem(bool t_bool) { holdingItem = t_bool; }
 	void setItemHeldID(int t_itemId) { m_itemHeldId = t_itemId; holdingItem = true; }
+	void setPosition(sf::Vector2f t_pos) { m_position = t_pos; }
 
 	void removeCoins(int t_coinNumber) { m_coinsCollected -= t_coinNumber; }
 	void usePowerUp(ItemTypes t_type);
