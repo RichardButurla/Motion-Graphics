@@ -770,52 +770,7 @@ void Game::setupSprite()
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		players[i].init(playerTexture);
-	}
-
-
-	Pickups pickup;
-	
-	for (int i = 0; i < MAX_COINS; i++)
-	{
-		sf::Vector2f pos;
-		pos.x = rand() % 1000 + 600;
-		pos.y = rand() % 1000 + 100;
-		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
-
-		m_pickupItems[pickup.getItemId()] = pickup;
-	}
-
-	for (int i = 0; i < MAX_BLUE_SHELLS; i++)
-	{
-		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::BlueShell)], ItemTypes::BlueShell, playerPositions);
-		m_pickupItems[pickup.getItemId()] = pickup;
-	}
-
-	for (int i = 0; i < MAX_2X_COINS; i++)
-	{
-		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::CoinDoubler)], ItemTypes::CoinDoubler, playerPositions);
-		m_pickupItems[pickup.getItemId()] = pickup;
-	}
-
-	for (int i = 0; i < MAX_ARMOURS; i++)
-	{
-		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Armour)], ItemTypes::Armour, playerPositions);
-		m_pickupItems[pickup.getItemId()] = pickup;
-	}
-
-	for (int i = 0; i < MAX_SPEED_BOOSTS; i++)
-	{
-		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::SpeedBoost)], ItemTypes::SpeedBoost, playerPositions);
-		m_pickupItems[pickup.getItemId()] = pickup;
-	}
-
-	for (int i = 0; i < MAX_MAGNETS; i++)
-	{
-		pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Magnet)], ItemTypes::Magnet, playerPositions);
-		m_pickupItems[pickup.getItemId()] = pickup;
-	}
-
-	
+	}	
 
 	map.setTexture(texMap);
 }
@@ -857,15 +812,17 @@ void Game::loadPreviousLevel()
 		int x;
 		int y;
 		int tileType;
-		bool firstCoinFound = false;
-		int coinIndex = 0;
-		int powerUpIndex = -1;
+
+		Pickups pickup;
+		ItemTypes itemType;
+		bool itemsPlaced[MAX_ITEM_TYPES]{ false };
 
 		while (file >> x >> y >> tileType) {
 			tile.setPosition(sf::Vector2f{ static_cast<float>(x),static_cast<float>(y) });
 			tile.setTexture(m_tileTexture);
 			tile.setTileType(static_cast<TileType>(tileType));
 
+			//This is superflawed since we dont create mroe instances
 			if (tileType == static_cast<int>(TileType::PlayerSpawn))
 			{
 				for (int i = 0; i < MAX_PLAYERS; i++)
@@ -875,23 +832,42 @@ void Game::loadPreviousLevel()
 			}
 			if (tileType == static_cast<int>(TileType::CoinSpawn))
 			{
-				if (!firstCoinFound)
+				pickup.init(m_pickupsTextures[static_cast<int>(ItemTypes::Coin)], ItemTypes::Coin, playerPositions);
+				pickup.setPositionVector(tile.getPosition());
+				m_pickupItems[pickup.getItemId()] = pickup;
+				
+			}
+			if (tileType == static_cast<int>(TileType::PowerUpSpawn))
+			{
+				int count = 0;
+				for (int i = 0; i < MAX_ITEM_TYPES; i++) //checks if all powerup types have been placed and resets array
 				{
-					for (int i = 0; i < m_pickupItems.size(); i++)
-					{
-						if (m_pickupItems[i].getItemType() == ItemTypes::Coin) {
-							coinIndex = i;
-							firstCoinFound = true;
-							break;
-						}
-					}
+					if (itemsPlaced[i])
+						count++;
+
+					if (count == MAX_ITEM_TYPES)
+						for (int j = 0; j < MAX_ITEM_TYPES; j++)
+							itemsPlaced[j] = false;
+				}
+
+				int randItem = rand() % MAX_ITEM_TYPES;
+
+				while (itemsPlaced[randItem] == true)
+				{
+					randItem = rand() % MAX_ITEM_TYPES;
+
+				}
+				if (itemsPlaced[randItem] == false)
+				{
+					itemType = static_cast<ItemTypes>(randItem);
+					pickup.init(m_pickupsTextures[static_cast<int>(itemType)], itemType, playerPositions);
+					pickup.setPositionVector(tile.getPosition());
+					m_pickupItems[pickup.getItemId()] = pickup;
+
+					itemsPlaced[randItem] = true;
 				}
 				
-				if (m_pickupItems[coinIndex].getItemType() == ItemTypes::Coin)
-				{
-					m_pickupItems[coinIndex].setPositionVector(tile.getPosition());
-					coinIndex++;
-				}
+				
 
 			}
 			m_levelTiles.push_back(tile);

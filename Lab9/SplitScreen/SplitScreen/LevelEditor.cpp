@@ -58,12 +58,8 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 {
 	m_levelWindow.setView(m_currentView);
 
+	
 	//Draw Grid for placement
-	for (int i = 0; i < MAX_TILE_TYPES; i++)
-	{
-		t_window.draw(m_hudTile[i]);
-	}
-
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
@@ -72,10 +68,15 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 			t_window.draw(m_gridTile);
 		}
 	}
-
+	
 	for (int i = 0; i < m_placedTiles.size(); i++)
 	{
 		t_window.draw(m_placedTiles[i]);
+	}
+
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	{
+		t_window.draw(m_hudTile[i]);
 	}
 
 	t_window.draw(m_highlightTile);
@@ -179,8 +180,8 @@ void LevelEditor::processMouse()
 		for (int i = 0; i < MAX_TILE_TYPES; i++)
 		{
 			sf::Vector2f tilePos = m_hudTile[i].getPosition();
-			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
-				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
+			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth * currentZoom &&
+				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight * currentZoom)
 			{
 				std::cout << "tile selected";
 				m_highlightTile.setTileType(static_cast<TileType>(i));
