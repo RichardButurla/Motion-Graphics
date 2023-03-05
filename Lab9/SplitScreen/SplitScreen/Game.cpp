@@ -15,7 +15,7 @@
 Game::Game() :
 	m_window{ sf::VideoMode{ SCREEN_WIDTH, SCREEN_HEIGHT, 32U }, "Level Editor" },
 	m_exitGame{ false }, //when true game will exit
-	m_levelEditor(m_window,m_levelTiles)
+	m_levelEditor(m_window,m_levelTiles,m_gameTiles)
 {
 	baseView = m_window.getView();
 	movingView = m_window.getView();
@@ -124,6 +124,7 @@ void Game::processKeys(sf::Event t_event)
 	if (sf::Keyboard::Escape == t_event.key.code)
 	{
 		m_editingLevel = !m_editingLevel;
+		timeSinceGameStart.restart();
 		saveLevel();
 	}
 	
@@ -214,7 +215,6 @@ void Game::render()
 	if (m_editingLevel)
 	{
 		m_levelEditor.render(m_window);
-		m_window.setView(minimap); // Draw minimap
 	}
 	else
 	{
@@ -268,9 +268,9 @@ void Game::renderPlayerOneScreen()
 {
 	m_window.setView(left);
 	
-	for (int i = 0; i < m_levelTiles.size(); i++)
+	for (int i = 0; i < m_gameTiles.size(); i++)
 	{
-		m_window.draw(m_levelTiles[i]);
+		m_window.draw(m_gameTiles[i]);
 	}
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -292,9 +292,9 @@ void Game::renderPlayerTwoScreen()
 {
 	m_window.setView(right);
 
-	for (int i = 0; i < m_levelTiles.size(); i++)
+	for (int i = 0; i < m_gameTiles.size(); i++)
 	{
-		m_window.draw(m_levelTiles[i]);
+		m_window.draw(m_gameTiles[i]);
 	}
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -885,6 +885,11 @@ void Game::loadPreviousLevel()
 				}
 			}
 			m_levelTiles.push_back(tile);
+			if (tile.getTileType() != TileType::Wall && tile.getTileType() != TileType::Floor)
+			{
+				tile.setTileType(TileType::Floor);//This is so the special tiles arent drawn in game
+			}
+			m_gameTiles.push_back(tile);
 		}
 		file.close();
 	}

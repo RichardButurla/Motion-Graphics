@@ -109,7 +109,7 @@ void Pickups::blueShellTrack()
 void Pickups::coinMagnetTrack(sf::Vector2f t_target)
 {	
 	sf::Vector2f directionVector = t_target - m_position;
-	float magnetRadius = 100;
+	float magnetRadius = 40;
 	if (vectorLength(directionVector) < magnetRadius)
 	{
 		sf::Vector2f unitDir = vectorUnitVector(directionVector);

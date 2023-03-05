@@ -1,9 +1,10 @@
 #include "LevelEditor.h"
 #include <iostream>
 
-LevelEditor::LevelEditor(sf::RenderWindow & t_window, std::vector<Tile>& m_gameTiles) :
+LevelEditor::LevelEditor(sf::RenderWindow & t_window, std::vector<Tile>& m_levelEditorTiles, std::vector<Tile>& m_gameTiles) :
 	m_levelWindow(t_window),
-	m_placedTiles(m_gameTiles)
+	m_levelEditorTiles(m_levelEditorTiles),
+	m_gameTiles(m_gameTiles)
 {
 
 	m_currentView = m_levelWindow.getView();
@@ -69,9 +70,9 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 		}
 	}
 	
-	for (int i = 0; i < m_placedTiles.size(); i++)
+	for (int i = 0; i < m_levelEditorTiles.size(); i++)
 	{
-		t_window.draw(m_placedTiles[i]);
+		t_window.draw(m_levelEditorTiles[i]);
 	}
 
 	for (int i = 0; i < MAX_TILE_TYPES; i++)
@@ -237,7 +238,8 @@ void LevelEditor::setupGrid()
 			m_gridPositions[row][col] = sf::Vector2f{ col * tileWidth, row * tileHeight + m_hudYOffset };
 		}
 	}
-	m_placedTiles.reserve(MAX_COLLUMS * MAX_ROWS);
+	m_levelEditorTiles.reserve(MAX_COLLUMS * MAX_ROWS);
+	m_gameTiles.reserve(MAX_COLLUMS * MAX_ROWS);
 }
 
 void LevelEditor::setupFontAndText()
@@ -295,18 +297,19 @@ void LevelEditor::checkPlacingBlock()
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{
 				sf::Vector2f placedTilePos;
-				if (m_placedTiles.size() == 0) //first block to be placed
+				if (m_levelEditorTiles.size() == 0) //first block to be placed
 				{
 					Tile newTile = m_highlightTile;
 					newTile.setPosition(tilePos);
-					m_placedTiles.push_back(newTile);
+					m_levelEditorTiles.push_back(newTile);
+					m_gameTiles.push_back(newTile);
 					tileCount++;
 				}
 				else
 				{
-					for (int i = 0; i < m_placedTiles.size(); i++)
+					for (int i = 0; i < m_levelEditorTiles.size(); i++)
 					{
-						placedTilePos = m_placedTiles[i].getPosition();
+						placedTilePos = m_levelEditorTiles[i].getPosition();
 						if (tilePos.x == placedTilePos.x &&
 							tilePos.y == placedTilePos.y)
 						{
@@ -317,7 +320,8 @@ void LevelEditor::checkPlacingBlock()
 					{
 						Tile newTile = m_highlightTile;
 						newTile.setPosition(tilePos);
-						m_placedTiles.push_back(newTile);
+						m_levelEditorTiles.push_back(newTile);
+						m_gameTiles.push_back(newTile);
 						tileCount++;
 					}
 				}
@@ -342,9 +346,9 @@ void LevelEditor::checkRemovingBlock()
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{
 				sf::Vector2f placedTilePos;
-				for (int i = 0; i < m_placedTiles.size(); i++)
+				for (int i = 0; i < m_levelEditorTiles.size(); i++)
 				{
-					placedTilePos = m_placedTiles[i].getPosition();
+					placedTilePos = m_levelEditorTiles[i].getPosition();
 					if (tilePos.x == placedTilePos.x &&
 						tilePos.y == placedTilePos.y)
 					{
@@ -354,7 +358,8 @@ void LevelEditor::checkRemovingBlock()
 				}
 				if (occupied == true)
 				{
-					m_placedTiles.erase(m_placedTiles.begin() + tileIndex);
+					m_levelEditorTiles.erase(m_levelEditorTiles.begin() + tileIndex);
+					m_gameTiles.erase(m_gameTiles.begin() + tileIndex);
 					tileCount--;
 				}
 

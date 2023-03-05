@@ -59,6 +59,7 @@ private:
 	//Level
 	LevelEditor m_levelEditor;
 	std::vector<Tile>m_levelTiles;
+	std::vector<Tile>m_gameTiles;
 	sf::Texture m_tileTexture;
 	bool m_editingLevel = true;
 	Tile playerSpawnTile;

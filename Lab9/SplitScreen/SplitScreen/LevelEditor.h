@@ -30,7 +30,7 @@ private:
 class LevelEditor
 {
 public:
-	LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_gameTiles);
+	LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_levelEditorTiles, std::vector<Tile>& m_gameTiles);
 	void init(sf::Texture & t_tileTexture,sf::Font & t_font);
 	void update();
 	void render(sf::RenderWindow& t_window);
@@ -64,7 +64,8 @@ private:
 	float m_hudXOffset = 70;
 	int tileCount = 0;
 	sf::Vector2f m_gridPositions[MAX_ROWS][MAX_COLLUMS];
-	std::vector<Tile> & m_placedTiles;
+	std::vector<Tile> & m_levelEditorTiles;
+	std::vector<Tile> & m_gameTiles;
 	sf::Texture m_tileTexture;
 
 	//
