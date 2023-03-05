@@ -187,7 +187,7 @@ void Game::update(sf::Time t_deltaTime)
 			playerPositions[i] = players[i].getPosition();
 			checkWallTileCollision(players[i]);
 		}
-		checkPlayerInput();
+		checkPlayerInput(t_deltaTime);
 		checkPickupCollision();
 		checkBlueShellCollision();
 		checkGameTime();
@@ -306,35 +306,35 @@ void Game::renderPlayerTwoScreen()
 	m_window.draw(player2);*/
 }
 
-void Game::checkPlayerInput()
+void Game::checkPlayerInput(sf::Time& t_deltaTime)
 {
-	checkPlayerOneInput();
-	checkPlayerTwoInput();
+	checkPlayerOneInput(t_deltaTime);
+	checkPlayerTwoInput(t_deltaTime);
 }
 
-void Game::checkPlayerOneInput()
+void Game::checkPlayerOneInput(sf::Time& t_deltaTime)
 {
 	sf::Vector2f moveVector;
 	float direction = 1;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-			moveVector = { 0,-1 };
+			moveVector = { 0,-1 * t_deltaTime.asSeconds()};
 			players[playerOne].movePlayer(moveVector);
 	}
 	else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-			moveVector = { 0,1 };
+			moveVector = { 0,1 * t_deltaTime.asSeconds() };
 			players[playerOne].movePlayer(moveVector);		
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{	
-			moveVector = { -1,0 };
+			moveVector = { -1 * t_deltaTime.asSeconds(),0 };
 			players[playerOne].movePlayer(moveVector);
 	}	
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{		
-			moveVector = { 1,0 };
+			moveVector = { 1 * t_deltaTime.asSeconds(),0 };
 			players[playerOne].movePlayer(moveVector);
 	}
 	//Pick Up/Drop Item
@@ -384,7 +384,7 @@ void Game::checkPlayerOneInput()
 	}
 }
 
-void Game::checkPlayerTwoInput()
+void Game::checkPlayerTwoInput(sf::Time& t_deltaTime)
 {
 	sf::Vector2f moveVector;
 	float direction = 1;
@@ -573,11 +573,11 @@ bool Game::checkWallTileCollision(Player & t_player)
 				sf::Vector2f pushBackVector = t_player.getPosition() - m_levelTiles[j].getPosition();
 				if (abs(pushBackVector.x) > abs(pushBackVector.y))
 				{
-					t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x / 4), t_player.getPosition().y });
+					t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x  / 4), t_player.getPosition().y });
 				}
 				else
 				{
-					t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y / 4)});
+					t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y  / 4)});
 				}
 			}
 		}
@@ -852,7 +852,7 @@ void Game::loadPreviousLevel()
 						{
 							itemsPlaced[j] = false;
 						}
-						itemsPlaced[static_cast<int>(ItemTypes::Coin)] = true;
+						itemsPlaced[static_cast<int>(ItemTypes::Coin)] = true; //have to make coin never used since i made items types hold coin...
 					}
 										
 				}

@@ -32,9 +32,9 @@ private:
 	void renderPlayerOneScreen();
 	void renderPlayerTwoScreen();
 
-	void checkPlayerInput();
-	void checkPlayerOneInput();
-	void checkPlayerTwoInput();
+	void checkPlayerInput(sf::Time& t_deltaTime);
+	void checkPlayerOneInput(sf::Time& t_deltaTime);
+	void checkPlayerTwoInput(sf::Time& t_deltaTime);
 
 	void checkPickupCollision();
 	void checkBlueShellCollision();

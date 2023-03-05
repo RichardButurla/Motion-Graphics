@@ -15,4 +15,8 @@ C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(792,15): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(795,16): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(889,20): warning C4018: '<': signed/unsigned mismatch
+  Player.cpp
+C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Player.cpp(27,21): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  Generating Code...
   SplitScreen.vcxproj -> C:\Users\Richie\Desktop\MG\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe

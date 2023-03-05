@@ -27,6 +27,7 @@ public:
 	void usePowerUp(ItemTypes t_type);
 	void collectCoin() { if (coinDoublerActivated) { m_coinsCollected += 2; } else { m_coinsCollected += 1; } }
 
+	float getSpeed() { return m_currentSpeed; }
 	int getItemHeldID() { return m_itemHeldId; }
 	bool isHoldingItem() { return holdingItem; }
 	int getNumberOfCoinsCollected() { return m_coinsCollected; }
@@ -38,9 +39,9 @@ private:
 	sf::Texture m_playerTexture;
 
 	sf::Vector2f m_position{ 200,200 };
-	float m_currentSpeed{3};
-	float boostedSpeed{ 6 };
-	float normalSpeed{ 3 };
+	float m_currentSpeed{100};
+	float boostedSpeed{ 150 };
+	float normalSpeed{ 100 };
 	int m_itemHeldId{ -1 };
 	bool holdingItem = false;
 
