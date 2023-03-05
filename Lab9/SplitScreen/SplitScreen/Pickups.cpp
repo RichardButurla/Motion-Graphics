@@ -49,7 +49,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x / 5, textureSize.y));
 		textureSize.x /= 5;
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setScale(0.05f, 0.05f);
+		this->setScale(0.5f, 0.5f);
 		m_position = { 600,400 };
 		this->setPosition(m_position);
 		break;
@@ -81,7 +81,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTexture(t_texture);
 		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
 		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.005f, 0.005f);
+		this->setScale(0.05f, 0.05f);
 		m_position = { 1400,400 };
 		this->setPosition(m_position);
 		break;

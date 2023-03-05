@@ -816,6 +816,7 @@ void Game::loadPreviousLevel()
 		Pickups pickup;
 		ItemTypes itemType;
 		bool itemsPlaced[MAX_ITEM_TYPES]{ false };
+		itemsPlaced[static_cast<int>(ItemTypes::Coin)] = true;
 
 		while (file >> x >> y >> tileType) {
 			tile.setPosition(sf::Vector2f{ static_cast<float>(x),static_cast<float>(y) });
@@ -846,8 +847,14 @@ void Game::loadPreviousLevel()
 						count++;
 
 					if (count == MAX_ITEM_TYPES)
+					{
 						for (int j = 0; j < MAX_ITEM_TYPES; j++)
+						{
 							itemsPlaced[j] = false;
+						}
+						itemsPlaced[static_cast<int>(ItemTypes::Coin)] = true;
+					}
+										
 				}
 
 				int randItem = rand() % MAX_ITEM_TYPES;
@@ -866,9 +873,6 @@ void Game::loadPreviousLevel()
 
 					itemsPlaced[randItem] = true;
 				}
-				
-				
-
 			}
 			m_levelTiles.push_back(tile);
 		}

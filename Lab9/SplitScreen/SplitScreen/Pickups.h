@@ -31,7 +31,7 @@ public:
 
 	void pickUp(PlayerID t_playerID) {  pickedUp = true; playerID = t_playerID; }
 	void useItem() { pickupUsed = true; if (m_itemType == ItemTypes::BlueShell) { blueShellTrack(); } }
-	void dropPickup() { pickedUp = false; m_position.y += 100; this->setPosition(m_position); }
+	void dropPickup() { pickedUp = false; m_position.y += 50; this->setPosition(m_position); }
 
 	void blueShellTrack();
 	void coinMagnetTrack(sf::Vector2f t_target);
