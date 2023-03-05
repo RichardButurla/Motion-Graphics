@@ -214,6 +214,7 @@ void Game::render()
 	if (m_editingLevel)
 	{
 		m_levelEditor.render(m_window);
+		m_window.setView(minimap); // Draw minimap
 	}
 	else
 	{
@@ -222,23 +223,36 @@ void Game::render()
 
 			left.setCenter(players[playerOne].getPosition());
 			right.setCenter(players[playerTwo].getPosition());
-
-
+			
 
 			for (int i = 0; i < MAX_PLAYERS; i++)
 			{
 				playerCoinTexts[i].setPosition(players[i].getPosition().x - left.getSize().x / 2, players[i].getPosition().y + left.getSize().y / 2.5);
 				playerCoinTexts[i].setString("Coins Collected: " + std::to_string(players[i].getNumberOfCoinsCollected()));
 			}
-			//minimap.setCenter(sf::Vector2f(player2.getPosition().x + (player1.getPosition().x) / 2, player2.getPosition().y + (player1.getPosition().y) / 2));
-
+			m_window.draw(m_gameTimeText);
+			
 			renderPlayerOneScreen();
 
 			renderPlayerTwoScreen();
 
 			m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
-
+			//m_gameTimeText.setPosition()
 			m_window.draw(m_gameTimeText);
+
+
+			//m_window.setView(minimap); // Draw minimap
+
+			//for (int i = 0; i < m_levelTiles.size(); i++)
+			//{
+			//	m_window.draw(m_levelTiles[i]);
+			//}
+
+			//for (int i = 0; i < MAX_PLAYERS; i++)
+			//	players[i].render(m_window);		
+
+			//m_window.draw(m_gameTimeText);
+
 		}
 		else
 		{
@@ -246,10 +260,6 @@ void Game::render()
 			m_window.draw(m_gameLoseText);
 		}
 	}
-	
-	//m_window.draw(miniback);
-	//m_window.setView(minimap); // Draw minimap
-	//m_window.draw(map);
 
 	m_window.display();
 }
@@ -391,20 +401,20 @@ void Game::checkPlayerTwoInput(sf::Time& t_deltaTime)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		moveVector.y = -direction;
+		moveVector.y = -direction * t_deltaTime.asSeconds();
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		moveVector.x = -direction;
+		moveVector.x = -direction * t_deltaTime.asSeconds();
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		moveVector.y = direction;
+		moveVector.y = direction * t_deltaTime.asSeconds();
 
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		moveVector.x = direction;
+		moveVector.x = direction * t_deltaTime.asSeconds();
 	}
 	//Pick Up/Drop Item
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -590,7 +600,7 @@ void Game::checkGameTime()
 {
 	int timeLeft = gameDuration.asSeconds() - timeSinceGameStart.getElapsedTime().asSeconds();
 	m_gameTimeText.setString("Time Left: " + std::to_string(timeLeft));
-	/*if (timeSinceGameStart.getElapsedTime() > gameDuration)
+	if (timeSinceGameStart.getElapsedTime() > gameDuration)
 	{
 		m_gameOver = true;
 		sf::Vector2f playerOneTextPos{ m_window.getSize().x / 3.5f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f };
@@ -605,7 +615,7 @@ void Game::checkGameTime()
 			m_gameWinText.setPosition(playerTwoTextPos);
 			m_gameLoseText.setPosition(playerOneTextPos);
 		}
-	}*/
+	}
 }
 
 void Game::takeAwayCoins(int t_playerNumber)
@@ -782,10 +792,10 @@ void Game::setupViews()
 
 	size = 200; // The 'minimap' view will show a smaller picture of the map
 	minimap = sf::View(sf::FloatRect(standard.getCenter().x, standard.getCenter().y, static_cast<float>(size), static_cast<float>(m_window.getSize().y * size / m_window.getSize().x)));
-	minimap.setViewport(sf::FloatRect(1.f - static_cast<float>(minimap.getSize().x) / m_window.getSize().x - 0.02f, 1.f - static_cast<float>(minimap.getSize().y) / m_window.getSize().y - 0.02f,
+	minimap.setViewport(sf::FloatRect(1.f - static_cast<float>(minimap.getSize().x) / m_window.getSize().x - 0.1f, 1.f - static_cast<float>(minimap.getSize().y) / m_window.getSize().y - 0.1f,
 		static_cast<float>(minimap.getSize().x) / m_window.getSize().x, static_cast<float>(minimap.getSize().y) / m_window.getSize().y));
 	minimap.zoom(4.f);
-
+	minimap.setCenter(static_cast<sf::Vector2f>(m_window.getSize()));
 	// The 'left' and the 'right' view will be used for splitscreen displays
 	left = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(m_window.getSize().x / 2), static_cast<float>(m_window.getSize().y)));
 	left.setViewport(sf::FloatRect(0.f, 0.f, 0.5, 1.f));
@@ -795,9 +805,9 @@ void Game::setupViews()
 	right.zoom(0.2);
 
 	// We want to draw a rectangle behind the minimap
-	miniback.setPosition(minimap.getViewport().left * m_window.getSize().x - 5, minimap.getViewport().top * m_window.getSize().y - 5);
+	/*miniback.setPosition(minimap.getViewport().left * m_window.getSize().x - 5, minimap.getViewport().top * m_window.getSize().y - 5);
 	miniback.setSize(sf::Vector2f(minimap.getViewport().width * m_window.getSize().x + 10, minimap.getViewport().height * m_window.getSize().y + 10));
-	miniback.setFillColor(sf::Color(160, 8, 8));
+	miniback.setFillColor(sf::Color(160, 8, 8));*/
 
 	/*left.setCenter(player1.getPosition());
 	right.setCenter(player2.getPosition());*/

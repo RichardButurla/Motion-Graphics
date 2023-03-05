@@ -74,7 +74,7 @@ private:
 
 	//Time
 	sf::Clock timeSinceGameStart;
-	sf::Time gameDuration = sf::seconds(100);
+	sf::Time gameDuration = sf::seconds(90);
 	sf::Text m_gameTimeText;
 	sf::Text m_gameLoseText;
 	sf::Text m_gameWinText;
