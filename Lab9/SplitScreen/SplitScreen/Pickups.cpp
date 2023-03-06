@@ -8,7 +8,7 @@ void Pickups::update(sf::Time& t_deltaTime)
 	{
 		if (m_itemType == ItemTypes::BlueShell)
 		{
-			blueShellTrack();
+			//blueShellTrack();
 			m_position.x += (m_velocity.x * 90) * t_deltaTime.asSeconds();
 			m_position.y += (m_velocity.y * 90) * t_deltaTime.asSeconds();
 		}

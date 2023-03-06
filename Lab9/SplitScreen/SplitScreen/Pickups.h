@@ -28,7 +28,7 @@ public:
 	sf::Vector2f getVelocity() { return m_velocity; }
 
 	void setItemType(ItemTypes t_type) { m_itemType = t_type; }
-	void setPositionVector(sf::Vector2f t_pos) { m_position = t_pos; }
+	void setPositionVector(sf::Vector2f t_pos) { m_position = t_pos; this->setPosition(m_position); }
 
 	void pickUp(PlayerID t_playerID) {  pickedUp = true; playerID = t_playerID; }
 	void useItem() { pickupUsed = true; if (m_itemType == ItemTypes::BlueShell) { blueShellTrack(); } }

@@ -606,6 +606,7 @@ void Game::checkBlueShellWallCollision()
 			Pickups & blueShell = m_pickupItems[i];
 			if (blueShell.isUsed())
 			{
+				std::cout << "\nblueShell Velocity X: " << blueShell.getVelocity().x << "Velocity Y : " << blueShell.getVelocity().y;
 				for (int j = 0; j < m_gameTiles.size(); j++)
 				{
 					if (m_gameTiles[j].getTileType() == TileType::Wall)
@@ -620,13 +621,13 @@ void Game::checkBlueShellWallCollision()
 							sf::Vector2f tilePosition = m_gameTiles[j].getPosition();
 
 
-							sf::Vector2f pushBack;
+							/*sf::Vector2f pushBack;
 							pushBack.x = shellPosition.x - shellVelocity.x * 6;
 							pushBack.y = shellPosition.y - shellVelocity.y * 6;
-							blueShell.setPositionVector(pushBack);
+							blueShell.setPositionVector(pushBack);*/
 
-							sf::Vector2f wallNormalComponent = (shellPosition - tilePosition ) / 2.0f;
-							sf::Vector2f greenShellNormalComponent = (tilePosition - shellPosition) / 2.0f;
+							sf::Vector2f wallNormalComponent = (shellPosition - tilePosition );
+							sf::Vector2f greenShellNormalComponent = (tilePosition - shellPosition);
 
 							sf::Vector2f projectionOne = vectorProjection({ 0,0 }, wallNormalComponent);
 
@@ -634,7 +635,11 @@ void Game::checkBlueShellWallCollision()
 
 							sf::Vector2f velocityOne = projectionOne + rejectionOne;
 
-							blueShell.setVelocity(-velocityOne);
+							blueShell.setPositionVector({ blueShell.getPosition().x + (-velocityOne.x * 10) , blueShell.getPosition().y + (-velocityOne.y * 10) });
+							//velocityOne.x *= 1.3;
+							//velocityOne.y *= 1.3;
+							blueShell.setVelocity(- velocityOne );
+							
 						}
 					}
 				}
