@@ -59,13 +59,11 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 {
 	m_levelWindow.setView(m_currentView);
 
-	
-	//Draw Grid for placement
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			m_gridTile.setPosition(m_gridPositions[row][col]);
+			m_gridTile.setPosition(m_gridPositions[row * MAX_ROWS + col]);
 			t_window.draw(m_gridTile);
 		}
 	}
@@ -230,12 +228,12 @@ void LevelEditor::setupSprite()
 }
 
 void LevelEditor::setupGrid()
-{
+{	
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			m_gridPositions[row][col] = sf::Vector2f{ col * tileWidth, row * tileHeight + m_hudYOffset };
+			m_gridPositions[row * MAX_ROWS + col] = sf::Vector2f{ col * tileWidth, row * tileHeight + m_hudYOffset };
 		}
 	}
 	m_levelEditorTiles.reserve(MAX_COLLUMS * MAX_ROWS);
@@ -268,12 +266,28 @@ void LevelEditor::setupFontAndText()
 void LevelEditor::checkHighlightingBlock()
 {
 	sf::Vector2f tilePos;
-
+	int index = 0;
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			tilePos = m_gridPositions[row][col];
+			index = row * MAX_ROWS + col;
+			tilePos = m_gridPositions[index];
+			if (m_mouseMovePos.x > tilePos.x && m_mouseMovePos.x < tilePos.x + tileWidth &&
+				m_mouseMovePos.y > tilePos.y && m_mouseMovePos.y < tilePos.y + tileHeight)
+			{
+				m_highlightTile.setPosition(tilePos);
+			}
+		}
+	}
+
+	index = 0;
+	for (int row = 0; row < MAX_ROWS; row++)
+	{
+		for (int col = 0; col < MAX_COLLUMS; col++)
+		{
+			index = row * MAX_ROWS + col;
+			tilePos = m_gridPositions[index];
 			if (m_mouseMovePos.x > tilePos.x && m_mouseMovePos.x < tilePos.x + tileWidth &&
 				m_mouseMovePos.y > tilePos.y && m_mouseMovePos.y < tilePos.y + tileHeight)
 			{
@@ -287,12 +301,14 @@ void LevelEditor::checkPlacingBlock()
 {
 	sf::Vector2f tilePos;
 	bool freeSpace = true;
+	int index = 0;
 
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			tilePos = m_gridPositions[row][col];
+			index = row * MAX_ROWS + col;
+			tilePos = m_gridPositions[index];
 			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{
@@ -336,12 +352,14 @@ void LevelEditor::checkRemovingBlock()
 	sf::Vector2f tilePos;
 	bool occupied = false;
 	int tileIndex = -1;
+	int index = 0;
 
 	for (int row = 0; row < MAX_ROWS; row++)
 	{
 		for (int col = 0; col < MAX_COLLUMS; col++)
 		{
-			tilePos = m_gridPositions[row][col];
+			index = row * MAX_ROWS + col;
+			tilePos = m_gridPositions[index];
 			if (m_mousePressPos.x > tilePos.x && m_mousePressPos.x < tilePos.x + tileWidth &&
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{

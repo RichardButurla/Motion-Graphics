@@ -63,7 +63,7 @@ private:
 	float m_hudYOffset = 90;
 	float m_hudXOffset = 70;
 	int tileCount = 0;
-	sf::Vector2f m_gridPositions[MAX_ROWS][MAX_COLLUMS];
+	sf::Vector2f m_gridPositions[MAX_ROWS * MAX_COLLUMS];
 	std::vector<Tile> & m_levelEditorTiles;
 	std::vector<Tile> & m_gameTiles;
 	sf::Texture m_tileTexture;

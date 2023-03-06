@@ -6,6 +6,7 @@
 
 
 
+
 /// <summary>
 /// default constructor
 /// setup the m_window properties
@@ -387,17 +388,8 @@ void Game::checkPlayerOneInput(sf::Time& t_deltaTime)
 
 				//BlueShell does not get erased
 			case ItemTypes::SpeedBoost:
-				players[playerOne].usePowerUp(itemType);
-				m_pickupItems.erase(itemId);
-				break;
 			case ItemTypes::Armour:
-				m_pickupItems.erase(itemId);
-				players[playerOne].usePowerUp(itemType);
-				break;
 			case ItemTypes::Magnet:
-				m_pickupItems.erase(itemId);
-				players[playerOne].usePowerUp(itemType);
-				break;
 			case ItemTypes::CoinDoubler:
 				m_pickupItems.erase(itemId);
 				players[playerOne].usePowerUp(itemType);
@@ -457,17 +449,8 @@ void Game::checkPlayerTwoInput(sf::Time& t_deltaTime)
 
 				//BlueShell does not get erased
 			case ItemTypes::SpeedBoost:
-				players[playerTwo].usePowerUp(itemType);
-				m_pickupItems.erase(itemId);
-				break;
 			case ItemTypes::Armour:
-				players[playerTwo].usePowerUp(itemType);
-				m_pickupItems.erase(itemId);
-				break;
 			case ItemTypes::Magnet:
-				players[playerTwo].usePowerUp(itemType);
-				m_pickupItems.erase(itemId);
-				break;
 			case ItemTypes::CoinDoubler:
 				players[playerTwo].usePowerUp(itemType);
 				m_pickupItems.erase(itemId);
@@ -613,6 +596,7 @@ bool Game::checkPlayerWallTileCollision(Player & t_player)
 
 void Game::checkBlueShellWallCollision()
 {
+
 	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
 		if (m_pickupItems[i].getItemType() == ItemTypes::BlueShell)
