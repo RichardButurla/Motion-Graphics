@@ -38,6 +38,8 @@ public:
 	void coinMagnetTrack(sf::Vector2f t_target);
 	void setTrackingVelocity(sf::Vector2f target);
 	void setVelocity(sf::Vector2f t_vel) { m_velocity = t_vel; }
+	
+	void animateCoin();
 
 	
 private:
@@ -49,6 +51,14 @@ private:
 	sf::Vector2f * pickUpPositions;
 	PlayerID playerID;
 	ItemID itemId;
+
+	//Coin animation
+	sf::Texture m_texture;
+	sf::Vector2u m_textureSize;
+	static const int MAX_COIN_FRAMES = 6;
+	int m_currentCoinFrames = 0;
+	sf::Time m_coinFrameTime = sf::seconds(0.1);
+	sf::Clock m_timeSinceFrameChange;
 };
 
 

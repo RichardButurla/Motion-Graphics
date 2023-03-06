@@ -1,4 +1,5 @@
 ﻿  Game.cpp
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.h(60,27): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(32,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(202,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(236,114): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
@@ -28,4 +29,119 @@ C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cp
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(866,15): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(869,16): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(972,20): warning C4018: '<': signed/unsigned mismatch
+  Pickups.cpp
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.h(60,27): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(39,32): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(59,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(60,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(68,23): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(70,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(71,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(79,23): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(81,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(82,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(90,23): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(92,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(93,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(102,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(103,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+  main.cpp
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.h(60,27): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
   SplitScreen.vcxproj -> C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe

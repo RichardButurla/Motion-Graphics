@@ -22,66 +22,85 @@ void Pickups::update(sf::Time& t_deltaTime)
 	else
 	{
 		this->setPosition(m_position);
+		if (m_itemType == ItemTypes::Coin)
+		{
+			animateCoin();
+		}
 	}
 }
 
 void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f* playerPositions)
 {
+	m_texture = t_texture;
 	itemId = newItemID();
-	sf::Vector2u textureSize = t_texture.getSize();
+	m_textureSize = t_texture.getSize();
 	m_itemType = itemType;
 	pickUpPositions = playerPositions;
+	sf::Vector2f scale{ 0.05,0.05 };
 
 	switch (itemType)
 	{
 	case ItemTypes::Coin:
 		this->setTexture(t_texture);
-		this->setTextureRect(sf::IntRect(0, 0, textureSize.x / 6, textureSize.y / 2));
-		textureSize.x /= 6;
-		textureSize.y /= 2;
-		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setScale(0.05f, 0.05f);
+		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x / 6, m_textureSize.y / 2));
+		m_textureSize.x /= 6;
+		m_textureSize.y /= 2;
+		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		this->setScale(scale);
 		m_position = sf::Vector2f{ 600,200 };
 		this->setPosition(m_position);
 		break;
 	case ItemTypes::BlueShell:
 		this->setTexture(t_texture);
-		this->setTextureRect(sf::IntRect(0, 0, textureSize.x / 5, textureSize.y));
-		textureSize.x /= 5;
-		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setScale(0.5f, 0.5f);
+		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x / 5, m_textureSize.y));
+		m_textureSize.x /= 5;
+		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		this->setScale(scale);
+		m_textureSize.x *= scale.x;
+		m_textureSize.y *= scale.y;
 		m_position = { 600,400 };
 		this->setPosition(m_position);
 		break;
 	case ItemTypes::SpeedBoost:
 		this->setTexture(t_texture);
-		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.04f, 0.04f);
+		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x, m_textureSize.y));
+		scale = { 0.04,0.04 };
+		this->setScale(scale);
+		m_textureSize.x *= scale.x;
+		m_textureSize.y *= scale.y;
 		m_position = { 800,400 };
 		this->setPosition(m_position);
 		break;
 	case ItemTypes::Armour:
 		this->setTexture(t_texture);
-		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.03f, 0.03f);
+		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x, m_textureSize.y));
+		scale = { 0.03,0.03 };
+		this->setScale(scale);
+		m_textureSize.x *= scale.x;
+		m_textureSize.y *= scale.y;
 		m_position = { 1000,400 };
 		this->setPosition(m_position);
 		break;
 	case ItemTypes::Magnet:
 		this->setTexture(t_texture);
-		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.02f, 0.02f);
+		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x, m_textureSize.y));
+		scale = { 0.02,0.02 };
+		this->setScale(scale);
+		m_textureSize.x *= scale.x;
+		m_textureSize.y *= scale.y;
 		m_position = { 1200,400 };
 		this->setPosition(m_position);
 		break;
 	case ItemTypes::CoinDoubler:
 		this->setTexture(t_texture);
-		this->setOrigin(textureSize.x / 2.f, textureSize.y / 2.f);
-		this->setTextureRect(sf::IntRect(0, 0, textureSize.x, textureSize.y));
-		this->setScale(0.05f, 0.05f);
+		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x, m_textureSize.y));
+		this->setScale(scale);
+		m_textureSize.x *= scale.x;
+		m_textureSize.y *= scale.y;
 		m_position = { 1400,400 };
 		this->setPosition(m_position);
 		break;
@@ -123,4 +142,29 @@ void Pickups::setTrackingVelocity(sf::Vector2f target)
 	sf::Vector2f directionVector = target - m_position;
 	sf::Vector2f unitDir = vectorUnitVector(directionVector);
 	m_velocity = unitDir;
+}
+
+void Pickups::animateCoin()
+{
+	if (m_timeSinceFrameChange.getElapsedTime() > m_coinFrameTime)
+	{
+		m_timeSinceFrameChange.restart();
+		if (m_currentCoinFrames < MAX_COIN_FRAMES)
+		{
+			m_currentCoinFrames++;
+		}
+		if (m_currentCoinFrames >= MAX_COIN_FRAMES)
+		{
+			m_currentCoinFrames = 0;
+		}
+		
+		
+	}
+
+	std::cout << "Frame: " << m_currentCoinFrames;
+	this->setTextureRect(sf::IntRect(m_textureSize.x * m_currentCoinFrames, 0,
+		m_textureSize.x, m_textureSize.y));
+
+	/*this->setTextureRect(sf::IntRect(m_textureSize.x * m_currentCoinFrames, m_textureSize.y * m_currentCoinFrames,
+		m_textureSize.x + m_textureSize.x * m_currentCoinFrames, m_textureSize.y + m_textureSize.y * m_currentCoinFrames));*/
 }
