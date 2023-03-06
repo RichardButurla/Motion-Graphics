@@ -2,15 +2,15 @@
 #include "Vector2.h"
 #include <iostream>
 
-void Pickups::update()
+void Pickups::update(sf::Time& t_deltaTime)
 {
 	if (pickupUsed)
 	{
 		if (m_itemType == ItemTypes::BlueShell)
 		{
-			//blueShellTrack(); if we want tracking 
-			m_position.x += m_velocity.x * 5;
-			m_position.y += m_velocity.y * 5;
+			blueShellTrack();
+			m_position.x += (m_velocity.x * 90) * t_deltaTime.asSeconds();
+			m_position.y += (m_velocity.y * 90) * t_deltaTime.asSeconds();
 		}
 		this->setPosition(m_position);
 	}

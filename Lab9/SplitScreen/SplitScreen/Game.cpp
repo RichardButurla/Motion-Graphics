@@ -186,11 +186,12 @@ void Game::update(sf::Time t_deltaTime)
 		for (int i = 0; i < MAX_PLAYERS; i++)
 		{
 			playerPositions[i] = players[i].getPosition();
-			checkWallTileCollision(players[i]);
+			checkPlayerWallTileCollision(players[i]);
 		}
 		checkPlayerInput(t_deltaTime);
 		checkPickupCollision();
 		checkBlueShellCollision();
+		checkBlueShellWallCollision();
 		checkGameTime();
 
 		for (int i = 0; i < MAX_PLAYERS; i++)
@@ -200,7 +201,7 @@ void Game::update(sf::Time t_deltaTime)
 
 		for (int i = 0; i < m_pickupItems.size(); i++)
 		{
-			m_pickupItems[i].update();
+			m_pickupItems[i].update(t_deltaTime);
 		}
 	}	
 }
@@ -243,9 +244,9 @@ void Game::render()
 
 			//m_window.setView(minimap); // Draw minimap
 
-			//for (int i = 0; i < m_levelTiles.size(); i++)
+			//for (int i = 0; i < m_gameTiles.size(); i++)
 			//{
-			//	m_window.draw(m_levelTiles[i]);
+			//	m_window.draw(m_gameTiles[i]);
 			//}
 
 			//for (int i = 0; i < MAX_PLAYERS; i++)
@@ -572,7 +573,7 @@ void Game::checkBlueShellCollision()
 	}
 }
 
-bool Game::checkWallTileCollision(Player & t_player)
+bool Game::checkPlayerWallTileCollision(Player & t_player)
 {
 	for (int j = 0; j < m_levelTiles.size(); j++)
 	{
@@ -594,6 +595,54 @@ bool Game::checkWallTileCollision(Player & t_player)
 			
 	}
 	return false;
+}
+
+void Game::checkBlueShellWallCollision()
+{
+	for (int i = 0; i < m_pickupItems.size(); i++)
+	{
+		if (m_pickupItems[i].getItemType() == ItemTypes::BlueShell)
+		{
+			Pickups & blueShell = m_pickupItems[i];
+			if (blueShell.isUsed())
+			{
+				for (int j = 0; j < m_gameTiles.size(); j++)
+				{
+					if (m_gameTiles[j].getTileType() == TileType::Wall)
+					{
+						if (blueShell.getGlobalBounds().intersects(m_gameTiles[j].getGlobalBounds()))
+						{
+							
+							//Now apply math
+							sf::Vector2f shellVelocity = blueShell.getVelocity();
+
+							sf::Vector2f shellPosition = blueShell.getPosition();
+							sf::Vector2f tilePosition = m_gameTiles[j].getPosition();
+
+
+							sf::Vector2f pushBack;
+							pushBack.x = shellPosition.x - shellVelocity.x * 6;
+							pushBack.y = shellPosition.y - shellVelocity.y * 6;
+							blueShell.setPositionVector(pushBack);
+
+							sf::Vector2f wallNormalComponent = (shellPosition - tilePosition ) / 2.0f;
+							sf::Vector2f greenShellNormalComponent = (tilePosition - shellPosition) / 2.0f;
+
+							sf::Vector2f projectionOne = vectorProjection({ 0,0 }, wallNormalComponent);
+
+							sf::Vector2f rejectionOne = vectorRejection(shellVelocity, greenShellNormalComponent);
+
+							sf::Vector2f velocityOne = projectionOne + rejectionOne;
+
+							blueShell.setVelocity(-velocityOne);
+						}
+					}
+				}
+				
+			}
+
+		}
+	}
 }
 
 void Game::checkGameTime()

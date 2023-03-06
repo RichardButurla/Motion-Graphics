@@ -17,7 +17,7 @@ class Pickups : public sf::Sprite
 public:
 	Pickups() = default;
 
-	void update();
+	void update(sf::Time& t_deltaTime);
 	void init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2f* playerPositions);
 
 	ItemTypes getItemType() const { return m_itemType; }
@@ -25,6 +25,7 @@ public:
 	PlayerID getPlayerID() { return playerID; }
 	bool isPickedUp() { return pickedUp; }
 	bool isUsed() { return pickupUsed; }
+	sf::Vector2f getVelocity() { return m_velocity; }
 
 	void setItemType(ItemTypes t_type) { m_itemType = t_type; }
 	void setPositionVector(sf::Vector2f t_pos) { m_position = t_pos; }
@@ -36,6 +37,7 @@ public:
 	void blueShellTrack();
 	void coinMagnetTrack(sf::Vector2f t_target);
 	void setTrackingVelocity(sf::Vector2f target);
+	void setVelocity(sf::Vector2f t_vel) { m_velocity = t_vel; }
 
 	
 private:
