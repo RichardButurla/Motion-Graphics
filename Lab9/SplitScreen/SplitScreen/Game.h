@@ -7,6 +7,7 @@
 #include "GameEnums.h"
 #include "Pickups.h"
 #include <functional>
+#include <list>
 
 class Game
 {
@@ -40,6 +41,7 @@ private:
 	void checkBlueShellCollision();
 	bool checkPlayerWallTileCollision(Player & t_player);
 	void checkBlueShellWallCollision();
+	void calculateBlueShellDeflect(Pickups& t_blueShell, Tile& t_wall);
 	void checkGameTime();
 
 	void takeAwayCoins(int t_playerNumber);
@@ -60,7 +62,7 @@ private:
 	//Level
 	LevelEditor m_levelEditor;
 	std::vector<Tile>m_levelTiles;
-	std::vector<Tile>m_gameTiles;
+	std::map<TileType, std::list<Tile>> m_gameTiles;
 	sf::Texture m_tileTexture;
 	bool m_editingLevel = true;
 	Tile playerSpawnTile;

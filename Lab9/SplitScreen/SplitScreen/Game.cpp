@@ -255,10 +255,17 @@ void Game::render()
 			for (int i = 0; i < MAX_PLAYERS; i++)
 			{
 				m_window.setView(playerMiniMaps[i]); // Draw minimap
-				for (int j = 0; j < m_gameTiles.size(); j++)
+
+				TileType tileType;
+				for (int j = 0; j < MAX_TILE_TYPES; j++)
 				{
-					m_window.draw(m_gameTiles[j]);
+					tileType = static_cast<TileType>(j);
+					for (auto& walls : m_gameTiles[tileType])
+					{
+						m_window.draw(walls);
+					}
 				}
+				
 
 				for (int k = 0; k < MAX_PLAYERS; k++)
 					players[k].render(m_window);
@@ -284,9 +291,14 @@ void Game::renderPlayerOneScreen()
 {
 	m_window.setView(left);
 	
-	for (int i = 0; i < m_gameTiles.size(); i++)
+	TileType tileType;
+	for (int j = 0; j < MAX_TILE_TYPES; j++)
 	{
-		m_window.draw(m_gameTiles[i]);
+		tileType = static_cast<TileType>(j);
+		for (auto& walls : m_gameTiles[tileType])
+		{
+			m_window.draw(walls);
+		}
 	}
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -308,9 +320,14 @@ void Game::renderPlayerTwoScreen()
 {
 	m_window.setView(right);
 
-	for (int i = 0; i < m_gameTiles.size(); i++)
+	TileType tileType;
+	for (int j = 0; j < MAX_TILE_TYPES; j++)
 	{
-		m_window.draw(m_gameTiles[i]);
+		tileType = static_cast<TileType>(j);
+		for (auto& walls : m_gameTiles[tileType])
+		{
+			m_window.draw(walls);
+		}
 	}
 
 	for (int i = 0; i < MAX_PLAYERS; i++)
@@ -604,42 +621,40 @@ void Game::checkBlueShellWallCollision()
 			Pickups & blueShell = m_pickupItems[i];
 			if (blueShell.isUsed())
 			{
-				std::cout << "\nblueShell Velocity X: " << blueShell.getVelocity().x << "Velocity Y : " << blueShell.getVelocity().y;
-				for (int j = 0; j < m_gameTiles.size(); j++)
+				for (auto& wall : m_gameTiles[TileType::Wall])
 				{
-					if (m_gameTiles[j].getTileType() == TileType::Wall)
+					if (blueShell.getGlobalBounds().intersects(wall.getGlobalBounds()))
 					{
-						if (blueShell.getGlobalBounds().intersects(m_gameTiles[j].getGlobalBounds()))
-						{
-							
-							//Now apply math
-							sf::Vector2f shellVelocity = blueShell.getVelocity();
-
-							sf::Vector2f shellPosition = blueShell.getPosition();
-							sf::Vector2f tilePosition = m_gameTiles[j].getPosition();
-
-							sf::Vector2f wallNormalComponent = (shellPosition - tilePosition );
-							sf::Vector2f greenShellNormalComponent = (tilePosition - shellPosition);
-
-							sf::Vector2f projectionOne = vectorProjection({ 0,0 }, wallNormalComponent);
-
-							sf::Vector2f rejectionOne = vectorRejection(shellVelocity, greenShellNormalComponent);
-
-							sf::Vector2f velocityOne = projectionOne + rejectionOne;
-
-							blueShell.setPositionVector({ blueShell.getPosition().x + (-velocityOne.x * 10) , blueShell.getPosition().y + (-velocityOne.y * 10) });
-							//velocityOne.x *= 1.3;
-							//velocityOne.y *= 1.3;
-							blueShell.setVelocity(- velocityOne );
-							
-						}
+						calculateBlueShellDeflect(blueShell, wall);
 					}
 				}
-				
 			}
 
 		}
 	}
+}
+
+void Game::calculateBlueShellDeflect(Pickups& t_blueShell, Tile& t_wall)
+{
+	//Now apply math
+	sf::Vector2f shellVelocity = t_blueShell.getVelocity();
+
+	sf::Vector2f shellPosition = t_blueShell.getPosition();
+	sf::Vector2f tilePosition = t_wall.getPosition();
+
+	sf::Vector2f wallNormalComponent = (shellPosition - tilePosition);
+	sf::Vector2f greenShellNormalComponent = (tilePosition - shellPosition);
+
+	sf::Vector2f projectionOne = vectorProjection({ 0,0 }, wallNormalComponent);
+
+	sf::Vector2f rejectionOne = vectorRejection(shellVelocity, greenShellNormalComponent);
+
+	sf::Vector2f velocityOne = projectionOne + rejectionOne;
+
+	t_blueShell.setPositionVector({ t_blueShell.getPosition().x + (-velocityOne.x * 10) , t_blueShell.getPosition().y + (-velocityOne.y * 10) });
+	//velocityOne.x *= 1.3;
+	//velocityOne.y *= 1.3;
+	t_blueShell.setVelocity(-velocityOne);
 }
 
 void Game::checkGameTime()
@@ -941,7 +956,18 @@ void Game::loadPreviousLevel()
 			{
 				tile.setTileType(TileType::Floor);//This is so the special tiles arent drawn in game
 			}
-			m_gameTiles.push_back(tile);
+			switch (tile.getTileType())
+			{
+			case TileType::Floor:
+				//m_gameTiles[TileType::Floor].push_back(tile);
+				break;
+			case TileType::Wall:
+				//m_gameTiles[TileType::Wall].push_back(tile);
+				break;
+			default:
+				break;
+			}
+			
 		}
 		file.close();
 	}

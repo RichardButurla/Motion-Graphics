@@ -1,12 +1,11 @@
 #include "LevelEditor.h"
 #include <iostream>
 
-LevelEditor::LevelEditor(sf::RenderWindow & t_window, std::vector<Tile>& m_levelEditorTiles, std::vector<Tile>& m_gameTiles) :
+LevelEditor::LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_levelEditorTiles, std::shared_ptr<std::map<TileType, std::list<Tile>>> t_gameTiles) :
 	m_levelWindow(t_window),
 	m_levelEditorTiles(m_levelEditorTiles),
-	m_gameTiles(m_gameTiles)
+	m_gameTiles(t_gameTiles)
 {
-
 	m_currentView = m_levelWindow.getView();
 }
 
@@ -237,7 +236,6 @@ void LevelEditor::setupGrid()
 		}
 	}
 	m_levelEditorTiles.reserve(MAX_COLLUMS * MAX_ROWS);
-	m_gameTiles.reserve(MAX_COLLUMS * MAX_ROWS);
 }
 
 void LevelEditor::setupFontAndText()
@@ -318,7 +316,7 @@ void LevelEditor::checkPlacingBlock()
 					Tile newTile = m_highlightTile;
 					newTile.setPosition(tilePos);
 					m_levelEditorTiles.push_back(newTile);
-					m_gameTiles.push_back(newTile);
+					*m_gameTiles[newTile.getTileType()].push_back(newTile);
 					tileCount++;
 				}
 				else
@@ -337,7 +335,7 @@ void LevelEditor::checkPlacingBlock()
 						Tile newTile = m_highlightTile;
 						newTile.setPosition(tilePos);
 						m_levelEditorTiles.push_back(newTile);
-						m_gameTiles.push_back(newTile);
+						*m_gameTiles[newTile.getTileType()].push_back(newTile);
 						tileCount++;
 					}
 				}
@@ -364,21 +362,24 @@ void LevelEditor::checkRemovingBlock()
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{
 				sf::Vector2f placedTilePos;
-				for (int i = 0; i < m_levelEditorTiles.size(); i++)
+				TileType tileType;
+				for (int i = 0; i < MAX_TILE_TYPES; i++)
 				{
-					placedTilePos = m_levelEditorTiles[i].getPosition();
-					if (tilePos.x == placedTilePos.x &&
-						tilePos.y == placedTilePos.y)
+					tileType = static_cast<TileType>(i);
+					int j = 0;
+					for (auto& tile : m_gameTiles[tileType])
 					{
-						occupied = true;
-						tileIndex = i;
+						placedTilePos = tile.getPosition();
+						if (tilePos.x == placedTilePos.x && tilePos.y == placedTilePos.y)
+						{
+							//m_gameTiles[tileType].remove(tile);
+							m_levelEditorTiles.erase(m_levelEditorTiles.begin() + j);
+							occupied = true;
+							tileCount--;
+							break;
+						}
+						j++;
 					}
-				}
-				if (occupied == true)
-				{
-					m_levelEditorTiles.erase(m_levelEditorTiles.begin() + tileIndex);
-					m_gameTiles.erase(m_gameTiles.begin() + tileIndex);
-					tileCount--;
 				}
 
 

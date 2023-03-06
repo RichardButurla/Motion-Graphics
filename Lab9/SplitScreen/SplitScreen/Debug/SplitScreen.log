@@ -1,69 +1,206 @@
 ﻿  Game.cpp
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.h(60,27): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(19,15): error C2665: 'LevelEditor::LevelEditor': none of the 3 overloads could convert all the argument types
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.h(35,2): message : could be 'LevelEditor::LevelEditor(sf::RenderWindow &,std::vector<Tile,std::allocator<Tile>> &,std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>)'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(19,15): message : 'LevelEditor::LevelEditor(sf::RenderWindow &,std::vector<Tile,std::allocator<Tile>> &,std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>)': cannot convert argument 3 from 'std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>' to 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(19,38): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.h(35,2): message : see declaration of 'LevelEditor::LevelEditor'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(20,1): message : while trying to match the argument list '(sf::RenderWindow, std::vector<Tile,std::allocator<Tile>>, std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>)'
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(33,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(203,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(237,114): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(258,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(287,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(295,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(311,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(323,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(470,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(531,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(575,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(600,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(608,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(647,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(692,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(748,39): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(844,78): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(307,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(340,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(487,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(548,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(592,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(617,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(662,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(707,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(763,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(859,78): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(845,78): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(860,78): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(850,15): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(853,16): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(956,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(865,15): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(868,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(982,20): warning C4018: '<': signed/unsigned mismatch
   LevelEditor.cpp
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(71,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(201,25): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(70,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(200,25): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(202,26): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(201,26): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(211,53): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(210,53): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(211,42): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(210,42): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(214,62): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(213,62): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(214,51): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(213,51): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(326,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(367,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(319,40): error C2676: binary '[': 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>' does not define this operator or a conversion to a type acceptable to the predefined operator
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705,23): message : could be '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(319): error C2783: '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const': could not deduce template argument for '__formal'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705): message : see declaration of 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator []'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(324,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(338,41): error C2676: binary '[': 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>' does not define this operator or a conversion to a type acceptable to the predefined operator
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705,23): message : could be '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(338): error C2783: '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const': could not deduce template argument for '__formal'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705): message : see declaration of 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator []'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370,35): error C2676: binary '[': 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>' does not define this operator or a conversion to a type acceptable to the predefined operator
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705,23): message : could be '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(371): error C2783: '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const': could not deduce template argument for '__formal'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705): message : see declaration of 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator []'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370,6): error C2530: 'tile': references must be initialized
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370,6): error C3531: 'tile': a symbol whose type contains 'auto' must have an initializer
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370,22): error C2143: syntax error: missing ';' before ':'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370,6): error C2676: binary '[': 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>' does not define this operator or a conversion to a type acceptable to the predefined operator
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705,23): message : could be '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370): error C2783: '_Elem &std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator [](ptrdiff_t) noexcept const': could not deduce template argument for '__formal'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\memory(1705): message : see declaration of 'std::shared_ptr<std::map<TileType,std::list<Tile,std::allocator<Tile>>,std::less<TileType>,std::allocator<std::pair<const TileType,std::list<Tile,std::allocator<Tile>>>>>>::operator []'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\LevelEditor.cpp(370,45): error C2143: syntax error: missing ';' before ')'
   main.cpp
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.h(60,27): warning C4305: 'argument': truncation from 'double' to 'float'
+  Pickups.cpp
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.h(60,27): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(39,32): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(59,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(60,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(68,23): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(70,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(71,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(79,23): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(81,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(82,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(90,23): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(92,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(93,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(102,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Pickups.cpp(103,27): warning C4244: '*=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+          and
+          [
+              T=unsigned int
+          ]
+  Player.cpp
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Player.cpp(27,21): warning C4018: '<': signed/unsigned mismatch
+  Vector2.cpp
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Vector2.cpp(59,43): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Vector2.cpp(59,27): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
   Generating Code...
-  SplitScreen.vcxproj -> C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe

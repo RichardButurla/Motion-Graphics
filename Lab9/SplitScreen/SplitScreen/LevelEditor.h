@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Globals.h"
+#include <list>
+#include <map>
 
 enum class EditAction
 {
@@ -30,7 +32,7 @@ private:
 class LevelEditor
 {
 public:
-	LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_levelEditorTiles, std::vector<Tile>& m_gameTiles);
+	LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_levelEditorTiles, std::shared_ptr<std::map<TileType, std::list<Tile>>> t_gameTiles);
 	void init(sf::Texture & t_tileTexture,sf::Font & t_font);
 	void update();
 	void render(sf::RenderWindow& t_window);
@@ -65,7 +67,7 @@ private:
 	int tileCount = 0;
 	sf::Vector2f m_gridPositions[MAX_ROWS * MAX_COLLUMS];
 	std::vector<Tile> & m_levelEditorTiles;
-	std::vector<Tile> & m_gameTiles;
+	std::shared_ptr<std::map<TileType,std::list<Tile>>> m_gameTiles;
 	sf::Texture m_tileTexture;
 
 	//
