@@ -71,7 +71,7 @@ private:
 
 	sf::View fixed;
 	sf::View standard;
-	sf::View minimap;
+	sf::View playerMiniMaps[MAX_PLAYERS];
 	unsigned int size = 200; // The 'minimap' view will show a smaller picture of the map
 
 	//Time
@@ -85,7 +85,7 @@ private:
 	// The 'left' and the 'right' view will be used for splitscreen displays
 	sf::View left;
 	sf::View right;
-	sf::RectangleShape miniback; // We want to draw a rectangle behind the minimap
+	sf::RectangleShape miniMapBackgrounds[MAX_PLAYERS]; // We want to draw a rectangle behind the minimap
 
 	//Players
 	sf::Texture playerTexture;

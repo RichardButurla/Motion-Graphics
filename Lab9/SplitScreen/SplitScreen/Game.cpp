@@ -224,6 +224,11 @@ void Game::render()
 
 			left.setCenter(players[playerOne].getPosition());
 			right.setCenter(players[playerTwo].getPosition());
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				playerMiniMaps[i].setCenter(players[i].getPosition());
+			}
+			
 			
 
 			for (int i = 0; i < MAX_PLAYERS; i++)
@@ -241,16 +246,25 @@ void Game::render()
 			//m_gameTimeText.setPosition()
 			m_window.draw(m_gameTimeText);
 
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				m_window.draw(miniMapBackgrounds[i]);
+			}
 
-			//m_window.setView(minimap); // Draw minimap
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				m_window.setView(playerMiniMaps[i]); // Draw minimap
+				for (int j = 0; j < m_gameTiles.size(); j++)
+				{
+					m_window.draw(m_gameTiles[j]);
+				}
 
-			//for (int i = 0; i < m_gameTiles.size(); i++)
-			//{
-			//	m_window.draw(m_gameTiles[i]);
-			//}
+				for (int k = 0; k < MAX_PLAYERS; k++)
+					players[k].render(m_window);
+			}
+			
 
-			//for (int i = 0; i < MAX_PLAYERS; i++)
-			//	players[i].render(m_window);		
+					
 
 			//m_window.draw(m_gameTimeText);
 
@@ -837,12 +851,15 @@ void Game::setupViews()
 	fixed = m_window.getView(); // The 'fixed' view will never change
 	standard = fixed; // The 'standard' view will be the one that gets always displayed
 
-	size = 200; // The 'minimap' view will show a smaller picture of the map
-	minimap = sf::View(sf::FloatRect(standard.getCenter().x, standard.getCenter().y, static_cast<float>(size), static_cast<float>(m_window.getSize().y * size / m_window.getSize().x)));
-	minimap.setViewport(sf::FloatRect(1.f - static_cast<float>(minimap.getSize().x) / m_window.getSize().x - 0.1f, 1.f - static_cast<float>(minimap.getSize().y) / m_window.getSize().y - 0.1f,
-		static_cast<float>(minimap.getSize().x) / m_window.getSize().x, static_cast<float>(minimap.getSize().y) / m_window.getSize().y));
-	minimap.zoom(4.f);
-	minimap.setCenter(static_cast<sf::Vector2f>(m_window.getSize()));
+	size = 100; // The 'minimap' view will show a smaller picture of the map
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		playerMiniMaps[i] = sf::View(sf::FloatRect(standard.getCenter().x, standard.getCenter().y, static_cast<float>(size), static_cast<float>(m_window.getSize().y * size / m_window.getSize().x)));
+		playerMiniMaps[i].zoom(4.f);
+	}
+	playerMiniMaps[playerOne].setViewport(sf::FloatRect(0.005, 0.005, 0.25, 0.25));
+	playerMiniMaps[playerTwo].setViewport(sf::FloatRect(0.75, 0.005, 0.245, 0.25));
+	
 	// The 'left' and the 'right' view will be used for splitscreen displays
 	left = sf::View(sf::FloatRect(0.f, 0.f, static_cast<float>(m_window.getSize().x / 2), static_cast<float>(m_window.getSize().y)));
 	left.setViewport(sf::FloatRect(0.f, 0.f, 0.5, 1.f));
@@ -852,9 +869,13 @@ void Game::setupViews()
 	right.zoom(0.2);
 
 	// We want to draw a rectangle behind the minimap
-	/*miniback.setPosition(minimap.getViewport().left * m_window.getSize().x - 5, minimap.getViewport().top * m_window.getSize().y - 5);
-	miniback.setSize(sf::Vector2f(minimap.getViewport().width * m_window.getSize().x + 10, minimap.getViewport().height * m_window.getSize().y + 10));
-	miniback.setFillColor(sf::Color(160, 8, 8));*/
+	for (int i = 0; i < MAX_PLAYERS; i++)
+	{
+		miniMapBackgrounds[i].setPosition(playerMiniMaps[i].getViewport().left * m_window.getSize().x - 5, playerMiniMaps[i].getViewport().top * m_window.getSize().y - 5);
+		miniMapBackgrounds[i].setSize(sf::Vector2f(playerMiniMaps[i].getViewport().width * m_window.getSize().x + 10, playerMiniMaps[i].getViewport().height * m_window.getSize().y + 10));
+		miniMapBackgrounds[i].setFillColor(sf::Color(160, 8, 8));
+	}
+	
 
 	/*left.setCenter(player1.getPosition());
 	right.setCenter(player2.getPosition());*/
