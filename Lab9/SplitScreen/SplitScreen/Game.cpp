@@ -620,12 +620,6 @@ void Game::checkBlueShellWallCollision()
 							sf::Vector2f shellPosition = blueShell.getPosition();
 							sf::Vector2f tilePosition = m_gameTiles[j].getPosition();
 
-
-							/*sf::Vector2f pushBack;
-							pushBack.x = shellPosition.x - shellVelocity.x * 6;
-							pushBack.y = shellPosition.y - shellVelocity.y * 6;
-							blueShell.setPositionVector(pushBack);*/
-
 							sf::Vector2f wallNormalComponent = (shellPosition - tilePosition );
 							sf::Vector2f greenShellNormalComponent = (tilePosition - shellPosition);
 
@@ -674,7 +668,7 @@ void Game::checkGameTime()
 
 void Game::takeAwayCoins(int t_playerNumber)
 {
-	int numberOfCoinsLost = 6;
+	int numberOfCoinsLost = 9;
 	int numberOfCoinsCollected = players[t_playerNumber].getNumberOfCoinsCollected();
 	if (numberOfCoinsCollected > 0)
 	{
@@ -695,11 +689,10 @@ void Game::takeAwayCoins(int t_playerNumber)
 void Game::dropCoins(sf::Vector2f t_playerPos, int t_numberOfCoinsLost)
 {
 	//put coins around player and add onto map.
-	float dropAngle = 20;
-	float dropDistance = 150;
+	float dropAngle = 45;
+	float dropDistance = 30;
 	float dropAngleRadians = dropAngle * (PI / 180);
-	dropAngleRadians = dropAngleRadians;
-	float dropAngleRadianDecrement = (dropAngleRadians * 10) / t_numberOfCoinsLost;
+	float dropAngleRadianDecrement = dropAngleRadians;
 
 	sf::Vector2f initialDropPos = t_playerPos;
 	initialDropPos.y += dropDistance;

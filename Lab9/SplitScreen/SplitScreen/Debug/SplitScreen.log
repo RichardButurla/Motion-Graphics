@@ -11,10 +11,10 @@ C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cp
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(578,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(602,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(610,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(655,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(700,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(757,39): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(856,15): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(859,16): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(958,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(649,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(694,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(750,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(849,15): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(852,16): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\SplitScreen\Game.cpp(951,20): warning C4018: '<': signed/unsigned mismatch
   SplitScreen.vcxproj -> C:\Users\Richie\Desktop\MG2\Motion-Graphics\Lab9\SplitScreen\Debug\SplitScreen.exe
