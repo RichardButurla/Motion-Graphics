@@ -55,6 +55,7 @@ void Pickups::init(sf::Texture const& t_texture, ItemTypes itemType, sf::Vector2
 		this->setTextureRect(sf::IntRect(0, 0, m_textureSize.x / 5, m_textureSize.y));
 		m_textureSize.x /= 5;
 		this->setOrigin(m_textureSize.x / 2.f, m_textureSize.y / 2.f);
+		scale = { 0.5,0.5 };
 		this->setScale(scale);
 		m_textureSize.x *= scale.x;
 		m_textureSize.y *= scale.y;

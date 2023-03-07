@@ -39,7 +39,7 @@ private:
 
 	void checkPickupCollision();
 	void checkBlueShellCollision();
-	bool checkPlayerWallTileCollision(Player & t_player);
+	void checkPlayerWallTileCollision(Player & t_player);
 	void checkBlueShellWallCollision();
 	void calculateBlueShellDeflect(Pickups& t_blueShell, Tile& t_wall);
 	void checkGameTime();
@@ -53,6 +53,8 @@ private:
 
 	void loadPreviousLevel();
 	void saveLevel();
+	void swapToGameTextures();
+	void swapToEditorTextures();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::View baseView;
@@ -61,7 +63,6 @@ private:
 
 	//Level
 	LevelEditor m_levelEditor;
-	std::vector<Tile>m_levelTiles;
 	std::map<TileType, std::list<Tile>> m_gameTiles;
 	sf::Texture m_tileTexture;
 	bool m_editingLevel = true;

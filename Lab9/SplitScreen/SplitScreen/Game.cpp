@@ -16,7 +16,7 @@
 Game::Game() :
 	m_window{ sf::VideoMode{ SCREEN_WIDTH, SCREEN_HEIGHT, 32U }, "Level Editor" },
 	m_exitGame{ false }, //when true game will exit
-	m_levelEditor(m_window,m_levelTiles,m_gameTiles)
+	m_levelEditor(m_window,m_gameTiles)
 {
 	baseView = m_window.getView();
 	movingView = m_window.getView();
@@ -124,8 +124,18 @@ void Game::processKeys(sf::Event t_event)
 {
 	if (sf::Keyboard::Escape == t_event.key.code)
 	{
+		if (m_editingLevel)
+		{
+			swapToGameTextures();
+		}
+		else
+		{
+			swapToEditorTextures();
+		}
+
 		m_editingLevel = !m_editingLevel;
 		timeSinceGameStart.restart();
+		
 		saveLevel();
 	}
 	
@@ -587,28 +597,23 @@ void Game::checkBlueShellCollision()
 	}
 }
 
-bool Game::checkPlayerWallTileCollision(Player & t_player)
+void Game::checkPlayerWallTileCollision(Player & t_player)
 {
-	for (int j = 0; j < m_levelTiles.size(); j++)
+	for (auto & tile : m_gameTiles[TileType::Wall])
 	{
-		if (m_levelTiles[j].getTileType() == TileType::Wall)
+		if (t_player.getGlobalBounds().intersects(tile.getGlobalBounds()))
 		{
-			if (t_player.getGlobalBounds().intersects(m_levelTiles[j].getGlobalBounds()))
+			sf::Vector2f pushBackVector = t_player.getPosition() - tile.getPosition();
+			if (abs(pushBackVector.x) > abs(pushBackVector.y))
 			{
-				sf::Vector2f pushBackVector = t_player.getPosition() - m_levelTiles[j].getPosition();
-				if (abs(pushBackVector.x) > abs(pushBackVector.y))
-				{
-					t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x  / 4), t_player.getPosition().y });
-				}
-				else
-				{
-					t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y  / 4)});
-				}
+				t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x  / 4), t_player.getPosition().y });
 			}
-		}
-			
+			else
+			{
+				t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y  / 4)});
+			}
+		}			
 	}
-	return false;
 }
 
 void Game::checkBlueShellWallCollision()
@@ -951,22 +956,23 @@ void Game::loadPreviousLevel()
 					itemsPlaced[randItem] = true;
 				}
 			}
-			m_levelTiles.push_back(tile);
-			if (tile.getTileType() != TileType::Wall && tile.getTileType() != TileType::Floor)
-			{
-				tile.setTileType(TileType::Floor);//This is so the special tiles arent drawn in game
-			}
-			switch (tile.getTileType())
-			{
-			case TileType::Floor:
-				//m_gameTiles[TileType::Floor].push_back(tile);
-				break;
-			case TileType::Wall:
-				//m_gameTiles[TileType::Wall].push_back(tile);
-				break;
-			default:
-				break;
-			}
+
+			m_gameTiles[static_cast<TileType>(tileType)].push_back(tile);
+			//if (tile.getTileType() != TileType::Wall && tile.getTileType() != TileType::Floor)
+			//{
+			//	tile.setTileType(TileType::Floor);//This is so the special tiles arent drawn in game
+			//}
+			//switch (tile.getTileType())
+			//{
+			//case TileType::Floor:
+			//	m_gameTiles[TileType::Floor].push_back(tile);
+			//	break;
+			//case TileType::Wall:
+			//	m_gameTiles[TileType::Wall].push_back(tile);
+			//	break;
+			//default:
+			//	break;
+			//}
 			
 		}
 		file.close();
@@ -979,10 +985,64 @@ void Game::saveLevel()
 {
 	std::ofstream file("tileData.txt");
 
-	for (int i = 0; i < m_levelTiles.size(); i++) {
-		sf::Vector2f tilePos = m_levelTiles[i].getPosition();
-		int tileType = static_cast<int>(m_levelTiles[i].getTileType());
-		file << tilePos.x << " " << tilePos.y << " " << tileType << std::endl;
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
+	{
+		TileType tileType = static_cast<TileType>(i);
+		for (auto& tile : m_gameTiles[tileType]) {
+			sf::Vector2f tilePos = tile.getPosition();
+			file << tilePos.x << " " << tilePos.y << " " << static_cast<int>(tileType) << std::endl;
+		}
 	}
+	
 	file.close();
+}
+
+
+//changes texture rects of tiles beteween game and level editor
+//so we dont see coin or powerup tiles
+void Game::swapToGameTextures()
+{
+	 
+	for (int i = 0; i < MAX_ITEM_TYPES; i++)
+	{
+		TileType tileType = static_cast<TileType>(i);
+		for (auto& tile : m_gameTiles[tileType])
+		{
+			switch (tileType)
+			{
+			case TileType::PlayerSpawn:
+			case TileType::PowerUpSpawn:
+			case TileType::CoinSpawn:
+				tile.setTextureRect(tile.getTileTypeTextureRect(TileType::Floor));
+				break;
+			default:
+				break;
+			}
+			
+		}
+	}
+}
+
+void Game::swapToEditorTextures()
+{
+	for (int i = 0; i < MAX_ITEM_TYPES; i++)
+	{
+		TileType tileType = static_cast<TileType>(i);
+		for (auto& tile : m_gameTiles[tileType])
+		{
+			switch (tileType)
+			{
+			case TileType::PlayerSpawn:
+				tile.setTextureRect(tile.getTileTypeTextureRect(TileType::PlayerSpawn));
+			case TileType::PowerUpSpawn:
+				tile.setTextureRect(tile.getTileTypeTextureRect(TileType::PowerUpSpawn));
+			case TileType::CoinSpawn:
+				tile.setTextureRect(tile.getTileTypeTextureRect(TileType::CoinSpawn));
+				break;
+			default:
+				break;
+			}
+
+		}
+	}
 }

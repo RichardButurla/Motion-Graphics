@@ -1,9 +1,8 @@
 #include "LevelEditor.h"
 #include <iostream>
 
-LevelEditor::LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_levelEditorTiles, std::shared_ptr<std::map<TileType, std::list<Tile>>> t_gameTiles) :
+LevelEditor::LevelEditor(sf::RenderWindow& t_window, std::map<TileType, std::list<Tile>> & t_gameTiles) :
 	m_levelWindow(t_window),
-	m_levelEditorTiles(m_levelEditorTiles),
 	m_gameTiles(t_gameTiles)
 {
 	m_currentView = m_levelWindow.getView();
@@ -67,10 +66,15 @@ void LevelEditor::render(sf::RenderWindow& t_window)
 		}
 	}
 	
-	for (int i = 0; i < m_levelEditorTiles.size(); i++)
+	for (int i = 0; i < MAX_TILE_TYPES; i++)
 	{
-		t_window.draw(m_levelEditorTiles[i]);
+		TileType tileType = static_cast<TileType>(i);
+		for (auto& tile : m_gameTiles[tileType])
+		{
+			t_window.draw(tile);
+		}
 	}
+	
 
 	for (int i = 0; i < MAX_TILE_TYPES; i++)
 	{
@@ -235,7 +239,7 @@ void LevelEditor::setupGrid()
 			m_gridPositions[row * MAX_ROWS + col] = sf::Vector2f{ col * tileWidth, row * tileHeight + m_hudYOffset };
 		}
 	}
-	m_levelEditorTiles.reserve(MAX_COLLUMS * MAX_ROWS);
+
 }
 
 void LevelEditor::setupFontAndText()
@@ -311,31 +315,34 @@ void LevelEditor::checkPlacingBlock()
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{
 				sf::Vector2f placedTilePos;
-				if (m_levelEditorTiles.size() == 0) //first block to be placed
+				TileType tileType = m_highlightTile.getTileType();
+				if (m_gameTiles[tileType].size() == 0) //first block to be placed
 				{
 					Tile newTile = m_highlightTile;
 					newTile.setPosition(tilePos);
-					m_levelEditorTiles.push_back(newTile);
-					*m_gameTiles[newTile.getTileType()].push_back(newTile);
+					m_gameTiles[tileType].push_back(newTile);
 					tileCount++;
 				}
 				else
 				{
-					for (int i = 0; i < m_levelEditorTiles.size(); i++)
+					for (int i = 0; i < MAX_TILE_TYPES; i++)
 					{
-						placedTilePos = m_levelEditorTiles[i].getPosition();
-						if (tilePos.x == placedTilePos.x &&
-							tilePos.y == placedTilePos.y)
+						TileType tileType = static_cast<TileType>(i);
+						for (auto& tile : m_gameTiles[tileType])
 						{
-							freeSpace = false;
+							placedTilePos = tile.getPosition();
+							if (tilePos.x == placedTilePos.x &&
+								tilePos.y == placedTilePos.y)
+							{
+								freeSpace = false;
+							}
 						}
-					}
+					}				
 					if (freeSpace == true)
 					{
 						Tile newTile = m_highlightTile;
 						newTile.setPosition(tilePos);
-						m_levelEditorTiles.push_back(newTile);
-						*m_gameTiles[newTile.getTileType()].push_back(newTile);
+						m_gameTiles[newTile.getTileType()].push_back(newTile);
 						tileCount++;
 					}
 				}
@@ -362,8 +369,30 @@ void LevelEditor::checkRemovingBlock()
 				m_mousePressPos.y > tilePos.y && m_mousePressPos.y < tilePos.y + tileHeight)
 			{
 				sf::Vector2f placedTilePos;
-				TileType tileType;
+
+				// result is a list::iterator that is either the matched tile 
+				// or "one past the end"
 				for (int i = 0; i < MAX_TILE_TYPES; i++)
+				{
+					TileType tileType = static_cast<TileType>(i);
+					auto result = std::find_if(std::begin(m_gameTiles[tileType]), std::end(m_gameTiles[tileType]),
+						[&](Tile const& tile) {
+							placedTilePos = tile.getPosition();
+							return (tilePos.x == placedTilePos.x && tilePos.y == placedTilePos.y);
+						});
+
+					// If we found a matching tile
+					if (result != m_gameTiles[tileType].end())
+					{
+						// delete it
+						m_gameTiles[tileType].erase(result);
+						//m_gameTiles[tileType].erase(result);
+					}
+				}
+				
+				
+				
+				/*for (int i = 0; i < MAX_TILE_TYPES; i++)
 				{
 					tileType = static_cast<TileType>(i);
 					int j = 0;
@@ -372,15 +401,16 @@ void LevelEditor::checkRemovingBlock()
 						placedTilePos = tile.getPosition();
 						if (tilePos.x == placedTilePos.x && tilePos.y == placedTilePos.y)
 						{
-							//m_gameTiles[tileType].remove(tile);
+							m_gameTiles[tileType].remove(tile);
 							m_levelEditorTiles.erase(m_levelEditorTiles.begin() + j);
 							occupied = true;
 							tileCount--;
+							std::cout << "removed";
 							break;
 						}
 						j++;
 					}
-				}
+				}*/
 
 
 			}
@@ -422,4 +452,35 @@ void Tile::setTileType(TileType t_type)
 	}
 
 	m_tileType = t_type;
+}
+
+sf::IntRect Tile::getTileTypeTextureRect(TileType t_TileType)
+{
+	sf::Vector2u textureSize = this->getTexture()->getSize();
+	textureSize.x = textureSize.x / 7;
+	textureSize.y = textureSize.y / 3;
+
+	sf::IntRect tileRect;
+	switch (t_TileType)
+	{
+	case TileType::PlayerSpawn:
+		tileRect = (sf::IntRect(textureSize.x * 1, 0, textureSize.x, textureSize.y));
+		break;
+	case TileType::Wall:
+		tileRect = (sf::IntRect(textureSize.x * 5, textureSize.y * 2, textureSize.x, textureSize.y));
+		break;
+	case TileType::Floor:
+		tileRect = (sf::IntRect(0, 0, textureSize.x, textureSize.y));
+		break;
+	case TileType::PowerUpSpawn:
+		tileRect = (sf::IntRect(textureSize.x * 2, 0, textureSize.x, textureSize.y));
+		break;
+	case TileType::CoinSpawn:
+		tileRect = (sf::IntRect(textureSize.x * 3, 0, textureSize.x, textureSize.y));
+		break;
+	default:
+		break;
+	}
+	// // O: insert return statement here
+	return tileRect;
 }

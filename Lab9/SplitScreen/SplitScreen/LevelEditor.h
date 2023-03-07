@@ -24,6 +24,7 @@ class Tile : public sf::Sprite
 public:
 	TileType getTileType() { return m_tileType; }
 	void setTileType(TileType t_type);
+	sf::IntRect getTileTypeTextureRect(TileType t_TileType);
 
 private:
 	TileType m_tileType = TileType::Wall;
@@ -32,7 +33,7 @@ private:
 class LevelEditor
 {
 public:
-	LevelEditor(sf::RenderWindow& t_window, std::vector<Tile>& m_levelEditorTiles, std::shared_ptr<std::map<TileType, std::list<Tile>>> t_gameTiles);
+	LevelEditor(sf::RenderWindow& t_window, std::map<TileType, std::list<Tile>> & t_gameTiles);
 	void init(sf::Texture & t_tileTexture,sf::Font & t_font);
 	void update();
 	void render(sf::RenderWindow& t_window);
@@ -66,8 +67,7 @@ private:
 	float m_hudXOffset = 70;
 	int tileCount = 0;
 	sf::Vector2f m_gridPositions[MAX_ROWS * MAX_COLLUMS];
-	std::vector<Tile> & m_levelEditorTiles;
-	std::shared_ptr<std::map<TileType,std::list<Tile>>> m_gameTiles;
+	std::map<TileType,std::list<Tile>> & m_gameTiles;
 	sf::Texture m_tileTexture;
 
 	//
