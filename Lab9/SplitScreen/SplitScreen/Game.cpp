@@ -188,7 +188,7 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
-	checkStartGame();
+	
 	
 	if (m_editingLevel)
 	{
@@ -196,6 +196,7 @@ void Game::update(sf::Time t_deltaTime)
 	}
 	else
 	{
+		checkStartGame();
 		if (!m_startOfGame)
 		{
 			for (int i = 0; i < MAX_PLAYERS; i++)
@@ -652,11 +653,11 @@ void Game::checkPlayerWallTileCollision(Player & t_player)
 			sf::Vector2f pushBackVector = t_player.getPosition() - tile.getPosition();
 			if (abs(pushBackVector.x) > abs(pushBackVector.y))
 			{
-				t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x  / 4), t_player.getPosition().y });
+				t_player.setPosition({ (t_player.getPosition().x + pushBackVector.x  / 7), t_player.getPosition().y });
 			}
 			else
 			{
-				t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y  / 4)});
+				t_player.setPosition({ t_player.getPosition().x , (t_player.getPosition().y + pushBackVector.y  / 7)});
 			}
 		}			
 	}

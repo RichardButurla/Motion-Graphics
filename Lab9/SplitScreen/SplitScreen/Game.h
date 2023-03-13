@@ -82,7 +82,7 @@ private:
 	//Time
 	sf::Clock timeSinceGameStart;
 	sf::Time startCountdown = sf::seconds(4);
-	sf::Time gameDuration = (sf::seconds(9) + startCountdown);
+	sf::Time gameDuration = (sf::seconds(90) + startCountdown);
 	
 	sf::Text m_gameTimeText;
 	sf::Text m_countdownText;
