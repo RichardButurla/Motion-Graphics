@@ -188,31 +188,51 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		m_window.close();
 	}
+	checkStartGame();
+	
 	if (m_editingLevel)
 	{
 		m_levelEditor.update();
 	}
 	else
 	{
-		for (int i = 0; i < MAX_PLAYERS; i++)
+		if (!m_startOfGame)
 		{
-			playerPositions[i] = players[i].getPosition();
-			checkPlayerWallTileCollision(players[i]);
-		}
-		checkPlayerInput(t_deltaTime);
-		checkPickupCollision();
-		checkBlueShellCollision();
-		checkBlueShellWallCollision();
-		checkGameTime();
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				playerPositions[i] = players[i].getPosition();
+				checkPlayerWallTileCollision(players[i]);
+			}
+			checkPlayerInput(t_deltaTime);
+			checkPickupCollision();
+			checkBlueShellCollision();
+			checkBlueShellWallCollision();
+			checkGameTime();
 
-		for (int i = 0; i < MAX_PLAYERS; i++)
-		{
-			players[i].update(m_magnetFunctions);
-		}
+			for (int i = 0; i < MAX_PLAYERS; i++)
+			{
+				players[i].update(m_magnetFunctions);
+			}
 
-		for (int i = 0; i < m_pickupItems.size(); i++)
+			for (int i = 0; i < m_pickupItems.size(); i++)
+			{
+				m_pickupItems[i].update(t_deltaTime);
+			}
+		}
+		if (m_gameOver)
 		{
-			m_pickupItems[i].update(t_deltaTime);
+			sf::Vector2f playerOneTextPos{ m_window.getSize().x / 3.5f - m_gameTimeText.getGlobalBounds().width / 2.f , m_window.getSize().y / 2.f };
+			sf::Vector2f playerTwoTextPos{ m_window.getSize().x / 1.5f - m_gameTimeText.getGlobalBounds().width / 2.f , m_window.getSize().y / 2.f };
+			if (players[playerOne].getNumberOfCoinsCollected() > players[playerTwo].getNumberOfCoinsCollected())
+			{
+				m_gameWinText.setPosition(playerOneTextPos);
+				m_gameLoseText.setPosition(playerTwoTextPos);
+			}
+			else
+			{
+				m_gameWinText.setPosition(playerTwoTextPos);
+				m_gameLoseText.setPosition(playerOneTextPos);
+			}
 		}
 	}	
 }
@@ -289,8 +309,10 @@ void Game::render()
 		}
 		else
 		{
+			m_window.setView(fixed); // Draw 'GUI' elements with fixed positions
 			m_window.draw(m_gameWinText);
 			m_window.draw(m_gameLoseText);
+			std::cout << "\n" << m_gameLoseText.getPosition().x;
 		}
 	}
 
@@ -320,6 +342,12 @@ void Game::renderPlayerOneScreen()
 	}
 
 	m_window.draw(playerCoinTexts[playerOne]);
+
+	if (m_startOfGame)
+	{
+		m_countdownText.setPosition({ players[playerOne].getPosition().x - 10,players[playerOne].getPosition().y - 10 });
+		m_window.draw(m_countdownText);
+	}
 	//m_window.draw(player1);
 	//m_window.draw(bulletPlayer1);
 	//m_window.draw(bulletPlayer2);
@@ -350,6 +378,12 @@ void Game::renderPlayerTwoScreen()
 	for (int i = 0; i < m_pickupItems.size(); i++)
 	{
 		m_window.draw(m_pickupItems[i]);
+	}
+
+	if (m_startOfGame)
+	{
+		m_countdownText.setPosition({ players[playerTwo].getPosition().x - 10,players[playerTwo].getPosition().y - 10 });
+		m_window.draw(m_countdownText);
 	}
 
 	/*m_window.draw(bulletPlayer1);
@@ -488,6 +522,18 @@ void Game::checkPlayerTwoInput(sf::Time& t_deltaTime)
 		}
 	}
 	players[playerTwo].movePlayer(moveVector);
+}
+
+void Game::checkStartGame()
+{
+	if (m_startOfGame)
+	{
+		m_countdownText.setString(std::to_string(static_cast<int>(startCountdown.asSeconds() - timeSinceGameStart.getElapsedTime().asSeconds())));
+		if (timeSinceGameStart.getElapsedTime() > startCountdown)
+		{
+			m_startOfGame = false;
+		}
+	}
 }
 
 void Game::checkPickupCollision()
@@ -669,18 +715,6 @@ void Game::checkGameTime()
 	if (timeSinceGameStart.getElapsedTime() > gameDuration)
 	{
 		m_gameOver = true;
-		sf::Vector2f playerOneTextPos{ m_window.getSize().x / 3.5f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f };
-		sf::Vector2f playerTwoTextPos{ m_window.getSize().x / 1.5f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f };
-		if (players[playerOne].getNumberOfCoinsCollected() > players[playerTwo].getNumberOfCoinsCollected())
-		{
-			m_gameWinText.setPosition(playerOneTextPos);
-			m_gameLoseText.setPosition(playerTwoTextPos);
-		}
-		else
-		{
-			m_gameWinText.setPosition(playerTwoTextPos);
-			m_gameLoseText.setPosition(playerOneTextPos);
-		}
 	}
 }
 
@@ -782,7 +816,7 @@ void Game::setupFontAndText()
 	m_gameLoseText.setPosition({ m_window.getSize().x / 2.f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f });
 	m_gameLoseText.setCharacterSize(30U);
 	m_gameLoseText.setOutlineColor(sf::Color::Black);
-	m_gameLoseText.setFillColor(sf::Color::White);
+	m_gameLoseText.setFillColor(sf::Color::Red);
 	m_gameLoseText.setOutlineThickness(3.0f);
 
 	m_gameWinText.setFont(m_ArialBlackfont);
@@ -791,8 +825,18 @@ void Game::setupFontAndText()
 	m_gameWinText.setPosition({ m_window.getSize().x / 4.f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f });
 	m_gameWinText.setCharacterSize(30U);
 	m_gameWinText.setOutlineColor(sf::Color::Black);
-	m_gameWinText.setFillColor(sf::Color::White);
+	m_gameWinText.setFillColor(sf::Color::Green);
 	m_gameWinText.setOutlineThickness(3.0f);
+
+	
+	m_countdownText.setFont(m_ArialBlackfont);
+	m_countdownText.setString("3");
+	m_countdownText.setStyle(sf::Text::Italic | sf::Text::Bold);
+	m_countdownText.setPosition({ m_window.getSize().x / 4.f - m_gameTimeText.getGlobalBounds().width / 2 , m_window.getSize().y / 2.f });
+	m_countdownText.setCharacterSize(30U);
+	m_countdownText.setOutlineColor(sf::Color::Black);
+	m_countdownText.setFillColor(sf::Color::White);
+	m_countdownText.setOutlineThickness(3.0f);
 
 }
 

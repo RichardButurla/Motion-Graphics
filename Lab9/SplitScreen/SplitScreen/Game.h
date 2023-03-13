@@ -37,6 +37,8 @@ private:
 	void checkPlayerOneInput(sf::Time& t_deltaTime);
 	void checkPlayerTwoInput(sf::Time& t_deltaTime);
 
+
+	void checkStartGame();
 	void checkPickupCollision();
 	void checkBlueShellCollision();
 	void checkPlayerWallTileCollision(Player & t_player);
@@ -79,8 +81,12 @@ private:
 
 	//Time
 	sf::Clock timeSinceGameStart;
-	sf::Time gameDuration = sf::seconds(90);
+	sf::Time startCountdown = sf::seconds(4);
+	sf::Time gameDuration = (sf::seconds(9) + startCountdown);
+	
 	sf::Text m_gameTimeText;
+	sf::Text m_countdownText;
+	bool m_startOfGame = true;
 	sf::Text m_gameLoseText;
 	sf::Text m_gameWinText;
 	bool m_gameOver;
